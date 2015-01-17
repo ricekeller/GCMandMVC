@@ -1,0 +1,12 @@
+E:\Dev\mongotest\obj\Debug\mongotest.csprojResolveAssemblyReference.cache
+E:\Dev\mongotest\bin\Debug\mongotest.exe.config
+E:\Dev\mongotest\bin\Debug\mongotest.exe
+E:\Dev\mongotest\bin\Debug\mongotest.pdb
+E:\Dev\mongotest\bin\Debug\MongoDB.Bson.dll
+E:\Dev\mongotest\bin\Debug\MongoDB.Driver.dll
+E:\Dev\mongotest\bin\Debug\MongoDB.Bson.pdb
+E:\Dev\mongotest\bin\Debug\MongoDB.Bson.xml
+E:\Dev\mongotest\bin\Debug\MongoDB.Driver.pdb
+E:\Dev\mongotest\bin\Debug\MongoDB.Driver.xml
+E:\Dev\mongotest\obj\Debug\mongotest.exe
+E:\Dev\mongotest\obj\Debug\mongotest.pdb
