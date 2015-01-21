@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Web", "ChatApp.Web\ChatApp.Web\ChatApp.Web.csproj", "{B0B0E382-0B04-43D3-9545-648B0824EFA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.MongoDB", "ChatApp.MongoDB\ChatApp.MongoDB.csproj", "{8A645971-5E73-4A38-910F-634DC11BFBEE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mongotest", "mongotest\mongotest.csproj", "{C3D75363-0EEA-4693-BD33-6092596FF911}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcApplication1", "MvcApplication1\MvcApplication1.csproj", "{304C58E0-387A-44C8-990F-E21A62A56CA0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B0B0E382-0B04-43D3-9545-648B0824EFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0B0E382-0B04-43D3-9545-648B0824EFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0B0E382-0B04-43D3-9545-648B0824EFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0B0E382-0B04-43D3-9545-648B0824EFA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A645971-5E73-4A38-910F-634DC11BFBEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A645971-5E73-4A38-910F-634DC11BFBEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A645971-5E73-4A38-910F-634DC11BFBEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A645971-5E73-4A38-910F-634DC11BFBEE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3D75363-0EEA-4693-BD33-6092596FF911}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3D75363-0EEA-4693-BD33-6092596FF911}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3D75363-0EEA-4693-BD33-6092596FF911}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3D75363-0EEA-4693-BD33-6092596FF911}.Release|Any CPU.Build.0 = Release|Any CPU
+		{304C58E0-387A-44C8-990F-E21A62A56CA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{304C58E0-387A-44C8-990F-E21A62A56CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{304C58E0-387A-44C8-990F-E21A62A56CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{304C58E0-387A-44C8-990F-E21A62A56CA0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
