@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace ChatApp.MongoDB
 {
-    public class Class1
+    public class Response
     {
+        public string Status;
     }
 }
