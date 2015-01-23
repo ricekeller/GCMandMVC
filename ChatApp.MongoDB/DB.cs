@@ -20,14 +20,18 @@ namespace ChatApp.MongoDB
             _server = _client.GetServer();
             _db = _server.GetDatabase("chatappdb");
         }
-        public DB Instance()
+        public static DB Instance()
         {
             return _istance;
         }
 
-        public MongoCollection GetCollection(string collection)
+        public MongoCollection<T> GetCollection<T>(string collection)
         {
-            return _db.GetCollection(collection);
+            if(string.IsNullOrWhiteSpace(collection))
+            {
+                return null;
+            }
+            return _db.GetCollection<T>(collection);
         }
     }
 }

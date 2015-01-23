@@ -10,3 +10,13 @@ E:\Dev\mongotest\bin\Debug\MongoDB.Driver.pdb
 E:\Dev\mongotest\bin\Debug\MongoDB.Driver.xml
 E:\Dev\mongotest\obj\Debug\mongotest.exe
 E:\Dev\mongotest\obj\Debug\mongotest.pdb
+E:\Dev\ChatApp\mongotest\bin\Debug\mongotest.exe.config
+E:\Dev\ChatApp\mongotest\bin\Debug\mongotest.exe
+E:\Dev\ChatApp\mongotest\bin\Debug\mongotest.pdb
+E:\Dev\ChatApp\mongotest\bin\Debug\MongoDB.Bson.pdb
+E:\Dev\ChatApp\mongotest\bin\Debug\MongoDB.Bson.xml
+E:\Dev\ChatApp\mongotest\bin\Debug\MongoDB.Driver.pdb
+E:\Dev\ChatApp\mongotest\bin\Debug\MongoDB.Driver.xml
+E:\Dev\ChatApp\mongotest\obj\Debug\mongotest.csprojResolveAssemblyReference.cache
+E:\Dev\ChatApp\mongotest\obj\Debug\mongotest.exe
+E:\Dev\ChatApp\mongotest\obj\Debug\mongotest.pdb

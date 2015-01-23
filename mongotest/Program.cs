@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
@@ -18,11 +19,11 @@ namespace mongotest
     {
         static void Main(string[] args)
         {
-            var connectionString = "mongodb://devtest:devtest@ds029541.mongolab.com:29541/devtest";
-            var client = new MongoClient(connectionString);
-            var server = client.GetServer();
-            var database = server.GetDatabase("devtest");
-            var collection = database.GetCollection<Entity>("entities");
+            //var connectionString = "mongodb://devtest:devtest@ds029541.mongolab.com:29541/devtest";
+            //var client = new MongoClient(connectionString);
+            //var server = client.GetServer();
+            //var database = server.GetDatabase("devtest");
+            //var collection = database.GetCollection<Entity>("entities");
 
 
             //var entity = new Entity { Name = "Tom" };
@@ -40,11 +41,11 @@ namespace mongotest
 
             //collection.Remove(query);
             
-            for(int i=0;i<10000;i++)
-            {
-                var entity = new Entity() { Name = i.ToString() };
-                collection.Insert(entity);
-            }
+            //for(int i=0;i<10000;i++)
+            //{
+            //    var entity = new Entity() { Name = i.ToString() };
+            //    collection.Insert(entity);
+            //}
         }
     }
 }
