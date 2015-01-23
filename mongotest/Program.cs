@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using MongoDB.Driver.Builders;
@@ -65,6 +66,16 @@ namespace mongotest
 			//DateTime d2 = new DateTime(3000, 12, 12);
 			//TimeSpan ts = d2.Subtract(d1);
 			//ts = d1.Subtract(d2);
+			var webAddr = "https://android.googleapis.com/gcm/send";
+			WebClient wc = new WebClient();
+			wc.Headers.Add("Content-Type", "application/json");
+			var data = new JavaScriptSerializer().Serialize(
+					new
+					{
+						key="123"
+					}
+				);
+			string result = wc.UploadString(webAddr, "POST", data);
         }
     }
 }
