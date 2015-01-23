@@ -46,6 +46,25 @@ namespace mongotest
             //    var entity = new Entity() { Name = i.ToString() };
             //    collection.Insert(entity);
             //}
+
+
+			//post data
+			//var webAddr = "https://android.googleapis.com/gcm/send";
+			//WebClient wc = new WebClient();
+			//wc.Headers.Add("Authorization", "key=AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8");
+			//wc.Headers.Add("Content-Type", "application/json");
+			//var data = new JavaScriptSerializer().Serialize(
+			//		new
+			//		{
+			//			registration_ids = new string[2] { "A", "B" },
+			//			data = new {message="This is the message."}
+			//		}
+			//	);
+			//string result = wc.UploadString(webAddr, "POST", data);
+			//DateTime d1 = new DateTime(1, 1, 1);
+			//DateTime d2 = new DateTime(3000, 12, 12);
+			//TimeSpan ts = d2.Subtract(d1);
+			//ts = d1.Subtract(d2);
         }
     }
 }
