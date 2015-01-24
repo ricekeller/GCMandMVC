@@ -66,16 +66,24 @@ namespace mongotest
 			//DateTime d2 = new DateTime(3000, 12, 12);
 			//TimeSpan ts = d2.Subtract(d1);
 			//ts = d1.Subtract(d2);
-			var webAddr = "https://android.googleapis.com/gcm/send";
-			WebClient wc = new WebClient();
-			wc.Headers.Add("Content-Type", "application/json");
-			var data = new JavaScriptSerializer().Serialize(
-					new
-					{
-						key="123"
-					}
-				);
-			string result = wc.UploadString(webAddr, "POST", data);
+
+
+            //var webAddr = "http://localhost:59957/api/APIKey";
+            //WebClient wc = new WebClient();
+            //wc.Headers.Add("Content-Type", "application/json");
+            //wc.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
+            //wc.Headers.Add("key", "1234h");
+            //var data = new JavaScriptSerializer().Serialize(
+            //        "AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8"
+            //    );
+            //string result = wc.UploadString(webAddr, "POST", data);
+            string[] ss = {"",null," ","   "};
+            foreach(string s in ss)
+            {
+                Console.WriteLine("Space:"+string.IsNullOrWhiteSpace(s));
+                Console.WriteLine("Empty:" + string.IsNullOrEmpty(s));
+            }
+            Console.ReadKey();
         }
     }
 }

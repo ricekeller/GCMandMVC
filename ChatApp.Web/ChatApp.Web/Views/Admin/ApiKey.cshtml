@@ -1,0 +1,23 @@
+﻿@model string
+
+@{
+    ViewBag.Title = "ApiKey";
+}
+
+<h2>ApiKey</h2>
+@if (!string.IsNullOrWhiteSpace(Model))
+{
+    <p>Current Key:</p>
+    <p>@Model</p>
+}
+else
+{
+    using (Html.BeginForm())
+    {
+        <p>@Html.ValidationMessage("Model")</p>
+        @Html.Label("key", "Please enter the new key:")
+        @Html.TextBox("key")
+        <p><input type="submit" value="Submit" /></p>
+    }
+}
+

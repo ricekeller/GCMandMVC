@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Net.Http;
 using System.Web.Http;
 using ChatApp.MongoDB;
 using ChatApp.MongoDB.BI;
 using ChatApp.Web.Models;
 
-namespace ChatApp.Web.Controllers
+namespace ChatApp.Web.Controllers.Admin
 {
     public class APIKeyController : ApiController
     {
@@ -16,7 +17,7 @@ namespace ChatApp.Web.Controllers
         }
 
         [HttpPost]
-        public Response UpdateKey(string key)
+        public Response UpdateKey([FromBody]string key)
         {
             if(string.IsNullOrWhiteSpace(key))
             {
