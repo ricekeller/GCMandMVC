@@ -110,11 +110,16 @@
   <ItemGroup>
     <Compile Include="Controllers\Admin\AdminController.cs" />
     <Compile Include="Controllers\Admin\APIKeyController.cs" />
+    <Compile Include="Controllers\Admin\MessagePortalController.cs" />
     <Compile Include="Controllers\Default1Controller.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\APIKeyResponse.cs" />
+    <Compile Include="Models\AppUser.cs" />
+    <Compile Include="Models\GCMServerHelper.cs" />
+    <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
