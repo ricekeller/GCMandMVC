@@ -119,6 +119,7 @@
     <Compile Include="Models\AppUser.cs" />
     <Compile Include="Models\GCMServerHelper.cs" />
     <Compile Include="Models\Message.cs" />
+    <Compile Include="Models\MessagePortalResponse.cs" />
     <Compile Include="Models\Utils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -77,13 +77,24 @@ namespace mongotest
             //        "AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8"
             //    );
             //string result = wc.UploadString(webAddr, "POST", data);
-            string[] ss = {"",null," ","   "};
-            foreach(string s in ss)
+            _errorMsgs = new List<string>();
+            for(int i=0;i<10;i++)
             {
-                Console.WriteLine("Space:"+string.IsNullOrWhiteSpace(s));
-                Console.WriteLine("Empty:" + string.IsNullOrEmpty(s));
+                _errorMsgs.Add("the number now is: " + i);
+            }
+            foreach(string s in GetErrorMsgs())
+            {
+                Console.WriteLine(s);
             }
             Console.ReadKey();
+        }
+        private static List<string> _errorMsgs;
+        public static IEnumerable<string> GetErrorMsgs()
+        {
+            for (int i = 0; i < _errorMsgs.Count; i++)
+            {
+                yield return _errorMsgs[i];
+            }
         }
     }
 }

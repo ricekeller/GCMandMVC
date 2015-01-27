@@ -13,6 +13,6 @@ namespace ChatApp.MongoDB
     }
     public class Response
     {
-        public string Status;
+        public string Status { get; set; }
     }
 }

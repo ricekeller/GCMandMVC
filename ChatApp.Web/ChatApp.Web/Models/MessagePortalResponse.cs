@@ -6,8 +6,8 @@ using ChatApp.MongoDB;
 
 namespace ChatApp.Web.Models
 {
-    public class APIKeyResponse:Response
+    public class MessagePortalResponse:Response
     {
-        public string Key { get; set; }
+        public string FullMessage { get; set; }
     }
 }
