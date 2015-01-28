@@ -4,13 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp.MongoDB
+namespace ChatApp.MongoDB.BI.Model
 {
-    public enum ResponseStatus
-    {
-        Success,
-        Fail
-    }
     public class Response
     {
         public string Status { get; set; }

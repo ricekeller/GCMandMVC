@@ -45,11 +45,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BI\APIKey.cs" />
+    <Compile Include="BI\Model\APIKey.cs" />
     <Compile Include="BI\APIKeyBI.cs" />
+    <Compile Include="BI\Model\APIKeyResponse.cs" />
+    <Compile Include="BI\Model\AppUser.cs" />
+    <Compile Include="BI\Model\Constants.cs" />
+    <Compile Include="BI\Model\Message.cs" />
+    <Compile Include="BI\MessagePortalBI.cs" />
+    <Compile Include="BI\Model\MessagePortalResponse.cs" />
     <Compile Include="DB.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Response.cs" />
+    <Compile Include="BI\Model\Response.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

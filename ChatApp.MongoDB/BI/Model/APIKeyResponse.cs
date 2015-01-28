@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using ChatApp.MongoDB;
 
-namespace ChatApp.Web.Models
+namespace ChatApp.MongoDB.BI.Model
 {
     public class APIKeyResponse:Response
     {

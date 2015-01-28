@@ -70,6 +70,6 @@ E:\Dev\ChatApp\MvcApplication1\bin\System.Web.Razor.xml
 E:\Dev\ChatApp\MvcApplication1\bin\System.Web.WebPages.xml
 E:\Dev\ChatApp\MvcApplication1\bin\System.Web.WebPages.Deployment.xml
 E:\Dev\ChatApp\MvcApplication1\bin\System.Web.WebPages.Razor.xml
-E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.csprojResolveAssemblyReference.cache
 E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.dll
 E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.pdb
+E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.csprojResolveAssemblyReference.cache

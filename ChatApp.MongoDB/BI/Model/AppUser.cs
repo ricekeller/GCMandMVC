@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ChatApp.Web.Models
+namespace ChatApp.MongoDB.BI.Model
 {
     public class AppUser
     {

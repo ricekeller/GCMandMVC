@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Driver.Builders;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using ChatApp.MongoDB.BI.Model;
 
 namespace ChatApp.MongoDB.BI
 {

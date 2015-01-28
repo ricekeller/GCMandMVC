@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MongoDB.Bson;
 
-namespace ChatApp.MongoDB.BI
+namespace ChatApp.MongoDB.BI.Model
 {
     public class APIKey
     {

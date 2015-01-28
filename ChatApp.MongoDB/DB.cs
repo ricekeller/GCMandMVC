@@ -33,5 +33,7 @@ namespace ChatApp.MongoDB
             }
             return _db.GetCollection<T>(collection);
         }
+
+
     }
 }

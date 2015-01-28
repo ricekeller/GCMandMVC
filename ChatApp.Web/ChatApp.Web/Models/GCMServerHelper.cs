@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Script.Serialization;
+using ChatApp.MongoDB.BI.Model;
 using Newtonsoft.Json.Linq;
 
 namespace ChatApp.Web.Models
@@ -26,7 +27,11 @@ namespace ChatApp.Web.Models
 			return _instance;
 		}
 
-		public string SendMessage(string msg,string regId)
+        public bool SendMessage(Message msg)
+        {
+            throw new NotImplementedException();
+        }
+		private string SendMessageRaw(string msg,string regId)
 		{
 			WebClient wc = new WebClient();
 			wc.Headers.Add("Authorization", "key="+APIKEY);

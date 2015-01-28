@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace ChatApp.Web.Models
+namespace ChatApp.MongoDB.BI.Model
 {
     public enum MessageType
     {
@@ -14,7 +14,7 @@ namespace ChatApp.Web.Models
         public AppUser Sender { get; set; }
         public AppUser Receiver { get; set; }
         public DateTime SendTimeStamp { get; set; }
-        private byte[] Message;
+        private byte[] RawMessage;
         private MessageType MessageType;
         private List<string> _errorMsgs;
         //public static Message Create(string senderID,string senderName,string senderRegID,
@@ -33,7 +33,7 @@ namespace ChatApp.Web.Models
             {
                 _errorMsgs.Clear();
             }
-            if (null == Message || Message.Length == 0)//empty message
+            if (null == RawMessage || RawMessage.Length == 0)//empty message
             {
                 _errorMsgs.Add("Message can't be empty!");
                 return false;

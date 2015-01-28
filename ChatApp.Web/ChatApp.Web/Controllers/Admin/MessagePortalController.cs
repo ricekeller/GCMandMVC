@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using ChatApp.MongoDB;
+using ChatApp.MongoDB.BI.Model;
 using ChatApp.Web.Models;
 
 namespace ChatApp.Web.Controllers.Admin
@@ -19,12 +20,11 @@ namespace ChatApp.Web.Controllers.Admin
             //1.validate 
             if(null==msg)
             {
-                return new MessagePortalResponse() { Status = Enum.GetName(typeof(ResponseStatus),ResponseStatus.Fail), FullMessage = "Invalid data posted!" };
+                return new MessagePortalResponse() { Status = Constants.FAIL, FullMessage = "Invalid data posted!" };
             }
             if(!msg.IsValid())
             {
-                MessagePortalResponse mpr = new MessagePortalResponse();
-                mpr.Status = Enum.GetName(typeof(ResponseStatus), ResponseStatus.Fail);
+                MessagePortalResponse mpr = new MessagePortalResponse() { Status=Constants.FAIL};
                 StringBuilder sb = new StringBuilder();
                 foreach(string em in msg.GetErrorMsgs())
                 {
@@ -34,10 +34,16 @@ namespace ChatApp.Web.Controllers.Admin
                 return mpr;
             }
             //2.get sender regID and receiver regID from the DB
-
+            ValidateRegIDs(msg);
             //3.using GCMServerHelper to send message to GCM
+            GCMServerHelper.GetInstance().SendMessage(msg);
+            return new MessagePortalResponse() { Status = Constants.SUCCESS, FullMessage = "Message is sent!" };
+        }
 
-            //4.process GCM response
+        private void ValidateRegIDs(Message msg)
+        {
+
+            throw new NotImplementedException();
         }
     }
 }
