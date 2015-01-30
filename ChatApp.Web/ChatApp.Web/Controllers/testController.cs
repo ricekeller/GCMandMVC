@@ -15,8 +15,8 @@ namespace ChatApp.Web.Controllers
 
         public ActionResult Index()
         {
-            var tu1= MessagePortalBI.GetUser("test1");
-            var tu2 = MessagePortalBI.GetUser("test2");
+            var tu1= MessagePortalBI.GetUserByName("test1");
+            var tu2 = MessagePortalBI.GetUserByName("test2");
             return View();
         }
 

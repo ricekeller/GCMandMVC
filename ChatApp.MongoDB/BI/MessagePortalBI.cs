@@ -11,12 +11,21 @@ namespace ChatApp.MongoDB.BI
 {
     public static class MessagePortalBI
     {
-        public static AppUser GetUser(string id)
+        public static AppUser GetUserByID(string id)
         {
-            var col = DB.Instance().GetCollection<AppUser>("User");
-            var query=Query<AppUser>.EQ(e=>e.Id,id);
-            var result = col.FindOne(query);
-            return result;
+            if(string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+            return DB.Instance().GetOne<AppUser>("User",a=>a.Id.ToString().Equals(id),a=>a.Id,a=>a.Name,a=>a.RegistrationId);
+        }
+        public static List<AppUser> GetUserByName(string name)
+        {
+            if(string.IsNullOrWhiteSpace(name))
+            {
+                return null;
+            }
+            return DB.Instance().GetMany<AppUser>("User",a=>a.Name==name,a=>a.Id,a=>a.Name,a=>a.RegistrationId);
         }
     }
 }
