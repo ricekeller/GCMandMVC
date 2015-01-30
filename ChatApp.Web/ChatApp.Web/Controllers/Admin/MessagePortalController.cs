@@ -42,7 +42,11 @@ namespace ChatApp.Web.Controllers.Admin
 
         private void ValidateRegIDs(Message msg)
         {
-
+            var oldRegID = DB.Instance().GetOne<AppUser>("User", a => a.Id.Equals(msg.Sender.Id), a => a.RegistrationId).RegistrationId;
+            if(!oldRegID.Equals(msg.Sender.RegistrationId))
+            {
+                //save new regID to BD
+            }
             throw new NotImplementedException();
         }
     }

@@ -17,6 +17,7 @@ namespace ChatApp.MongoDB.BI
         {
             var query = Query<APIKey>.EQ(e => e.Id, APIKEY);
             var col=DB.Instance().GetCollection<APIKey>(APIKEY);
+
             return col.FindOne(query).Key;
         }
         public static bool UpdateAPIKey(string newAPIKey)
