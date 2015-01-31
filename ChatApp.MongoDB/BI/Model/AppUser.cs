@@ -4,18 +4,20 @@ using System.Linq;
 using System.Web;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson.Serialization.IdGenerators;
 
 namespace ChatApp.MongoDB.BI.Model
 {
     public class AppUser
     {
-        public ObjectId Id { get; set; }
+        [BsonId(IdGenerator=typeof(StringObjectIdGenerator))]
+        public string Id { get; set; }
         public string Name { get; set; }
         public string RegistrationId { get; set; }
 
         public bool IsValid()
         {
-            return null!=Id;
+            return !string.IsNullOrWhiteSpace(Id);
         }
     }
 }

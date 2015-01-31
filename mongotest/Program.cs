@@ -77,18 +77,37 @@ namespace mongotest
             //        "AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8"
             //    );
             //string result = wc.UploadString(webAddr, "POST", data);
+
+
+            var webAddr = "http://localhost:59957/api/messageportal";
+            WebClient wc = new WebClient();
+            wc.Headers.Add("Content-Type", "application/json");
+            //wc.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
+            var data = new JavaScriptSerializer().Serialize(
+                new {
+                    RawMessage=Encoding.UTF8.GetBytes("Test Message: Hello ~~~~!~@#!@%$@#%^"),
+                    MessageType=0,
+                    SendTimeStamp=DateTime.UtcNow,
+                    Sender = new { Id = "54cd41d928851c2930dad75e", Name = "test1", RegistrationId = "1111111111111" },
+                    Receiver = new { Id = "54cd41d928851c2930dad75f", Name = "test2", RegistrationId = "222222" }
+                }
+                );
+            string result = wc.UploadString(webAddr, "POST", data);
+        }
+        private static List<string> _errorMsgs;
+        public static void TestYieldReturn()
+        {
             _errorMsgs = new List<string>();
-            for(int i=0;i<10;i++)
+            for (int i = 0; i < 10; i++)
             {
                 _errorMsgs.Add("the number now is: " + i);
             }
-            foreach(string s in GetErrorMsgs())
+            foreach (string s in GetErrorMsgs())
             {
                 Console.WriteLine(s);
             }
             Console.ReadKey();
         }
-        private static List<string> _errorMsgs;
         public static IEnumerable<string> GetErrorMsgs()
         {
             for (int i = 0; i < _errorMsgs.Count; i++)

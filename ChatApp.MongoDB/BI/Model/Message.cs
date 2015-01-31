@@ -14,8 +14,8 @@ namespace ChatApp.MongoDB.BI.Model
         public AppUser Sender { get; set; }
         public AppUser Receiver { get; set; }
         public DateTime SendTimeStamp { get; set; }
-        private byte[] RawMessage;
-        private MessageType MessageType;
+        public byte[] RawMessage { get; set; }
+        public MessageType MessageType { get; set; }
         private List<string> _errorMsgs;
         //public static Message Create(string senderID,string senderName,string senderRegID,
         //                             string receiverID,string receiverName,string receiverRegID,
@@ -38,7 +38,7 @@ namespace ChatApp.MongoDB.BI.Model
                 _errorMsgs.Add("Message can't be empty!");
                 return false;
             }
-            if (DateTime.Now.Subtract(SendTimeStamp) < TimeSpan.Zero)//future time
+            if (DateTime.UtcNow.Subtract(SendTimeStamp) < TimeSpan.Zero)//future time
             {
                 _errorMsgs.Add("Message send time is in the future!");
                 return false;

@@ -20,5 +20,15 @@ namespace ChatApp.Web.Controllers
             return View();
         }
 
+        public string GenerateUser()
+        {
+            AppUser u = null;
+            for(int i=0;i<5;i++)
+            {
+                u = new AppUser() { Name = "test" + i };
+                var res=MessagePortalBI.UpdateUser(u);
+            }
+            return "1";
+        }
     }
 }

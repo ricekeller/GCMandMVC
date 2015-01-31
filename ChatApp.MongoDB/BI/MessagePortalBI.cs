@@ -17,7 +17,7 @@ namespace ChatApp.MongoDB.BI
             {
                 return null;
             }
-            return DB.Instance().GetOne<AppUser>("User",a=>a.Id.ToString().Equals(id),a=>a.Id,a=>a.Name,a=>a.RegistrationId);
+            return DB.Instance().GetOne<AppUser>("User",a=>a.Id.Equals(id),a=>a.Id,a=>a.Name,a=>a.RegistrationId);
         }
         public static List<AppUser> GetUserByName(string name)
         {
@@ -26,6 +26,10 @@ namespace ChatApp.MongoDB.BI
                 return null;
             }
             return DB.Instance().GetMany<AppUser>("User",a=>a.Name==name,a=>a.Id,a=>a.Name,a=>a.RegistrationId);
+        }
+        public static bool UpdateUser(AppUser u)
+        {
+            return DB.Instance().GetCollection<AppUser>("User").Save(u).Ok;
         }
     }
 }

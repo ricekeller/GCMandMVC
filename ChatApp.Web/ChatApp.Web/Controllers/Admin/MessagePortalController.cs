@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using ChatApp.MongoDB;
+using ChatApp.MongoDB.BI;
 using ChatApp.MongoDB.BI.Model;
 using ChatApp.Web.Models;
 
@@ -43,11 +44,11 @@ namespace ChatApp.Web.Controllers.Admin
         private void ValidateRegIDs(Message msg)
         {
             var oldRegID = DB.Instance().GetOne<AppUser>("User", a => a.Id.Equals(msg.Sender.Id), a => a.RegistrationId).RegistrationId;
-            if(!oldRegID.Equals(msg.Sender.RegistrationId))
+            if(string.IsNullOrWhiteSpace(oldRegID)||!oldRegID.Equals(msg.Sender.RegistrationId))
             {
                 //save new regID to BD
+                MessagePortalBI.UpdateUser(msg.Sender);
             }
-            throw new NotImplementedException();
         }
     }
 }
