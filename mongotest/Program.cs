@@ -78,16 +78,78 @@ namespace mongotest
             //    );
             //string result = wc.UploadString(webAddr, "POST", data);
 
+            //TestBinaryAndString();
+            //Console.ReadKey();
 
+            var webAddr = "http://localhost:59957/Location/SaveLocation";
+            WebClient wc = new WebClient();
+            wc.Headers.Add("Content-Type", "application/json");
+            var data = new JavaScriptSerializer().Serialize(new {
+                    Latitude = "43.067448",
+                    Longitude = "-89.412069",
+                    Timestamp=DateTime.UtcNow
+            });
+            string result = wc.UploadString(webAddr, "POST", data);
+            
+        }
+        private static string String2Binary(string s)
+        {
+            byte[] b = Encoding.UTF8.GetBytes(s);
+            StringBuilder sb = new StringBuilder();
+            for(int i=0;i<b.Length;i++)
+            {
+                string tmp = Convert.ToString(b[i], 2).PadLeft(8,'0');
+                sb.Append(tmp);
+            }
+            return sb.ToString();
+        }
+        private static string Binary2String(string binaryS)
+        {
+            if(binaryS.Length%8!=0)
+            {
+                throw new ArgumentException("Input argument is not valid!");
+            }
+            byte[] b = new byte[binaryS.Length / 8];
+            for(int i=0;i<binaryS.Length;i+=8)
+            {
+                b[i / 8] = Convert.ToByte(binaryS.Substring(i, 8), 2);
+            }
+            return Encoding.UTF8.GetString(b);
+        }
+        private static void TestBinaryAndString()
+        {
+            string[] from = new string[9]{
+                "I'm Yan!",
+                "哈哈哈哈！@",
+                "我不知道這是啥啊。。。",
+                "這個是地址：http://madisonccc.org/",
+                "Just a test:!@$#@#%#^$%&%(*&*)OL:",
+                "01010101",
+                "22222222",
+                "11111111",
+                "00000001",
+            };
+
+            string[] to = new string[9];
+            for(int i=0;i<9;i++)
+            {
+                to[i] = String2Binary(from[i]);
+                Console.WriteLine("Test {0} - binary:{1}", i, to[i]);
+                Console.WriteLine("Test {0} - string:{1}", i, Binary2String(to[i]));
+            }
+        }
+        private static void SendMsg()
+        {
             var webAddr = "http://localhost:59957/api/messageportal";
             WebClient wc = new WebClient();
             wc.Headers.Add("Content-Type", "application/json");
             //wc.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
             var data = new JavaScriptSerializer().Serialize(
-                new {
-                    RawMessage=Encoding.UTF8.GetBytes("Test Message: Hello ~~~~!~@#!@%$@#%^"),
-                    MessageType=0,
-                    SendTimeStamp=DateTime.UtcNow,
+                new
+                {
+                    RawMessage = Encoding.UTF8.GetBytes("Test Message: Hello ~~~~!~@#!@%$@#%^"),
+                    MessageType = 0,
+                    SendTimeStamp = DateTime.UtcNow,
                     Sender = new { Id = "54cd41d928851c2930dad75e", Name = "test1", RegistrationId = "1111111111111" },
                     Receiver = new { Id = "54cd41d928851c2930dad75f", Name = "test2", RegistrationId = "222222" }
                 }

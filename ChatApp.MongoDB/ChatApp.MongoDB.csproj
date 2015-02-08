@@ -50,6 +50,8 @@
     <Compile Include="BI\Model\APIKeyResponse.cs" />
     <Compile Include="BI\Model\AppUser.cs" />
     <Compile Include="BI\Model\Constants.cs" />
+    <Compile Include="BI\LocationBI.cs" />
+    <Compile Include="BI\Model\LocationTrail.cs" />
     <Compile Include="BI\Model\Message.cs" />
     <Compile Include="BI\MessagePortalBI.cs" />
     <Compile Include="BI\Model\MessagePortalResponse.cs" />

@@ -1,0 +1,43 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ricekeller.illclxx.gcmclient.TestFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+        android:text="@string/hello_blank_fragment" />
+
+    <WebView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/webView"
+        android:layout_gravity="center" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:layout_gravity="center_horizontal|bottom" />
+
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New ToggleButton"
+        android:id="@+id/toggleButton"
+        android:layout_gravity="right|top" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textEmailAddress"
+        android:ems="10"
+        android:id="@+id/editText"
+        android:layout_gravity="left|bottom" />
+
+    <AnalogClock
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/analogClock"
+        android:layout_gravity="right|center_vertical" />
+
+</FrameLayout>

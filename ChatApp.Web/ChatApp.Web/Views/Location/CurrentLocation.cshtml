@@ -1,0 +1,49 @@
+﻿@model ChatApp.MongoDB.BI.Model.LocationTrail
+
+@{
+    ViewBag.Title = "CurrentLocation";
+    Layout = "~/Views/Shared/_LayoutPage.cshtml";
+}
+@section mainContent
+{
+    <style type="text/css">
+        #map-canvas {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <script type="text/javascript"
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCo-q1vlh3Koh9g8cauTwE_x4Va68bMelo">
+    </script>
+    <script type="text/javascript">
+        function initialize() 
+        {
+            var fLat=parseFloat(@Model.Latitude);
+            var fLng=parseFloat(@Model.Longitude);
+            var pos = new google.maps.LatLng(fLat , fLng);
+            var mapOptions = {
+                center: { lat: fLat, lng: fLng },
+                zoom: 12
+            };
+            var map = new google.maps.Map(document.getElementById("map-canvas"), mapOptions);
+            var marker = new google.maps.Marker({
+                map: map,
+                draggable: false,
+                animation: google.maps.Animation.DROP,
+                position: pos
+            });
+            google.maps.event.addListener(marker, 'click', toggleBounce);
+            function toggleBounce() {
+
+                if (marker.getAnimation() != null) {
+                    marker.setAnimation(null);
+                } else {
+                    marker.setAnimation(google.maps.Animation.BOUNCE);
+                }
+            }
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <div id="map-canvas"></div>
+}
