@@ -18,8 +18,8 @@ namespace ChatApp.MongoDB.BI
         }
         public static LocationTrail GetLastLoc()
         {
-            var col = DB.Instance().GetCollection<LocationTrail>(COLLECTIONNAME).AsQueryable<LocationTrail>();
-            return col.OrderBy(a => a.Timestamp).LastOrDefault();
+            var col = DB.Instance().GetCollection<LocationTrail>(COLLECTIONNAME).Find(Query.LTE("Timestamp", DateTime.Now));
+            return col.LastOrDefault();
         }
     }
 }
