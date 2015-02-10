@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 using ChatApp.Web.Models.ViewModels;
 
 namespace ChatApp.Web.Controllers
@@ -28,7 +29,11 @@ namespace ChatApp.Web.Controllers
 		{
 			if(ModelState.IsValid)
 			{
-				//do some login staff
+				if(Membership.ValidateUser(lvm.Email,lvm.Password))
+				{
+					FormsAuthentication.RedirectFromLoginPage(lvm.Email, lvm.RememberMe);
+				}
+				ModelState.AddModelError("", "Incorrect email and/or password!");
 			}
 			return View(lvm);
 		}
@@ -44,7 +49,12 @@ namespace ChatApp.Web.Controllers
 		{
 			if(ModelState.IsValid)
 			{
-				//do some create staff
+				MembershipUser u=Membership.CreateUser(vm.Email,vm.Password,vm.Email);
+				if(null!=u)
+				{
+					//TODO: do something
+				}
+				ModelState.AddModelError("", "Can not create user! Please try again!");
 			}
 			return View(vm);
 		}

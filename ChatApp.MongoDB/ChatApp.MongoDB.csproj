@@ -45,6 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BI\AccountManagementBI.cs" />
     <Compile Include="BI\Model\APIKey.cs" />
     <Compile Include="BI\APIKeyBI.cs" />
     <Compile Include="BI\Model\APIKeyResponse.cs" />
@@ -56,6 +57,7 @@
     <Compile Include="BI\MessagePortalBI.cs" />
     <Compile Include="BI\Model\MessagePortalResponse.cs" />
     <Compile Include="DB.cs" />
+    <Compile Include="PasswordSaltedHash.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BI\Model\Response.cs" />
   </ItemGroup>

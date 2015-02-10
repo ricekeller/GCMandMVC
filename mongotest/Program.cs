@@ -81,17 +81,48 @@ namespace mongotest
             //TestBinaryAndString();
             //Console.ReadKey();
 
-            var webAddr = "http://localhost:59957/Location/SaveLocation";
-            WebClient wc = new WebClient();
-            wc.Headers.Add("Content-Type", "application/json");
-            var data = new JavaScriptSerializer().Serialize(new {
-                    Latitude = "43.067448",
-                    Longitude = "-89.412069",
-                    Timestamp=DateTime.UtcNow
-            });
-            string result = wc.UploadString(webAddr, "POST", data);
-            
+			//var webAddr = "http://localhost:59957/Location/SaveLocation";
+			//WebClient wc = new WebClient();
+			//wc.Headers.Add("Content-Type", "application/json");
+			//var data = new JavaScriptSerializer().Serialize(new {
+			//		Latitude = "43.067448",
+			//		Longitude = "-89.412069",
+			//		Timestamp=DateTime.UtcNow
+			//});
+			//string result = wc.UploadString(webAddr, "POST", data);
+			TestSaltedHash();
+			Console.ReadKey();
         }
+		private static void TestSaltedHash()
+		{
+			string[] pass = { "123456",
+								"test",
+								"password",
+								"#$^@#^@#^@#",
+								":245:asgv:235",
+								"DLJSFdsklgfa23##",
+								"  asfSK#(83E"};
+			string[] dic ={"123457",
+								"teSt",
+								"pasSword",
+								"#$^@!!@#^@#",
+								":245:asg1:235",
+								"DLJSFdllklgfa23##",
+								"  aSSfSK#(83E"};
+			string[] correctHashes = new string[7];
+			for(int i=0;i<7;i++)
+			{
+				correctHashes[i] = PasswordHash.PasswordHash.CreateHash(pass[i]);
+			}
+			for(int i=0;i<7;i++)
+			{
+				Console.WriteLine("******************************");
+				Console.WriteLine("Test: {0}",i);
+				Console.WriteLine("CorrectHash: {0}",correctHashes[i]);
+				Console.WriteLine("Try correct: {0}",PasswordHash.PasswordHash.ValidatePassword(pass[i],correctHashes[i]));
+				Console.WriteLine("Try dic: {0}",PasswordHash.PasswordHash.ValidatePassword(dic[i],correctHashes[i]));
+			}
+		}
         private static string String2Binary(string s)
         {
             byte[] b = Encoding.UTF8.GetBytes(s);
