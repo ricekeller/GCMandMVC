@@ -10,13 +10,10 @@ namespace ChatApp.Web.Controllers
 {
     public class LocationController : Controller
     {
-        //
-        // GET: /Location/
-
-        public ActionResult CurrentLocation()
+        public PartialViewResult CurrentLocation()
         {
             LocationTrail loc = LocationBI.GetLastLoc();
-            return View(loc);
+            return PartialView(loc);
         }
 
         [HttpPost]

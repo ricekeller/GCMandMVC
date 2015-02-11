@@ -31,10 +31,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MongoDB.Bson">
-      <HintPath>..\..\..\Bak\Materials\ProgrammingPackages\MongoDB.CSharpDriver-1.10.0-rc1\MongoDB.Bson.dll</HintPath>
+      <HintPath>..\mongodriver\MongoDB.Bson.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="MongoDB.Driver">
-      <HintPath>..\..\..\Bak\Materials\ProgrammingPackages\MongoDB.CSharpDriver-1.10.0-rc1\MongoDB.Driver.dll</HintPath>
+      <HintPath>..\mongodriver\MongoDB.Driver.dll</HintPath>
+      <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

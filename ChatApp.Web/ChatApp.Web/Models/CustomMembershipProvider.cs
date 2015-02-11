@@ -32,6 +32,7 @@ namespace ChatApp.Web.Models
 
 		public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
 		{
+
 			throw new NotImplementedException();
 		}
 

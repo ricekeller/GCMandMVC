@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.21005.1
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Web", "ChatApp.Web\ChatApp.Web\ChatApp.Web.csproj", "{B0B0E382-0B04-43D3-9545-648B0824EFA8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B} = {3BE7FABA-D78E-473A-AA18-BB025F20BF1B}
+		{92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B} = {92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.MongoDB", "ChatApp.MongoDB\ChatApp.MongoDB.csproj", "{8A645971-5E73-4A38-910F-634DC11BFBEE}"
 EndProject
@@ -14,6 +18,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Web.BL", "ChatApp.Web.BL\ChatApp.Web.BL.csproj", "{92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Model", "ChatApp.Model\ChatApp.Model.csproj", "{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{8A645971-5E73-4A38-910F-634DC11BFBEE} = {8A645971-5E73-4A38-910F-634DC11BFBEE}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
