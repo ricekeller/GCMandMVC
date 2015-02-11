@@ -72,7 +72,6 @@ E:\Dev\ChatApp\MvcApplication1\bin\System.Web.WebPages.Deployment.xml
 E:\Dev\ChatApp\MvcApplication1\bin\System.Web.WebPages.Razor.xml
 E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.dll
 E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.pdb
-E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.csprojResolveAssemblyReference.cache
 D:\Bak\codes\GCMandMVC\MvcApplication1\bin\MvcApplication1.dll.config
 D:\Bak\codes\GCMandMVC\MvcApplication1\bin\MvcApplication1.dll
 D:\Bak\codes\GCMandMVC\MvcApplication1\bin\MvcApplication1.pdb

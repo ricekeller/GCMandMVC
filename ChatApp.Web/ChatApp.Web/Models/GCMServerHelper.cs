@@ -5,7 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Script.Serialization;
-using ChatApp.MongoDB.BI.Model;
+using ChatApp.Model;
 using Newtonsoft.Json.Linq;
 
 namespace ChatApp.Web.Models

@@ -13,7 +13,6 @@ E:\Dev\mongotest\obj\Debug\mongotest.pdb
 E:\Dev\ChatApp\mongotest\bin\Debug\mongotest.exe.config
 E:\Dev\ChatApp\mongotest\bin\Debug\mongotest.exe
 E:\Dev\ChatApp\mongotest\bin\Debug\mongotest.pdb
-E:\Dev\ChatApp\mongotest\obj\Debug\mongotest.csprojResolveAssemblyReference.cache
 E:\Dev\ChatApp\mongotest\obj\Debug\mongotest.exe
 E:\Dev\ChatApp\mongotest\obj\Debug\mongotest.pdb
 D:\Bak\codes\GCMandMVC\mongotest\bin\Debug\mongotest.exe.config

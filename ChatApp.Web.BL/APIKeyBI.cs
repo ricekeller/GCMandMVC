@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 using MongoDB.Driver.Builders;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using ChatApp.MongoDB.BI.Model;
+using ChatApp.MongoDB;
+using ChatApp.Model;
 
-namespace ChatApp.MongoDB.BI
+namespace ChatApp.Web.BL
 {
     public static class APIKeyBI
     {

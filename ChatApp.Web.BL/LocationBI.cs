@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ChatApp.MongoDB.BI.Model;
+using ChatApp.Model;
+using ChatApp.MongoDB;
 using MongoDB.Driver.Builders;
 using MongoDB.Driver.Linq;
 
-namespace ChatApp.MongoDB.BI
+namespace ChatApp.Web.BL
 {
     public static class LocationBI
     {

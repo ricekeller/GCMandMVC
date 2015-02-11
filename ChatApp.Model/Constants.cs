@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp.MongoDB.BI.Model
+namespace ChatApp.Model
 {
     public static class Constants
     {

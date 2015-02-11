@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.IdGenerators;
 
-namespace ChatApp.MongoDB.BI.Model
+namespace ChatApp.Model
 {
     public class LocationTrail
     {

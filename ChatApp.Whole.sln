@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mongotest", "mongotest\mong
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvcApplication1", "MvcApplication1\MvcApplication1.csproj", "{304C58E0-387A-44C8-990F-E21A62A56CA0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Web.BL", "ChatApp.Web.BL\ChatApp.Web.BL.csproj", "{92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Model", "ChatApp.Model\ChatApp.Model.csproj", "{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{304C58E0-387A-44C8-990F-E21A62A56CA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{304C58E0-387A-44C8-990F-E21A62A56CA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{304C58E0-387A-44C8-990F-E21A62A56CA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92BE1CC9-9809-4677-BB6F-8CF6CC58BC4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

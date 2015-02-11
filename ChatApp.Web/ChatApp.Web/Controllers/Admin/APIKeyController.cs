@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Net.Http;
 using System.Web.Http;
-using ChatApp.MongoDB;
-using ChatApp.MongoDB.BI;
-using ChatApp.MongoDB.BI.Model;
+using ChatApp.Model;
+using ChatApp.Web.BL;
 using ChatApp.Web.Models;
 
 namespace ChatApp.Web.Controllers.Admin

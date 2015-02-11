@@ -161,12 +161,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ChatApp.MongoDB\ChatApp.MongoDB.csproj">
-      <Project>{8a645971-5e73-4a38-910f-634dc11bfbee}</Project>
-      <Name>ChatApp.MongoDB</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Views\Admin\ApiKey.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -189,6 +183,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Views\Account\Register.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\ChatApp.Model\ChatApp.Model.csproj">
+      <Project>{3be7faba-d78e-473a-aa18-bb025f20bf1b}</Project>
+      <Name>ChatApp.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\ChatApp.Web.BL\ChatApp.Web.BL.csproj">
+      <Project>{92be1cc9-9809-4677-bb6f-8cf6cc58bc4b}</Project>
+      <Name>ChatApp.Web.BL</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp.MongoDB.BI
+namespace ChatApp.Model
 {
-	public static class AccountManagementBI
-	{
-		
-	}
+    public class Response
+    {
+        public string Status { get; set; }
+    }
 }

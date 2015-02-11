@@ -5,9 +5,8 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Web.Http;
-using ChatApp.MongoDB;
-using ChatApp.MongoDB.BI;
-using ChatApp.MongoDB.BI.Model;
+using ChatApp.Model;
+using ChatApp.Web.BL;
 using ChatApp.Web.Models;
 
 namespace ChatApp.Web.Controllers.Admin
@@ -35,20 +34,10 @@ namespace ChatApp.Web.Controllers.Admin
                 return mpr;
             }
             //2.get sender regID and receiver regID from the DB
-            ValidateRegIDs(msg);
+            MessagePortalBI.ValidateRegID(msg);
             //3.using GCMServerHelper to send message to GCM
             GCMServerHelper.GetInstance().SendMessage(msg);
             return new MessagePortalResponse() { Status = Constants.SUCCESS, FullMessage = "Message is sent!" };
-        }
-
-        private void ValidateRegIDs(Message msg)
-        {
-            var oldRegID = DB.Instance().GetOne<AppUser>("User", a => a.Id.Equals(msg.Sender.Id), a => a.RegistrationId).RegistrationId;
-            if(string.IsNullOrWhiteSpace(oldRegID)||!oldRegID.Equals(msg.Sender.RegistrationId))
-            {
-                //save new regID to BD
-                MessagePortalBI.UpdateUser(msg.Sender);
-            }
         }
     }
 }

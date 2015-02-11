@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using ChatApp.MongoDB.BI;
+using ChatApp.Web.BL;
+
 
 namespace ChatApp.Web.Controllers.Admin
 {
