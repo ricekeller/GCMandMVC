@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using ChatApp.Web.BL;
 
 namespace ChatApp.Web.Models.ViewModels
 {
-	public class CreateAccountViewModel:IValidatableObject
+	public class CreateAccountViewModel : IValidatableObject
 	{
 		[Required]
-		[MinLength(6)]
 		[EmailAddress(ErrorMessage = "Invalid email address.")]
 		public string Email { get; set; }
 
@@ -17,18 +17,25 @@ namespace ChatApp.Web.Models.ViewModels
 		public string Password { get; set; }
 
 		[Required]
-		[Display(Name="Confirm Password")]
+		[Display(Name = "Confirm Password")]
+		[Compare("Password", ErrorMessage = "Provided passwords are not same!")]
 		public string ConfirmPassword { get; set; }
 
-		[Display(Name="Display Name")]
-		[Range(2,20)]
+		[Display(Name = "Display Name")]
+		[Range(2, 20)]
 		public string DisplayName { get; set; }
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
-			if(null!=Password&&null!=ConfirmPassword&&!Password.Equals(ConfirmPassword))
+			var validPwd = Password.Length > 6 && Password.Where(Char.IsDigit).Count() > 3 && Password.Where(Char.IsLetter).Count() > 3;
+			if (!validPwd)
 			{
-				yield return new ValidationResult("Confirm password is not the same with password", new string[] { "ConfirmPassword" });
+				yield return new ValidationResult("Password's length should be at least 6 and contains at least 3 numbers and 3 letters", new string[] { "Password" });
+			}
+
+			if (AccountManagementBI.IsUserExist(Email))
+			{
+				yield return new ValidationResult("Email already exists! Please use another one!", new string[] { "Email" });
 			}
 		}
 	}

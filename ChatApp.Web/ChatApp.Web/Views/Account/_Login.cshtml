@@ -1,0 +1,20 @@
+﻿@model ChatApp.Web.Models.ViewModels.LoginViewModel
+
+@using (Html.BeginForm())
+{
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(true)
+	<p>
+		@Html.LabelFor(a => a.Email, new { @class = "editor-label" })
+		@Html.EditorFor(a => a.Email)
+	</p>
+	<p>
+		@Html.LabelFor(a => a.Password, new { @class = "editor-label" })
+		@Html.PasswordFor(a => a.Password)
+	</p>
+	<p>
+		@Html.LabelFor(a => a.RememberMe, new { @class = "editor-label checkbox" })
+		@Html.CheckBoxFor(a=>a.RememberMe)
+	</p>
+	<input type="submit" value="Log in" />
+}

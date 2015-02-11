@@ -46,3 +46,8 @@ body>div
     text-decoration:none;
     display:block;
 }
+
+.editor-label:not(.checkbox):after
+{
+	content:":";
+}

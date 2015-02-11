@@ -10,7 +10,7 @@
         		$.get(url, function (data)
         		{
         			$("#mainContentContainer").html(data);
-        			if(null!==postAction&&postAction!=="")
+        			if(null!==postAction&&postAction!==""&&postAction!=="undefined()")
         			{
         				eval(postAction);
         			}

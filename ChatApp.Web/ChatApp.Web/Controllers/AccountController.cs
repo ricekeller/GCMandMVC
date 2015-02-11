@@ -19,13 +19,14 @@ namespace ChatApp.Web.Controllers
         }
 
 		[HttpGet]
-		public ActionResult Login()
+		public PartialViewResult Login()
 		{
-			return View(new LoginViewModel());
+			return PartialView("_Login",new LoginViewModel());
 		}
 
 		[HttpPost]
-		public ActionResult Login(LoginViewModel lvm)
+		[ValidateAntiForgeryToken]
+		public PartialViewResult Login(LoginViewModel lvm)
 		{
 			if(ModelState.IsValid)
 			{
@@ -35,17 +36,18 @@ namespace ChatApp.Web.Controllers
 				}
 				ModelState.AddModelError("", "Incorrect email and/or password!");
 			}
-			return View(lvm);
+			return PartialView("_Login", lvm);
 		}
 
 		[HttpGet]
-		public ActionResult Register()
+		public PartialViewResult Register()
 		{
-			return View(new CreateAccountViewModel());
+			return PartialView("_Register",new CreateAccountViewModel());
 		}
 
 		[HttpPost]
-		public ActionResult Register(CreateAccountViewModel vm)
+		[ValidateAntiForgeryToken]
+		public PartialViewResult Register(CreateAccountViewModel vm)
 		{
 			if(ModelState.IsValid)
 			{
@@ -56,7 +58,7 @@ namespace ChatApp.Web.Controllers
 				}
 				ModelState.AddModelError("", "Can not create user! Please try again!");
 			}
-			return View(vm);
+			return PartialView("_Register",vm);
 		}
     }
 }

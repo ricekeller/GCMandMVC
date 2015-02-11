@@ -125,6 +125,7 @@
     <Compile Include="Models\CustomMembershipUser.cs" />
     <Compile Include="Models\CustomRoleProvider.cs" />
     <Compile Include="Models\GCMServerHelper.cs" />
+    <Compile Include="Models\PasswordSaltedHash.cs" />
     <Compile Include="Models\Utils.cs" />
     <Compile Include="Models\ViewModels\CreateAccountViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
@@ -168,13 +169,7 @@
     <Content Include="Views\Shared\_NavMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Views\Location\CurrentLocation.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Account\Login.cshtml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Location\_CurrentLocation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ChatApp.Model\ChatApp.Model.csproj">
@@ -185,6 +180,12 @@
       <Project>{92be1cc9-9809-4677-bb6f-8cf6cc58bc4b}</Project>
       <Name>ChatApp.Web.BL</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Account\_Register.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\Account\_Login.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

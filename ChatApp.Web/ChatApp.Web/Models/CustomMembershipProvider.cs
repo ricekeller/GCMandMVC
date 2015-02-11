@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
@@ -32,7 +33,21 @@ namespace ChatApp.Web.Models
 
 		public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
 		{
-
+			if(!ValidateUserName(username))
+			{
+				status = MembershipCreateStatus.InvalidUserName;
+				return null;
+			}
+			if(!ValidatePassword(password))
+			{
+				status = MembershipCreateStatus.InvalidPassword;
+				return null;
+			}
+			if (!ValidateEmail(email))
+			{
+				status = MembershipCreateStatus.InvalidEmail;
+				return null;
+			}
 			throw new NotImplementedException();
 		}
 
@@ -149,6 +164,47 @@ namespace ChatApp.Web.Models
 		public override bool ValidateUser(string username, string password)
 		{
 			throw new NotImplementedException();
+		}
+
+		private bool ValidateUserName(string username)
+		{
+			if(string.IsNullOrWhiteSpace(username))
+			{
+				return false;
+			}
+			if(!ValidateEmail(username))
+			{
+				return false;
+			}
+			RangeAttribute ra = new RangeAttribute(5, 100);
+			if(!ra.IsValid(username))
+			{
+				return false;
+			}
+			return true;
+		}
+
+		private bool ValidatePassword(string pwd)
+		{
+			if (string.IsNullOrWhiteSpace(pwd))
+			{
+				return false;
+			}
+			throw new NotImplementedException();
+		}
+
+		private bool ValidateEmail(string email)
+		{
+			if (string.IsNullOrWhiteSpace(email))
+			{
+				return false;
+			}
+			EmailAddressAttribute eaa = new EmailAddressAttribute();
+			if(!eaa.IsValid(email))
+			{
+				return false;
+			}
+			return true;
 		}
 	}
 }

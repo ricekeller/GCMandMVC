@@ -13,7 +13,7 @@ namespace ChatApp.Web.Controllers
         public PartialViewResult CurrentLocation()
         {
             LocationTrail loc = LocationBI.GetLastLoc();
-            return PartialView(loc);
+            return PartialView("_CurrentLocation",loc);
         }
 
         [HttpPost]
