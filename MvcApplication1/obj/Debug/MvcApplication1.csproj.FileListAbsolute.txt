@@ -100,3 +100,4 @@ D:\Bak\codes\GCMandMVC\MvcApplication1\bin\System.Web.WebPages.Razor.xml
 D:\Bak\codes\GCMandMVC\MvcApplication1\obj\Debug\MvcApplication1.csprojResolveAssemblyReference.cache
 D:\Bak\codes\GCMandMVC\MvcApplication1\obj\Debug\MvcApplication1.dll
 D:\Bak\codes\GCMandMVC\MvcApplication1\obj\Debug\MvcApplication1.pdb
+E:\Dev\ChatApp\MvcApplication1\obj\Debug\MvcApplication1.csprojResolveAssemblyReference.cache
