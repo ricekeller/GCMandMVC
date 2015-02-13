@@ -136,6 +136,8 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\CSS\Site.css" />
+    <Content Include="Content\Images\loading-black.GIF" />
+    <Content Include="Content\Images\loading-blue.gif" />
     <Content Include="Content\Scripts\Layout.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
