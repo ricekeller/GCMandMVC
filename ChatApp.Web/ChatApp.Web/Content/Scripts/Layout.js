@@ -7,6 +7,7 @@
 			var postAction = ui.item.attr("data-postLoadAction") + "()";
 			if (url && null !== url && url !== "")
 			{
+			    overlay();
 				$.get(url, function (data)
 				{
 					$("#mainContentContainer").html(data);
@@ -14,6 +15,7 @@
 					{
 						eval(postAction);
 					}
+					overlay();
 				});
 			}
 		}
