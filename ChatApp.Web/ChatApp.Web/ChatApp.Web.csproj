@@ -138,6 +138,13 @@
     <Content Include="Content\CSS\Site.css" />
     <Content Include="Content\Images\loading-black.GIF" />
     <Content Include="Content\Images\loading-blue.gif" />
+    <Content Include="Content\Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
+    <None Include="Content\Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Content\Scripts\jquery.validate.js" />
+    <Content Include="Content\Scripts\jquery.validate.min.js" />
+    <Content Include="Content\Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Content\Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Content\Scripts\Layout.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />

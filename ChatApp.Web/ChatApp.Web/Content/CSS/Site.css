@@ -71,3 +71,13 @@ body>div
      vertical-align:middle;
 	 z-index:1001;
 }
+
+.input-validation-error {
+ border: 1px solid #f00;
+ background-color: #fee;
+}
+
+.validation-summary-errors {
+ font-weight: bold;
+ color: #f00;
+}
