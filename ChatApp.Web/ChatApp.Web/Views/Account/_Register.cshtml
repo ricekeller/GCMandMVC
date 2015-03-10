@@ -3,7 +3,7 @@
 @using (Html.BeginForm("register", "account", FormMethod.Post, new { id = "register-form" }))
 {
     @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
+    @Html.ValidationSummary(false)
     <p>
         @Html.LabelFor(a => a.Email, new { @class = "editor-label" })
         @Html.EditorFor(a => a.Email)
