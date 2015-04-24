@@ -1,0 +1,39 @@
+﻿#player-upperbar
+{
+	height:15%;
+	background-color:ActiveCaption;
+}
+#iframe-player{
+	/*display:none;*/
+}
+#player-centerdiv
+{
+	height:65%;
+	background-color:aqua;
+}
+#player-center-left
+{
+	background-color:burlywood;
+	width:15%;
+	height:100%;
+	float:left;
+}
+#player-center-main
+{
+	background-color:antiquewhite;
+	width:auto;
+	height:100%;
+	float:left;
+}
+#player-center-right
+{
+	background-color:aquamarine;
+	width:20%;
+	height:100%;
+	float:right;
+}
+#player-bottom-control
+{
+	height:20%;
+	background-color:aliceblue;
+}
