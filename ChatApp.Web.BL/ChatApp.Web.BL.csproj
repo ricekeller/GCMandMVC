@@ -30,6 +30,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FlickrNet">
+      <HintPath>G:\Downloads\FlickrNet-3.13.0\FlickrNet.dll</HintPath>
+    </Reference>
     <Reference Include="MongoDB.Bson">
       <HintPath>..\mongodriver\MongoDB.Bson.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -37,6 +40,9 @@
     <Reference Include="MongoDB.Driver">
       <HintPath>..\mongodriver\MongoDB.Driver.dll</HintPath>
       <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="NHtmlUnit">
+      <HintPath>G:\Downloads\NHtmlUnit-master\app\NHtmlUnit\bin\Release\NHtmlUnit.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -50,6 +56,7 @@
     <Compile Include="AccountManagementBI.cs" />
     <Compile Include="APIKeyBI.cs" />
     <Compile Include="LocationBI.cs" />
+    <Compile Include="MediaBI.cs" />
     <Compile Include="MessagePortalBI.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

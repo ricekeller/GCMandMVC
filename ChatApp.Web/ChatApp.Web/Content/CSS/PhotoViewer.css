@@ -1,0 +1,18 @@
+﻿#photo-viewer-container {
+    background-color: #EEEEEE;
+}
+
+#imgLoad {
+    position: fixed;
+    bottom: 0;
+    left: 40%;
+    display: none;
+}
+
+.box {
+    margin: 5px;
+    padding: 10px;
+    display:inline-block;
+    background-color: #FFFFFF;
+    box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+}

@@ -1,0 +1,52 @@
+﻿<html>
+<head>
+    <title>testm</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCo-q1vlh3Koh9g8cauTwE_x4Va68bMelo"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.0/masonry.pkgd.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/PhotoViewer/imagesloaded.pkgd.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/Player.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/PhotoViewer.js"></script>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+    <script>
+        $("#photo-viewer-container").imagesLoaded("",function(){
+            $("#photo-viewer-container").masonry({
+                itemSelector: '.box',
+                columnWidth: 100,
+                isAnimated: true
+            });
+        });
+    </script>
+    <style type="text/css">
+        #photo-viewer-container {
+            background-color: #EEEEEE;
+        }
+
+        #imgLoad {
+            position: fixed;
+            bottom: 0;
+            left: 40%;
+            display: none;
+        }
+
+        .box {
+            margin: 5px;
+            padding: 10px;
+            width: 10%;
+            background-color: #FFFFFF;
+            box-shadow: 0 1px 3px rgba(34, 25, 25, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="photo-viewer-container" style="position: relative; height: 0px;">
+
+        <div class="box"><img src="https://farm8.staticflickr.com/7700/17079659088_c66d1cab65_t.jpg"><div><p>image092_S</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7606/17060019627_e534c3f34f_t.jpg"><div><p>152935briubp0bw4743b43</p></div></div><div class="box"><img src="https://farm9.staticflickr.com/8737/17265639652_efa8602205_t.jpg"><div><p>b1af134bjw1e64usiom6lg208c06e1ky</p></div></div><div class="box"><img src="https://farm9.staticflickr.com/8703/17266896431_23d7b19f83_t.jpg"><div><p>b1af134bjw1e64urlsmv7g209q06lkjl</p></div></div><div class="box"><img src="https://farm9.staticflickr.com/8776/17081217399_9af78b4380_t.jpg"><div><p>x_large_d7jZ_0c050000128a121a</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7674/17079874860_e416d4d68e_t.jpg"><div><p>b1af134bjw1e64uta9m4lg20b4069e81</p></div></div><div class="box"><img src="https://farm9.staticflickr.com/8720/16647204423_e44f4d45d6_t.jpg"><div><p>b1af134bjw1e64uskw1xmg20dw07p7wh</p></div></div><div class="box"><img src="https://farm9.staticflickr.com/8759/17060017897_911a5441cf_t.jpg"><div><p>b1af134bjw1e64urnm6tkg20ac06q1kx</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7648/16644973794_b3d896fff4_t.jpg"><div><p>20120419134101_326971</p></div></div><div class="box"><img src="https://farm9.staticflickr.com/8726/16647204013_72b53f0db1_t.jpg"><div><p>b1af134bjw1e64usu9ping207i04ityz</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7628/17079656848_a0d5293993_t.jpg"><div><p>b1af134bjw1e64usg9aw1g206y057tmp</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7616/16647203813_88e3cc5415_t.jpg"><div><p>b1af134bjw1e64utdlap1g207004ok4t</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7594/17079873860_9c1a09d230_t.jpg"><div><p>b1af134bjw1e64uscroh4g208r05otlk</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7585/17265640472_54586a26ab_t.jpg"><div><p>1</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7707/16647203603_cfa7cbdd51_t.jpg"><div><p>b1af134bjw1e64use0jgrg207n04fqd1</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7623/17267420805_cf2fbed6e4_t.jpg"><div><p>x_large_2pSb_5780000098751261</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7712/17079656538_37f46e0156_t.jpg"><div><p>image020_S</p></div></div><div class="box"><img src="https://farm8.staticflickr.com/7645/16647203493_ec0b671c96_t.jpg"><div><p>c5c5b76c6f06</p></div></div>
+    </div>
+</body>
+</html>
+

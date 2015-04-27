@@ -39,6 +39,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="FlickrNet">
+      <HintPath>G:\Downloads\FlickrNet-3.13.0\FlickrNet.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -136,10 +139,14 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\CSS\PhotoViewer.css" />
     <Content Include="Content\CSS\Player.css" />
     <Content Include="Content\CSS\Site.css" />
     <Content Include="Content\Images\loading-black.GIF" />
     <Content Include="Content\Images\loading-blue.gif" />
+    <Content Include="Content\Scripts\PhotoViewer\imagesloaded.pkgd.js" />
+    <Content Include="Content\Scripts\PhotoViewer\imagesloaded.pkgd.min.js" />
+    <Content Include="Content\Scripts\PhotoViewer.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <None Include="Content\Scripts\jquery.validate-vsdoc.js" />
@@ -148,6 +155,8 @@
     <Content Include="Content\Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Content\Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Content\Scripts\Layout.js" />
+    <Content Include="Content\Scripts\PhotoViewer\masonry.pkgd.js" />
+    <Content Include="Content\Scripts\PhotoViewer\masonry.pkgd.min.js" />
     <Content Include="Content\Scripts\Player.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
@@ -160,6 +169,8 @@
     <Content Include="Views\Web.config" />
     <Content Include="Views\Shared\ThreeTest.cshtml" />
     <Content Include="Views\Media\Index.cshtml" />
+    <Content Include="Views\Media\PhotoViewer.cshtml" />
+    <Content Include="Views\test\testm.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

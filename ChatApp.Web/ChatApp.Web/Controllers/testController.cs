@@ -35,5 +35,10 @@ namespace ChatApp.Web.Controllers
         {
             return View("ThreeTest");
         }
+
+        public ActionResult testm()
+        {
+            return View();
+        }
     }
 }
