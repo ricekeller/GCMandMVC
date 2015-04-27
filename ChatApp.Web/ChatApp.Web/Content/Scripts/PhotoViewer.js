@@ -30,7 +30,7 @@ PhotoViewer.prototype =
     },
     __createPhotoElement: function (photo) {
         var div = $("<div></div>").addClass("box");
-        var img = $("<img></img>").attr("src",photo.ThumbnailUrl);
+        var img = $("<img></img>").attr("src",photo.ThumbnailUrl).addClass("photo-item-img");
         img.click(this.__photoClicked);
         var infoDiv = $("<div></div>");
         var p = $("<p class='hidden'></p>").text(photo.Title);
