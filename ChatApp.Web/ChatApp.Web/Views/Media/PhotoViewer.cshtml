@@ -1,9 +1,19 @@
-﻿<script>
-    var pv = new PhotoViewer("72157649853753763");
-    pv.loadMorePhoto();
-
-</script>
+﻿
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/PhotoViewer.css" />
 <div id="photo-viewer-container">
 
 </div>
+
+<script>
+    //var pv = new PhotoViewer("72157649853753763");
+    var imgLoad = imagesLoaded($("#photo-viewer-container"));
+    var pv = new PhotoViewer("72157651794085640");
+    $('#photo-viewer-container').imagesLoaded()
+        .always(function (instance) {
+            console.log('all images loaded');
+            pv.layoutMasonry();
+        });
+    pv.loadMorePhoto();
+
+
+</script>

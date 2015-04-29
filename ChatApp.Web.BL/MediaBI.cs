@@ -14,7 +14,7 @@ namespace ChatApp.Web.BL
         private const string TOKEN = "72157649856687793-4f11a32c2085a9fd";
         private const string TOKENSECRET = "1eceabe4d07cc651";
         private const string USERID = "130989293@N07";
-        private const int PHOTOSPERPAGE = 25;
+        private const int PHOTOSPERPAGE = 100;
         private static Flickr flickr;
         static MediaBI()
         {
