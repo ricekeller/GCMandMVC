@@ -19,7 +19,7 @@ namespace ChatApp.Web.Controllers
 
         public PartialViewResult PhotoViewer()
         {
-            return PartialView();
+            return PartialView(MediaBI.GetPhotoSets());
         }
 
         public JsonResult ListPhotosets()
