@@ -1,28 +1,18 @@
 ﻿@model FlickrNet.PhotosetCollection
 <link rel="stylesheet" type="text/css" href="~/Content/CSS/PhotoViewer.css" />
 <div id="photo-viewer-toolbar">
-    <select id="photoset-selection">
-        @foreach (FlickrNet.Photoset ps in Model)
-        {
-            <option value="@ps.PhotosetId">@ps.Title</option>
-        }
-    </select>
+    <fieldset>
+        <label for="photoset-selection">Select Album:</label>
+        <select id="photoset-selection">
+            @foreach (FlickrNet.Photoset ps in Model)
+            {
+                <option value="@ps.PhotosetId">@ps.Title</option>
+            }
+        </select>
+    </fieldset>
 </div>
 <div id="photo-viewer-container">
-    
+
 </div>
 
-<script>
-    //var pv = new PhotoViewer("72157649853753763");
-    $('#photoset-selection').selectmenu();
-    var imgLoad = imagesLoaded($("#photo-viewer-container"));
-    var pv = new PhotoViewer("72157651794085640");
-    $('#photo-viewer-container').imagesLoaded()
-        .always(function (instance) {
-            console.log('all images loaded');
-            pv.layoutMasonry();
-        });
-    pv.loadMorePhoto();
-
-
-</script>
+<script type="text/javascript" src="~/Content/Scripts/PhotoViewer/PhotoViewerBehavior.js"></script>

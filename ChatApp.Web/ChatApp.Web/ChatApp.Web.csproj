@@ -157,6 +157,7 @@
     <Content Include="Content\Scripts\Layout.js" />
     <Content Include="Content\Scripts\PhotoViewer\masonry.pkgd.js" />
     <Content Include="Content\Scripts\PhotoViewer\masonry.pkgd.min.js" />
+    <Content Include="Content\Scripts\PhotoViewer\PhotoViewerBehavior.js" />
     <Content Include="Content\Scripts\Player.js" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />

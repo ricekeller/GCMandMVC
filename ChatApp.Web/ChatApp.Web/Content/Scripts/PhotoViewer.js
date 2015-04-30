@@ -28,7 +28,7 @@ PhotoViewer.prototype =
     },
     __createPhotoElement: function (photo) {
         var div = $("<div></div>").addClass("box");
-        var img = $("<img></img>").attr("src", photo.ThumbnailUrl).addClass("photo-item-img");
+        var img = $("<img></img>").attr("src", photo.SmallUrl).addClass("photo-item-img");
         img.click(this.__photoClicked);
         var infoDiv = $("<div></div>");
         var p = $("<p class='hidden'></p>").text(photo.Title);
@@ -47,6 +47,10 @@ PhotoViewer.prototype =
             gutter: 10,
             isAnimated: true
         });
+    },
+    __cleanUp:function()
+    {
+        this.__mainContainer.empty();
     },
     loadMorePhoto: function () {
         this.__getMorePhoto(this.__setID, ++this.__pageLoaded);
