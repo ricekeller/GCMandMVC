@@ -1,11 +1,13 @@
 ﻿var PhotoViewer = function (setID) {
     this.__setID = setID;
+    var con = $("<div id='photo-viewer-container'></div>").appendTo($("#mainContentContainer"));
     this.__mainContainer = $("#photo-viewer-container");
 };
 PhotoViewer.prototype =
 {
     __masonry: null,
     __getMorePhotoUrl: "/Media/GetPhotosInSet",
+    __loadAlbumInfoUrl: "/Media/GetPhotoset",
     __pageLoaded: 0,
     __getMorePhoto: function (setID, page) {
         $.ajax({
@@ -48,19 +50,31 @@ PhotoViewer.prototype =
             isAnimated: true
         });
     },
-    __cleanUp:function()
-    {
+    __loadAlbumInfoHandler: function (data) {
+        if (!data) return;
+        var dt = data.DateCreated.replace("/Date(", "").replace(")/", "");
+        $("#photoset-photoCount").text(data.NumberOfPhotos);
+        $("#photoset-datecreated").text(new Date(parseInt(dt)).toLocaleDateString());
+        $("#photoset-description").text(data.Description);
+    },
+    cleanUp: function () {
         this.__mainContainer.empty();
+        this.__mainContainer.remove();
     },
     loadMorePhoto: function () {
         this.__getMorePhoto(this.__setID, ++this.__pageLoaded);
     },
-    layoutMasonry:function()
-    {
-        if (!this.__masonry)
-        {
+    layoutMasonry: function () {
+        if (!this.__masonry) {
             this.__initializeMasonry();
         }
         this.__masonry.layout();
+    },
+    loadAlbumInfo: function () {
+        $.ajax({
+            url: this.__loadAlbumInfoUrl,
+            data: { setID: this.__setID },
+            context: this,
+        }).done(this.__loadAlbumInfoHandler);
     }
 };

@@ -26,3 +26,20 @@
 {
     opacity:0.7;
 }
+
+#photo-viewer-toolbar label
+{
+    display:block;
+}
+
+#photo-viewer-toolbar div
+{
+    display:inline-block;
+    margin:2px 15px;
+    float:left;
+}
+
+.photo-viewer-toolbar-item
+{
+    font-size:1.1em;
+}

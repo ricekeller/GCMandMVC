@@ -1,18 +1,30 @@
 ﻿@model FlickrNet.PhotosetCollection
-<link rel="stylesheet" type="text/css" href="~/Content/CSS/PhotoViewer.css" />
+
 <div id="photo-viewer-toolbar">
     <fieldset>
-        <label for="photoset-selection">Select Album:</label>
-        <select id="photoset-selection">
-            @foreach (FlickrNet.Photoset ps in Model)
-            {
-                <option value="@ps.PhotosetId">@ps.Title</option>
-            }
-        </select>
+        <legend>Album Information:</legend>
+        <div>
+            <label for="photoset-selection">Select Album:</label>
+            <select id="photoset-selection">
+                @foreach (FlickrNet.Photoset ps in Model)
+                {
+                    <option value="@ps.PhotosetId">@ps.Title</option>
+                }
+            </select>
+        </div>
+        <div>
+            <label>Number of photos:</label>
+            <span id="photoset-photoCount" class="ui-selectmenu-text ui-widget">@Model[0].NumberOfPhotos</span>
+        </div>
+        <div>
+            <label>Data created:</label>
+            <span id="photoset-datecreated" class="ui-selectmenu-text ui-widget">@Model[0].DateCreated.ToUniversalTime().ToString("MM-dd-yyyy")</span>
+        </div>
+        <div>
+            <label>Description:</label>
+            <span id="photoset-description" class="ui-selectmenu-text ui-widget">@Model[0].Description</span>
+        </div>
     </fieldset>
-</div>
-<div id="photo-viewer-container">
-
 </div>
 
 <script type="text/javascript" src="~/Content/Scripts/PhotoViewer/PhotoViewerBehavior.js"></script>
