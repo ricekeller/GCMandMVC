@@ -9,7 +9,6 @@ $('#photoset-selection').selectmenu({
         bindImageLoaded();
         pv.loadAlbumInfo();
         pv.loadMorePhoto();
-        pv.enableGlisse();
     }
 });
 function bindImageLoaded()
