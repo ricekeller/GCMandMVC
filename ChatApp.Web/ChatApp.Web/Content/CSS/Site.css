@@ -48,6 +48,7 @@ html{
     background-color:lightpink;
     height:85vh;
     width:85vw;
+	overflow:scroll;
 }
 #menu a
 {
