@@ -9,6 +9,7 @@ PhotoViewer.prototype =
     __getMorePhotoUrl: "/Media/GetPhotosInSet",
     __loadAlbumInfoUrl: "/Media/GetPhotoset",
     __pageLoaded: 0,
+    __glisseChangeEffects : ['bounce', 'fadeBig', 'fade', 'roll', 'rotate', 'flipX', 'flipY'],
     __getMorePhoto: function (setID, page) {
         $.ajax({
             url: this.__getMorePhotoUrl,
@@ -32,7 +33,6 @@ PhotoViewer.prototype =
         var div = $("<div></div>").addClass("box");
         var img = $("<img></img>").attr("src", photo.SmallUrl).addClass("photo-item-img");
         img.attr("data-glisse-big", photo.LargeUrl).attr("rel", "group-photo").attr("title",photo.Title);
-        //img.click(this.__photoClicked);
         var infoDiv = $("<div></div>");
         var p = $("<p class='hidden'></p>").text(photo.Title);
         infoDiv.append(p);
@@ -61,11 +61,16 @@ PhotoViewer.prototype =
     },
     __enableGlisse: function ()
     {
+    	var $this = this;
     	$(".photo-item-img").glisse({
     		changeSpeed: 550,
     		speed: 500,
     		effect: 'bounce',
     		fullscreen: false
+    	});
+    	$(".photo-item-img").each(function ()
+    	{
+    		$(this).data('glisse').changeEffect($this.getRandomGlisseEffect());
     	});
     },
     cleanUp: function () {
@@ -87,5 +92,9 @@ PhotoViewer.prototype =
             data: { setID: this.__setID },
             context: this,
         }).done(this.__loadAlbumInfoHandler);
+    },
+    getRandomGlisseEffect:function()
+    {
+    	return this.__glisseChangeEffects[parseInt(Math.random()*this.__glisseChangeEffects.length)];
     }
 };
