@@ -9,13 +9,14 @@ $('#photoset-selection').selectmenu({
         bindImageLoaded();
         pv.loadAlbumInfo();
         pv.loadMorePhoto();
+        pv.enableGlisse();
     }
 });
 function bindImageLoaded()
 {
     $('#photo-viewer-container').imagesLoaded()
     .always(function (instance) {
-        pv.layoutMasonry();
+    	pv.layoutMasonry();
     });
 }
 bindImageLoaded();

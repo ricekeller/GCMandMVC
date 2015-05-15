@@ -31,12 +31,14 @@ PhotoViewer.prototype =
     __createPhotoElement: function (photo) {
         var div = $("<div></div>").addClass("box");
         var img = $("<img></img>").attr("src", photo.SmallUrl).addClass("photo-item-img");
-        img.click(this.__photoClicked);
+        img.attr("data-glisse-big", photo.LargeUrl).attr("rel", "group-photo").attr("title",photo.Title);
+        //img.click(this.__photoClicked);
         var infoDiv = $("<div></div>");
         var p = $("<p class='hidden'></p>").text(photo.Title);
         infoDiv.append(p);
         div.append(img).append(infoDiv);
         div.appendTo(this.__mainContainer);
+        this.__enableGlisse();
     },
     __photoClicked: function (event, src) {
         alert("event");
@@ -56,6 +58,15 @@ PhotoViewer.prototype =
         $("#photoset-photoCount").text(data.NumberOfPhotos);
         $("#photoset-datecreated").text(new Date(parseInt(dt)).toLocaleDateString());
         $("#photoset-description").text(data.Description);
+    },
+    __enableGlisse: function ()
+    {
+    	$(".photo-item-img").glisse({
+    		changeSpeed: 550,
+    		speed: 500,
+    		effect: 'bounce',
+    		fullscreen: false
+    	});
     },
     cleanUp: function () {
         this.__mainContainer.empty();
