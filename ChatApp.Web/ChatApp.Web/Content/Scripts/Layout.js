@@ -3,6 +3,7 @@
 	$("#menu").menu({
 		select: function (event, ui)
 		{
+            //do action
 			var url = ui.item.attr("data-url");
 			var postAction = ui.item.attr("data-postLoadAction") + "()";
 			if (url && null !== url && url !== "")

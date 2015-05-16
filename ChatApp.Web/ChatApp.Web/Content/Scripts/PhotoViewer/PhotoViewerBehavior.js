@@ -1,5 +1,5 @@
 ﻿//var pv = new PhotoViewer("72157649853753763");
-var imgLoad = imagesLoaded($("#photo-viewer-container"));
+//var imgLoad = imagesLoaded($("#photo-viewer-container"));
 var pv = new PhotoViewer("72157651794085640");
 $('#photoset-selection').selectmenu({
     change: function (event, ui) {

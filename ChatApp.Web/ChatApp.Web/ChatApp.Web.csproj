@@ -140,6 +140,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\CSS\img\loader.gif" />
+    <Content Include="Content\CSS\img\bg_maincontainer.jpg" />
     <Content Include="Content\CSS\PhotoViewer.css" />
     <Content Include="Content\CSS\Player.css" />
     <Content Include="Content\CSS\Site.css" />

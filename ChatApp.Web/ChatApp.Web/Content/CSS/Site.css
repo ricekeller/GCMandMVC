@@ -1,6 +1,7 @@
 ﻿body {
     margin:0px;
     padding:0px;
+    background: url("img/bg_maincontainer.jpg") repeat #01090c top center;
 }
 .hidden
 {
@@ -9,43 +10,52 @@
 html{
 	height:100%;
 	width:100%;
+    color:white;
 }
 .whole-page
 {
     height:100vh;
     width:100vw;
-    background-color:lightblue;
+    /*background-color:lightblue;*/
 }
 #UpperBarContainer
 {
     height:15vh;
-    background-color:lightcoral;
+    /*background-color:lightcoral;*/
 }
 #ubLeft
 {
     float:left;
     height:100%;
     width:30%;
-    background-color:lightcyan;
+    /*background-color:lightcyan;*/
 }
 #ubRight
 {
     float:right;
     height:100%;
     width:20%;
-    background-color:lightgoldenrodyellow;
+    /*background-color:lightgoldenrodyellow;*/
 }
 #NavMenu
 {
     float:left;
-    background-color:lightgray;
+    /*background-color:lightgray;*/
+    /*background: url("img/bg_nav.png") repeat #0a4651;*/
     width:15vw;
     height:85vh;
+}
+#NavMenu .ui-widget-content
+{
+    border-style:solid;
+    border-color:#0f707e;
+    background:none;
+    color:white;
 }
 #mainContentContainer
 {
     float:right;
-    background-color:lightpink;
+    /*background-color:lightpink;*/
     height:85vh;
     width:85vw;
 	overflow:scroll;
@@ -55,7 +65,15 @@ html{
     text-decoration:none;
     display:block;
 }
-
+#menu li
+{
+    padding:15px;
+}
+#menu .ui-state-focus
+{
+    background: #07343c repeat-x 50% 50%;
+    color: #02e0f8;
+}
 .editor-label:not(.checkbox):after
 {
 	content:":";
