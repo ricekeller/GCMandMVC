@@ -25,6 +25,7 @@
 .photo-item-img:hover
 {
     opacity:0.7;
+    cursor:pointer;
 }
 
 #photo-viewer-toolbar label
