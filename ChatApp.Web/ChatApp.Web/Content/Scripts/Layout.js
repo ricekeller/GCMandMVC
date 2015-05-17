@@ -3,22 +3,29 @@
 	$("#menu").menu({
 		select: function (event, ui)
 		{
-            //do action
-			var url = ui.item.attr("data-url");
-			var postAction = ui.item.attr("data-postLoadAction") + "()";
-			if (url && null !== url && url !== "")
-			{
-			    overlay();
-				$.get(url, function (data)
-				{
-					$("#mainContentContainer").html(data);
-					if (null !== postAction && postAction !== "" && postAction !== "undefined()")
-					{
-						eval(postAction);
-					}
-					overlay();
-				});
-			}
+		    //do action
+		    var wholepage = ui.item.attr("data-wholepage");
+		    var url = ui.item.attr("data-url");
+		    var postAction = ui.item.attr("data-postLoadAction") + "()";
+		    if (wholepage)
+		    {
+		        if (null !== postAction && postAction !== "" && postAction !== "undefined()") {
+		            eval(postAction);
+		        }
+		    }
+		    else
+		    {
+		        if (url && null !== url && url !== "") {
+		            overlay();
+		            $.get(url, function (data) {
+		                $("#mainContentContainer").html(data);
+		                if (null !== postAction && postAction !== "" && postAction !== "undefined()") {
+		                    eval(postAction);
+		                }
+		                overlay();
+		            });
+		        }
+		    }
 		}
 	});
 });
