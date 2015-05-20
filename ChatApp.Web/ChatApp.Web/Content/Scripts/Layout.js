@@ -28,6 +28,14 @@
 		    }
 		}
 	});
+	$("#mainContentContainer").unbind('scroll');
+	$("#mainContentContainer").scroll( function (eventObj)
+	{
+		if ($(this).scrollTop() + $(this).innerHeight() > $(this)[0].scrollHeight)
+		{
+			//alert('end reached');
+		}
+	});
 });
 function _postFormData(formid, url)
 {
