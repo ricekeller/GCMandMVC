@@ -2,6 +2,7 @@
     this.__setID = setID;
     var con = $("<div id='photo-viewer-container'></div>").appendTo($("#mainContentContainer"));
     this.__mainContainer = $("#photo-viewer-container");
+    this.__bindScrollEvent();
 };
 PhotoViewer.prototype =
 {
@@ -71,6 +72,17 @@ PhotoViewer.prototype =
     	$(".photo-item-img").each(function ()
     	{
     		$(this).data('glisse').changeEffect($this.getRandomGlisseEffect());
+    	});
+    },
+    __bindScrollEvent:function()
+    {
+    	$("#mainContentContainer").unbind('scroll');
+    	$("#mainContentContainer").scroll(function (eventObj)
+    	{
+    		if ($(this).scrollTop() + $(this).innerHeight() > $(this)[0].scrollHeight)
+    		{
+    			alert('end reached');
+    		}
     	});
     },
     cleanUp: function () {
