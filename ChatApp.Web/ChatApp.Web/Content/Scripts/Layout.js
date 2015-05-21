@@ -57,6 +57,12 @@ function _hideLoadingDiv()
 
 function overlay()
 {
-	el = document.getElementById("overlay");
+	var el = document.getElementById("overlay");
 	el.style.visibility = (el.style.visibility == "visible") ? "hidden" : "visible";
+}
+
+function switchBusyOverlay(toOpen)
+{
+	var el = document.getElementById("overlay");
+	el.style.visibility = toOpen?"visible":"hidden";
 }

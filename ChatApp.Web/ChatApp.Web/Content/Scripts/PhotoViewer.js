@@ -29,6 +29,7 @@ PhotoViewer.prototype =
         else {
             this.layoutMasonry();
         }
+        switchBusyOverlay(false);
     },
     __createPhotoElement: function (photo) {
         var div = $("<div></div>").addClass("box");
@@ -76,12 +77,14 @@ PhotoViewer.prototype =
     },
     __bindScrollEvent:function()
     {
+    	var $this = this;
     	$("#mainContentContainer").unbind('scroll');
     	$("#mainContentContainer").scroll(function (eventObj)
     	{
     		if ($(this).scrollTop() + $(this).innerHeight() > $(this)[0].scrollHeight)
     		{
-    			alert('end reached');
+    			//alert('end reached');
+    			$this.loadMorePhoto();
     		}
     	});
     },
@@ -89,7 +92,9 @@ PhotoViewer.prototype =
         this.__mainContainer.empty();
         this.__mainContainer.remove();
     },
-    loadMorePhoto: function () {
+    loadMorePhoto: function ()
+    {
+    	switchBusyOverlay(true);
         this.__getMorePhoto(this.__setID, ++this.__pageLoaded);
     },
     layoutMasonry: function () {
