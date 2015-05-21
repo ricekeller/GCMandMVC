@@ -19,15 +19,19 @@ PhotoViewer.prototype =
         }).done(this.__getMorePhotoHandler);
     },
     __getMorePhotoHandler: function (data, status) {
-        if (!data) return;
+    	if (!data) return;
+    	var elems = [];
+    	var div;
         for (var i = 0; i < data.length; i++) {
-            this.__createPhotoElement(data[i]);
+        	div = this.__createPhotoElement(data[i]);
+        	elems.push(div);
         }
         if (!this.__masonry) {
-            this.__initializeMasonry();
+        	this.__initializeMasonry();
+        	this.layoutMasonry();
         }
         else {
-            this.layoutMasonry();
+        	this.__masonry.appended(elems);
         }
         switchBusyOverlay(false);
     },
@@ -41,6 +45,7 @@ PhotoViewer.prototype =
         div.append(img).append(infoDiv);
         div.appendTo(this.__mainContainer);
         this.__enableGlisse();
+        return div;
     },
     __photoClicked: function (event, src) {
         alert("event");
