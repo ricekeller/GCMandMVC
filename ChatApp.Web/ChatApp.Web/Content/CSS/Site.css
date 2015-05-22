@@ -116,3 +116,43 @@ fieldset
  font-weight: bold;
  color: #f00;
 }
+
+.newsBoxNormal {
+	margin:0 20px;
+	width: 20%;
+	height:40%;
+	float: left;
+	display: block;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+	background:white;
+}
+.newsBoxNormal img
+{
+	width:100%;
+	height:100%;
+}
+.shadow {
+  box-shadow: 0 0 7px #011933;
+}
+
+#newsContainer {
+	width: 90%;
+	height: 100%;
+	padding: 10px 50px;
+	margin: 0;
+	display: table;
+	-ms-align-content: center;
+	-webkit-align-content: center;
+	align-content: center;
+	vertical-align:middle;
+	background-color:ActiveCaption;
+}
+#newsContainerInner
+{
+	width:80%;
+	height:80%;
+	background-color:aliceblue;
+	display:table-cell;
+}

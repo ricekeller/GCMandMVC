@@ -147,6 +147,7 @@
     <Content Include="Content\Images\loading-black.GIF" />
     <Content Include="Content\Images\loading-blue.gif" />
     <Content Include="Content\CSS\glisse.css" />
+    <Content Include="Content\Images\tnb.jpg" />
     <Content Include="Content\Scripts\PhotoViewer\glisse.js" />
     <Content Include="Content\Scripts\PhotoViewer\imagesloaded.pkgd.js" />
     <Content Include="Content\Scripts\PhotoViewer\imagesloaded.pkgd.min.js" />
