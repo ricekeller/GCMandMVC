@@ -139,14 +139,13 @@ fieldset
 
 #newsContainer {
 	width: 90%;
-	height: 100%;
+	height: 90%;
 	padding: 10px 50px;
 	margin: 0;
-	display: table;
-	-ms-align-content: center;
-	-webkit-align-content: center;
-	align-content: center;
-	vertical-align:middle;
+	display: flex;
+    text-align: center;
+    justify-content: center; /* align horizontal */
+    align-items: center; /* align vertical */
 	background-color:ActiveCaption;
 }
 #newsContainerInner
@@ -154,5 +153,4 @@ fieldset
 	width:80%;
 	height:80%;
 	background-color:aliceblue;
-	display:table-cell;
 }
