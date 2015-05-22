@@ -16,5 +16,9 @@ namespace ChatApp.Web.Controllers
             return View();
         }
 
+		public PartialViewResult GetNews()
+		{
+			return PartialView("_GetNews");
+		}
     }
 }

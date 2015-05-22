@@ -176,6 +176,7 @@
     <Content Include="Views\Media\Index.cshtml" />
     <Content Include="Views\Media\PhotoViewer.cshtml" />
     <Content Include="Views\test\testm.cshtml" />
+    <Content Include="Views\Home\_GetNews.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

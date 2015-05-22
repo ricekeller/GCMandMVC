@@ -28,6 +28,7 @@
 		    }
 		}
 	});
+	loadNews();
 });
 function _postFormData(formid, url)
 {
@@ -65,4 +66,15 @@ function switchBusyOverlay(toOpen)
 {
 	var el = document.getElementById("overlay");
 	el.style.visibility = toOpen?"visible":"hidden";
+}
+
+function loadNews()
+{
+	$.ajax({
+		url: '/home/getnews',
+		context: this,
+	}).done(function (data)
+	{
+		$("#mainContentContainer").html(data);
+	});
 }
