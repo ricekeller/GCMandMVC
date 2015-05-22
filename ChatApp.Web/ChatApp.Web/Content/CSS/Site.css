@@ -139,7 +139,7 @@ fieldset
 
 #newsContainer {
 	width: 90%;
-	height: 90%;
+	height: 95%;
 	padding: 10px 50px;
 	margin: 0;
 	display: flex;
@@ -150,7 +150,7 @@ fieldset
 }
 #newsContainerInner
 {
-	width:80%;
-	height:80%;
+	width:90%;
+	height:95%;
 	background-color:aliceblue;
 }
