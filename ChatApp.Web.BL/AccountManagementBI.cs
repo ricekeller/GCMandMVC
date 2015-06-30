@@ -19,7 +19,7 @@ namespace ChatApp.Web.BL
 
 		public static bool CreateAccount(UserAccount a)
 		{
-			return false;
+			return DB.Instance().GetCollection(s_CollectionName).Insert<UserAccount>(a).Ok;
 		}
 	}
 }
