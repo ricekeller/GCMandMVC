@@ -16,5 +16,10 @@ namespace ChatApp.Web.BL
 			var u = DB.Instance().GetOne<UserAccount>(s_CollectionName, a => a.Email.Equals(email), a => a.Email);
 			return null != u;
 		}
+
+		public static bool CreateAccount(UserAccount a)
+		{
+			return false;
+		}
 	}
 }

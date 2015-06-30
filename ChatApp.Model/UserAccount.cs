@@ -11,6 +11,6 @@ namespace ChatApp.Model
 	{
 		[BsonId]
 		public string Email { get; set; }
-		public string Password { get; set; }
+		public string PassHash { get; set; }
 	}
 }
