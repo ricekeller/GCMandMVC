@@ -154,6 +154,7 @@
     <Content Include="Content\Scripts\Games\ThreeTest\Detector.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\Game.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\KeyboardState.js" />
+    <Content Include="Content\Scripts\Games\ThreeTest\Projector.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\THREEx.FullScreen.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\THREEx.WindowResize.js" />
     <Content Include="Content\Scripts\PhotoViewer\glisse.js" />

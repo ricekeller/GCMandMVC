@@ -1,6 +1,8 @@
 ﻿Game = function (containerId)
 {
 	this._container = document.getElementById(containerId);
+	this._mousePos = { x: 0, y: 0 };
+	document.addEventListener("mousemove", this._onMouseMove.bind(this), false);
 	this.init();
 	this.start();
 };
@@ -25,6 +27,8 @@ Game.prototype =
 	//custom
 	_textures: null,
 	_floorGeo: null,
+	_projector: null,
+	_mousePos: null,
 
 	init: function ()
 	{
@@ -56,6 +60,7 @@ Game.prototype =
 		this._loadAssets();
 
 		// COSTOM
+		this._projector = new THREE.Projector();
 		var geometry = new THREE.BoxGeometry(1, 1, 1);
 		var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
 		var cube = new THREE.Mesh(geometry, material);
@@ -98,10 +103,52 @@ Game.prototype =
 	{
 		this._keyboard.update();
 		this._camControl.update(this._keyboard, this._clock.getDelta());
+
+		//custom
+		// find intersections
+
+		// create a Ray with origin at the mouse position
+		//   and direction into the scene (camera direction)
+		var vector = new THREE.Vector3(this._mousePos.x, this._mousePos.y, 1);
+		this._projector.unprojectVector(vector, this._camera);
+		var ray = new THREE.Raycaster(this._camera.position, vector.sub(this._camera.position).normalize());
+
+		// create an array containing all objects in the scene with which the ray intersects
+		var intersects = ray.intersectObjects(this._scene.children);
+		if (intersects && intersects.length > 0)
+		{
+			for (var i = 0; i < intersects.length; i++)
+			{
+				var idx = intersects[i].faceIndex;
+				this._floorGeo.faceVertexUvs[0][idx] = [new THREE.Vector2(0, 1), new THREE.Vector2(0, 0), new THREE.Vector2(1, 0)];
+				//if (idx % 2 == 0)
+				//{
+				//	delete this._floorGeo.faceVertexUvs[0][idx + 1];
+				//}
+				//else
+				//{
+				//	delete this._floorGeo.faceVertexUvs[0][idx - 1];
+				//}
+			}
+			// make sure new values are set
+			this._floorGeo.uvsNeedUpdate = true;
+		}
 	},
 	_loadAssets: function ()
 	{
 		this._assets = {};
 		this._assets["terrain"] = new THREE.ImageUtils.loadTexture('../Content/Images/Games/ThreeTest/terrain_1.png');
+
+		// generate UVs
+		this._generateUV();
+	},
+	_generateUV: function ()
+	{
+
+	},
+	_onMouseMove: function (event)
+	{
+		this._mousePos.x = (event.clientX / window.innerWidth) * 2 - 1;
+		this._mousePos.y = -(event.clientY / window.innerHeight) * 2 + 1;
 	}
 };
