@@ -144,12 +144,15 @@
     <Content Include="Content\CSS\PhotoViewer.css" />
     <Content Include="Content\CSS\Player.css" />
     <Content Include="Content\CSS\Site.css" />
+    <Content Include="Content\Images\Games\PhaserTest\terrain_1.png" />
     <Content Include="Content\Images\Games\ThreeTest\terrain_1.png" />
     <Content Include="Content\Images\Games\ThreeTest\rockroad.png" />
     <Content Include="Content\Images\loading-black.GIF" />
     <Content Include="Content\Images\loading-blue.gif" />
     <Content Include="Content\CSS\glisse.css" />
     <Content Include="Content\Images\tnb.jpg" />
+    <Content Include="Content\Scripts\Games\phaser.js" />
+    <Content Include="Content\Scripts\Games\PhaserTest\Game.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\CameraController.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\Detector.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\Game.js" />
@@ -187,6 +190,7 @@
     <Content Include="Views\Media\PhotoViewer.cshtml" />
     <Content Include="Views\test\testm.cshtml" />
     <Content Include="Views\Home\_GetNews.cshtml" />
+    <Content Include="Views\Shared\Phaser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

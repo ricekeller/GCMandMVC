@@ -40,5 +40,10 @@ namespace ChatApp.Web.Controllers
         {
             return View();
         }
+
+		public ActionResult testp()
+		{
+			return View("Phaser");
+		}
     }
 }
