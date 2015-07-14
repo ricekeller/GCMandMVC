@@ -17,9 +17,15 @@
 		window.onload = function ()
 		{
 
-			var game = new Game();
+			var game = new MainGame();
 			game.init(window.innerWidth, window.innerHeight);
 		};
+
+		document.addEventListener("contextmenu", function (e)
+		{
+			e.preventDefault();
+			console.log(e);
+		});
 		</script>
 </body>
 </html>
