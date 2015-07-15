@@ -9,6 +9,7 @@ MainGame.prototype =
 	_logo: null,
 	_level: null,
 	_keyboard: null,
+	_player: null,
 	_CAMERAVERTICALSPEED: 3,
 	_CAMERAHORIZONTALSPEED: 3,
 	_WORLDBOUNDS: { x1: -200, y1: -200, x2: 5100, y2: 5100 },
@@ -22,6 +23,7 @@ MainGame.prototype =
 	_preload: function ()
 	{
 		this._game.load.spritesheet('ground', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
+		this._game.load.spritesheet('player', '../Content/Images/Games/PhaserTest/player1.png', 32, 64);
 	},
 
 	_create: function ()
@@ -30,9 +32,20 @@ MainGame.prototype =
 		//this._logo.animations.add('left', [0, 1, 2, 3, 4, 5], 10, true);
 		//this._logo.anchor.setTo(0.5, 0.5);
 		this._game.world.setBounds(this._WORLDBOUNDS.x1, this._WORLDBOUNDS.y1, this._WORLDBOUNDS.x2, this._WORLDBOUNDS.y2);
-		this._level.init();
-		this._keyboard = this._game.input.keyboard.createCursorKeys();
 		this._game.camera.setSize(800, 600);
+		this._keyboard = this._game.input.keyboard.createCursorKeys();
+		this._level.init();
+
+		//alway added last so it is displayed on top of others
+		var playerFPS = 10;
+		var playerSprite = this._game.add.sprite(0, 0, 'player');
+		playerSprite.anchor.setTo(0.5, 0.5);
+		playerSprite.animations.add('up', [4, 5, 6, 7], playerFPS, true);
+		playerSprite.animations.add('down', [0, 1, 2, 3], playerFPS, true);
+		playerSprite.animations.add('left', [12, 13, 14, 15], playerFPS, true);
+		playerSprite.animations.add('right', [8, 9, 10, 11], playerFPS, true);
+		this._player = new MainGame.Characters.Player(this._game, playerSprite);
+		this._player.bindCamera(this._game.camera);
 	},
 
 	_update: function ()
@@ -41,19 +54,23 @@ MainGame.prototype =
 		//this._logo.animations.play('left');
 		if (this._keyboard.up.isDown)
 		{
-			this._game.camera.y -= this._CAMERAVERTICALSPEED;
+			//this._game.camera.y -= this._CAMERAVERTICALSPEED;
+			this._player.move('up');
 		}
 		if (this._keyboard.down.isDown)
 		{
-			this._game.camera.y += this._CAMERAVERTICALSPEED;
+			//this._game.camera.y += this._CAMERAVERTICALSPEED;
+			this._player.move('down');
 		}
 		if (this._keyboard.left.isDown)
 		{
-			this._game.camera.x -= this._CAMERAVERTICALSPEED;
+			//this._game.camera.x -= this._CAMERAVERTICALSPEED;
+			this._player.move('left');
 		}
 		if (this._keyboard.right.isDown)
 		{
-			this._game.camera.x += this._CAMERAVERTICALSPEED;
+			//this._game.camera.x += this._CAMERAVERTICALSPEED;
+			this._player.move('right');
 		}
 	},
 
@@ -125,11 +142,13 @@ MainGame.Level.prototype =
 
 	_onMouseDown: function _onMouseDown(sprite, pointer)
 	{
+		var camera = this._mainGame.get_phaserGame().camera;
 		if (pointer.button === 2)
 		{
 			this._currentSelectedCell = { x: sprite.x / this._cellW, y: sprite.y / this._cellH };
 			console.log("x:" + this._currentSelectedCell.x + " y:" + this._currentSelectedCell.y);
-			this._buildContextMenu.position.setTo(pointer.x, pointer.y);
+
+			this._buildContextMenu.position.setTo(pointer.x + camera.x, pointer.y + camera.y);
 		}
 	},
 
@@ -159,5 +178,48 @@ MainGame.Level.prototype =
 			this._ground[this._currentSelectedCell.y][this._currentSelectedCell.x].frame = sprite.frame;
 			this._buildContextMenu.position.setTo(worldBounds.x1, worldBounds.y1);
 		}
+	}
+}
+
+MainGame.Characters = MainGame.Characters || {};
+MainGame.Characters.Player = function (game, sprite)
+{
+	this._game = game;
+	this._sprite = sprite;
+}
+
+MainGame.Characters.Player.prototype =
+{
+	_game: null,
+	_sprite: null,
+	_VERTICALSPEED: 3,
+	_HORIZONTALSPEED: 3,
+
+	bindCamera: function bindCamera(camera)
+	{
+		camera.follow(this._sprite);
+	},
+
+	move: function move(dir)
+	{
+		var c = dir.toLowerCase();
+		switch (c)
+		{
+			case 'up':
+				this._sprite.position.y -= this._VERTICALSPEED;
+				break;
+			case 'down':
+				this._sprite.position.y += this._VERTICALSPEED;
+				break;
+			case 'left':
+				this._sprite.position.x -= this._HORIZONTALSPEED;
+				break;
+			case 'right':
+				this._sprite.position.x += this._HORIZONTALSPEED;
+				break;
+			default:
+				//shouldn't be here
+		}
+		this._sprite.animations.play(c);
 	}
 }

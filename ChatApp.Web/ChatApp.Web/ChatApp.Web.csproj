@@ -144,6 +144,7 @@
     <Content Include="Content\CSS\PhotoViewer.css" />
     <Content Include="Content\CSS\Player.css" />
     <Content Include="Content\CSS\Site.css" />
+    <Content Include="Content\Images\Games\PhaserTest\player1.png" />
     <Content Include="Content\Images\Games\PhaserTest\terrain_1.png" />
     <Content Include="Content\Images\Games\ThreeTest\terrain_1.png" />
     <Content Include="Content\Images\Games\ThreeTest\rockroad.png" />
