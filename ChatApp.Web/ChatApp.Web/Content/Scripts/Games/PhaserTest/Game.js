@@ -11,6 +11,7 @@ MainGame.prototype =
 	_keyboard: null,
 	_CAMERAVERTICALSPEED: 3,
 	_CAMERAHORIZONTALSPEED: 3,
+	_WORLDBOUNDS: { x1: -200, y1: -200, x2: 5100, y2: 5100 },
 
 	init: function (width, height)
 	{
@@ -28,8 +29,8 @@ MainGame.prototype =
 		//this._logo = this._game.add.sprite(this._game.world.centerX, this._game.world.centerY, 'ground');
 		//this._logo.animations.add('left', [0, 1, 2, 3, 4, 5], 10, true);
 		//this._logo.anchor.setTo(0.5, 0.5);
-		this._game.world.setBounds(-100, -100, 5100, 5100);
-		this._level.set_randomGround();
+		this._game.world.setBounds(this._WORLDBOUNDS.x1, this._WORLDBOUNDS.y1, this._WORLDBOUNDS.x2, this._WORLDBOUNDS.y2);
+		this._level.init();
 		this._keyboard = this._game.input.keyboard.createCursorKeys();
 		this._game.camera.setSize(800, 600);
 	},
@@ -85,8 +86,23 @@ MainGame.Level.prototype =
 	_cellH: null,
 	_ground: null,
 	_currentSelectedCell: null,
+	_buildContextMenu: null,
 
-	set_randomGround: function set_randomGround()
+	init: function init(cellData)
+	{
+		if (!cellData)
+		{
+			this._set_randomGround();
+		}
+		else
+		{
+			this._set_cellData(cellData);
+		}
+
+		this._createBuildContextMenu();
+	},
+
+	_set_randomGround: function set_randomGround()
 	{
 		this._ground = [];
 		for (var i = 0; i < this._h; i++)
@@ -102,21 +118,46 @@ MainGame.Level.prototype =
 		}
 	},
 
+	_set_cellData: function _set_cellData(data)
+	{
+
+	},
+
 	_onMouseDown: function _onMouseDown(sprite, pointer)
 	{
 		if (pointer.button === 2)
 		{
 			this._currentSelectedCell = { x: sprite.x / this._cellW, y: sprite.y / this._cellH };
 			console.log("x:" + this._currentSelectedCell.x + " y:" + this._currentSelectedCell.y);
+			this._buildContextMenu.position.setTo(pointer.x, pointer.y);
 		}
 	},
 
 	_createBuildContextMenu: function _createBuildContextMenu()
 	{
 		var frameNum = 7;
-		for(var i=0;i<frameNum;i++)
+		var worldBounds = this._mainGame._WORLDBOUNDS;
+		var tmpSprite;
+		this._buildContextMenu = this._mainGame.get_phaserGame().add.group();
+
+		for (var i = 0; i < frameNum; i++)
 		{
-			
+			tmpSprite = this._mainGame.get_phaserGame().add.sprite(0, i * 32, 'ground', i + 20);
+			tmpSprite.inputEnabled = true;
+			tmpSprite.events.onInputDown.add(this._onBuildContextMenuClick, this);
+			this._buildContextMenu.add(tmpSprite);
+		}
+
+		this._buildContextMenu.position.setTo(worldBounds.x1, worldBounds.y1);
+	},
+
+	_onBuildContextMenuClick: function _onBuildContextMenuClick(sprite, pointer)
+	{
+		if (pointer.button === 0)
+		{
+			var worldBounds = this._mainGame._WORLDBOUNDS;
+			this._ground[this._currentSelectedCell.y][this._currentSelectedCell.x].frame = sprite.frame;
+			this._buildContextMenu.position.setTo(worldBounds.x1, worldBounds.y1);
 		}
 	}
 }
