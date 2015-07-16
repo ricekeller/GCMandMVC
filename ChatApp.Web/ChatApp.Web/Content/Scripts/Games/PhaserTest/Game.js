@@ -8,11 +8,17 @@ MainGame.prototype =
 	_game: null,
 	_logo: null,
 	_level: null,
+	_map: null,
 	_keyboard: null,
+	_previousKeyboard: null,
 	_player: null,
 	_CAMERAVERTICALSPEED: 3,
 	_CAMERAHORIZONTALSPEED: 3,
 	_WORLDBOUNDS: { x1: -200, y1: -200, x2: 5100, y2: 5100 },
+
+
+	layer2: null,
+
 
 	init: function (width, height)
 	{
@@ -22,7 +28,10 @@ MainGame.prototype =
 
 	_preload: function ()
 	{
-		this._game.load.spritesheet('ground', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
+		this._game.load.tilemap('terrain', '../Content/Images/Games/PhaserTest/1-1.json', null, Phaser.Tilemap.TILED_JSON);
+		this._game.load.image('terrain_image', '../Content/Images/Games/PhaserTest/1-1.jpg');
+		this._game.load.image('terrain_tiles', '../Content/Images/Games/PhaserTest/empty.png');
+		//this._game.load.spritesheet('ground', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
 		this._game.load.spritesheet('player', '../Content/Images/Games/PhaserTest/player1.png', 32, 64);
 	},
 
@@ -31,10 +40,24 @@ MainGame.prototype =
 		//this._logo = this._game.add.sprite(this._game.world.centerX, this._game.world.centerY, 'ground');
 		//this._logo.animations.add('left', [0, 1, 2, 3, 4, 5], 10, true);
 		//this._logo.anchor.setTo(0.5, 0.5);
-		this._game.world.setBounds(this._WORLDBOUNDS.x1, this._WORLDBOUNDS.y1, this._WORLDBOUNDS.x2, this._WORLDBOUNDS.y2);
+		this._game.physics.startSystem(Phaser.Physics.ARCADE);
 		this._game.camera.setSize(800, 600);
 		this._keyboard = this._game.input.keyboard.createCursorKeys();
-		this._level.init();
+		this._previousKeyboard = { up: false, down: false, left: false, right: false };
+		//this._level.init();
+		this._map = this._game.add.tilemap('terrain');
+		this._map.addTilesetImage('background', 'terrain_image');
+		this._map.addTilesetImage('obstacles', 'terrain_tiles');
+		//this._map.setLayer(0);
+		var layer1 = this._map.createLayer('background');
+		layer1.resizeWorld();
+		this._game.camera.setBoundsToWorld();
+		this.layer2 = this._map.createLayer('obstacles');
+		this.layer2.debug = true;
+		layer1.debug = true;
+		this._map.setCollision(401, true, this.layer2);
+		this._map.setLayer(this.layer2);
+		//layer.resizeWorld();
 
 		//alway added last so it is displayed on top of others
 		var playerFPS = 10;
@@ -44,39 +67,57 @@ MainGame.prototype =
 		playerSprite.animations.add('down', [0, 1, 2, 3], playerFPS, true);
 		playerSprite.animations.add('left', [12, 13, 14, 15], playerFPS, true);
 		playerSprite.animations.add('right', [8, 9, 10, 11], playerFPS, true);
+		this._game.physics.enable(playerSprite);
+		playerSprite.body.collideWorldBounds = true;
 		this._player = new MainGame.Characters.Player(this._game, playerSprite);
 		this._player.bindCamera(this._game.camera);
 	},
 
 	_update: function ()
 	{
-		var d = 0.1;
+		this._game.physics.arcade.collide(this._player._sprite, this.layer2);
+		var vel = this._player._sprite.body.velocity;
+		if ((this._keyboard.up.isUp && this._previousKeyboard.up) || (this._keyboard.down.isUp && this._previousKeyboard.down))
+		{
+			vel.y = 0;
+		}
+		if ((this._keyboard.left.isUp && this._previousKeyboard.left) || (this._keyboard.right.isUp && this._previousKeyboard.right))
+		{
+			vel.x = 0;
+		}
+		var dirs = ['up', 'down', 'left', 'right'];
+		for (var dir = 0; dir < dirs.length; dir++)
+		{
+			this._previousKeyboard[dirs[dir]] = this._keyboard[dirs[dir]].isDown;
+		}
+
 		//this._logo.animations.play('left');
 		if (this._keyboard.up.isDown)
 		{
-			//this._game.camera.y -= this._CAMERAVERTICALSPEED;
-			this._player.move('up');
+			//this._player.move('up');
+			vel.y = -200;
 		}
 		if (this._keyboard.down.isDown)
 		{
-			//this._game.camera.y += this._CAMERAVERTICALSPEED;
-			this._player.move('down');
+			//this._player.move('down');
+			vel.y = 200;
 		}
 		if (this._keyboard.left.isDown)
 		{
-			//this._game.camera.x -= this._CAMERAVERTICALSPEED;
-			this._player.move('left');
+			//this._player.move('left');
+			vel.x = -200;
 		}
 		if (this._keyboard.right.isDown)
 		{
-			//this._game.camera.x += this._CAMERAVERTICALSPEED;
-			this._player.move('right');
+			//this._player.move('right');
+			vel.x = 200;
 		}
 	},
 
 	_render: function ()
 	{
 		this._game.debug.cameraInfo(this._game.camera, 32, 32);
+		this._game.debug.bodyInfo(this._player._sprite, 32, 320);
 	},
 
 	get_phaserGame: function get_phaserGame()
