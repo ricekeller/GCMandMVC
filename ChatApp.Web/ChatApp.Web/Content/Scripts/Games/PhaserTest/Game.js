@@ -313,26 +313,36 @@ MainGame.GUI.prototype =
 		return m;
 	},
 
-	_onMouseMove: function _onMouseMove(pointer, event)
+	_onMouseMove: function _onMouseMove(pointer)
 	{
 		//update marker position
-		var game = this._mainGame.get_phaserGame();
 		var layer = this._mainGame.get_level().get_bgLayer();
-		this._marker.x = layer.getTileX(game.input.activePointer.worldX) * 48;
-		this._marker.y = layer.getTileY(game.input.activePointer.worldY) * 48;
+		this._marker.x = layer.getTileX(pointer.worldX) * 48;
+		this._marker.y = layer.getTileY(pointer.worldY) * 48;
 
 	},
 
 	_onMouseButtonDown: function _onMouseButtonDown(pointer, event)
 	{
-		var layer = this._mainGame.get_level().get_bgLayer();
-		var game = this._mainGame.get_phaserGame();
-
-		if (!this._currentSelectedMarker)
+		switch(pointer.button)
 		{
-			this._currentSelectedMarker = this._createMarker(2, 0xffffff, 1, 0, 0, 48, 48);
+			case 0:// left button
+				var layer = this._mainGame.get_level().get_bgLayer();
+
+				if (!this._currentSelectedMarker)
+				{
+					this._currentSelectedMarker = this._createMarker(2, 0xffffff, 1, 0, 0, 48, 48);
+				}
+				this._currentSelectedMarker.x = layer.getTileX(pointer.worldX) * 48;
+				this._currentSelectedMarker.y = layer.getTileY(pointer.worldY) * 48;
+				break;
+			case 1:// middle button
+				break;
+			case 2://right button
+				break;
+			default:
+				break;
 		}
-		this._currentSelectedMarker.x=layer.getTileX(game.input.activePointer.worldX)*48;
-		this._currentSelectedMarker.y=layer.getTileY(game.input.activePointer.worldY)*48;
+		
 	}
 }
