@@ -12,11 +12,12 @@ MainGame.prototype =
 	_keyboard: null,
 	_previousKeyboard: null,
 	_player: null,
+	_gui: null,
 	_CAMERAVERTICALSPEED: 3,
 	_CAMERAHORIZONTALSPEED: 3,
 	_WORLDBOUNDS: { x1: -200, y1: -200, x2: 5100, y2: 5100 },
 
-    layer1:null,
+	layer1: null,
 	layer2: null,
 
 
@@ -24,6 +25,7 @@ MainGame.prototype =
 	{
 		this._game = new Phaser.Game(width, height, Phaser.AUTO, '', { preload: this._preload.bind(this), create: this._create.bind(this), update: this._update.bind(this), render: this._render.bind(this) });
 		this._level = new MainGame.Level(this._game, 100, 100, 64, 64);
+		this._gui = new MainGame.GUI(this);
 	},
 
 	_preload: function ()
@@ -42,6 +44,7 @@ MainGame.prototype =
 		this._keyboard = this._game.input.keyboard.createCursorKeys();
 		this._previousKeyboard = { up: false, down: false, left: false, right: false };
 		this._level.init();
+		this._gui.init();
 
 		//alway added last so it is displayed on top of others
 		var playerFPS = 10;
@@ -61,14 +64,14 @@ MainGame.prototype =
 	_update: function ()
 	{
 		this._game.physics.arcade.collide(this._player._sprite, this._level.get_itemsLayer());
-		
+
 		if ((this._keyboard.up.isUp && this._previousKeyboard.up) || (this._keyboard.down.isUp && this._previousKeyboard.down))
 		{
-		    this._player.clearSpeed('y');
+			this._player.clearSpeed('y');
 		}
 		if ((this._keyboard.left.isUp && this._previousKeyboard.left) || (this._keyboard.right.isUp && this._previousKeyboard.right))
 		{
-		    this._player.clearSpeed('x');
+			this._player.clearSpeed('x');
 		}
 		var dirs = ['up', 'down', 'left', 'right'];
 		for (var dir = 0; dir < dirs.length; dir++)
@@ -103,6 +106,11 @@ MainGame.prototype =
 	get_phaserGame: function get_phaserGame()
 	{
 		return this._game;
+	},
+
+	get_level: function get_level()
+	{
+		return this._level;
 	}
 }
 
@@ -117,9 +125,9 @@ MainGame.Level = function (game, w, h, cellW, cellH)
 
 MainGame.Level.prototype =
 {
-    _game: null,
-    _map: null,
-    _layers:null,
+	_game: null,
+	_map: null,
+	_layers: null,
 	_w: null,
 	_h: null,
 	_cellW: null,
@@ -130,24 +138,29 @@ MainGame.Level.prototype =
 
 	init: function init(cellData)
 	{
-	    this._map = this._game.add.tilemap('terrain');
-	    this._map.addTilesetImage('bg', 'terrain_image');
-	    this._map.addTilesetImage('obstacles', 'terrain_tiles');
-	    this._layers = [];
-	    this._layers.push(this._map.createLayer('bg'));
-	    this._layers.push(this._map.createLayer('items'));
-	    
-	    var currentLayer = this._layers[this._layers.length - 1];
-	    currentLayer.visible = false;
-	    currentLayer.debug = true;
-	    currentLayer.resizeWorld();
-	    this._game.camera.setBoundsToWorld();
-	    this._map.setCollision(401, true, currentLayer);
+		this._map = this._game.add.tilemap('terrain');
+		this._map.addTilesetImage('bg', 'terrain_image');
+		this._map.addTilesetImage('obstacles', 'terrain_tiles');
+		this._layers = [];
+		this._layers.push(this._map.createLayer('bg'));
+		this._layers.push(this._map.createLayer('items'));
+
+		var currentLayer = this._layers[this._layers.length - 1];
+		currentLayer.visible = false;
+		currentLayer.debug = true;
+		currentLayer.resizeWorld();
+		this._game.camera.setBoundsToWorld();
+		this._map.setCollision(401, true, currentLayer);
 	},
 
-	get_itemsLayer:function get_itemsLayer() 
+	get_itemsLayer: function get_itemsLayer()
 	{
-	    return this._layers[this._layers.length-1];
+		return this._layers[this._layers.length - 1];
+	},
+
+	get_bgLayer: function get_bgLayer()
+	{
+		return this._layers[0];
 	},
 
 	_set_randomGround: function set_randomGround()
@@ -233,7 +246,7 @@ MainGame.Characters.Player.prototype =
 
 	move: function move(dir)
 	{
-	    var vel = this._sprite.body.velocity;
+		var vel = this._sprite.body.velocity;
 		var c = dir.toLowerCase();
 		switch (c)
 		{
@@ -241,13 +254,13 @@ MainGame.Characters.Player.prototype =
 				vel.y = -this._VERTICALSPEED;
 				break;
 			case 'down':
-			    vel.y = this._VERTICALSPEED;
+				vel.y = this._VERTICALSPEED;
 				break;
 			case 'left':
-			    vel.x = -this._HORIZONTALSPEED;
+				vel.x = -this._HORIZONTALSPEED;
 				break;
 			case 'right':
-			    vel.x = this._HORIZONTALSPEED;
+				vel.x = this._HORIZONTALSPEED;
 				break;
 			default:
 				//shouldn't be here
@@ -257,16 +270,69 @@ MainGame.Characters.Player.prototype =
 
 	clearSpeed: function clearSpeed(axis)
 	{
-	    switch(axis.toLowerCase())
-	    {
-	        case 'x':
-	            this._sprite.body.velocity.x = 0;
-	            break;
-	        case 'y':
-	            this._sprite.body.velocity.y = 0;
-	            break;
-	        default:
-	            break;
-	    }
+		switch (axis.toLowerCase())
+		{
+			case 'x':
+				this._sprite.body.velocity.x = 0;
+				break;
+			case 'y':
+				this._sprite.body.velocity.y = 0;
+				break;
+			default:
+				break;
+		}
+	}
+}
+
+/**
+ * This class holds all GUI elements in game.
+ */
+MainGame.GUI = function (game)
+{
+	this._mainGame = game;
+}
+MainGame.GUI.prototype =
+{
+	_mainGame: null,
+	_marker: null,
+	_currentSelectedMarker: null,
+
+	init: function init()
+	{
+		this._marker = this._createMarker(2, 0x00ff00, 1, 0, 0, 48, 48);
+		//hook up mousemove and mouse down event
+		this._mainGame.get_phaserGame().input.addMoveCallback(this._onMouseMove, this);
+		this._mainGame.get_phaserGame().input.onDown.add(this._onMouseButtonDown, this);
+	},
+
+	_createMarker: function _createMarker(lineWidth, color, alpha, x, y, width, height)
+	{
+		var m = this._mainGame.get_phaserGame().add.graphics();
+		m.lineStyle(lineWidth, color, alpha);
+		m.drawRect(x, y, width, height);
+		return m;
+	},
+
+	_onMouseMove: function _onMouseMove(pointer, event)
+	{
+		//update marker position
+		var game = this._mainGame.get_phaserGame();
+		var layer = this._mainGame.get_level().get_bgLayer();
+		this._marker.x = layer.getTileX(game.input.activePointer.worldX) * 48;
+		this._marker.y = layer.getTileY(game.input.activePointer.worldY) * 48;
+
+	},
+
+	_onMouseButtonDown: function _onMouseButtonDown(pointer, event)
+	{
+		var layer = this._mainGame.get_level().get_bgLayer();
+		var game = this._mainGame.get_phaserGame();
+
+		if (!this._currentSelectedMarker)
+		{
+			this._currentSelectedMarker = this._createMarker(2, 0xffffff, 1, 0, 0, 48, 48);
+		}
+		this._currentSelectedMarker.x=layer.getTileX(game.input.activePointer.worldX)*48;
+		this._currentSelectedMarker.y=layer.getTileY(game.input.activePointer.worldY)*48;
 	}
 }
