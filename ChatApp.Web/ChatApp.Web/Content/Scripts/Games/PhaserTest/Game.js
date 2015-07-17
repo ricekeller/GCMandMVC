@@ -6,6 +6,7 @@
 MainGame.prototype =
 {
 	_game: null,
+	_msgProcessor: null,
 	_logo: null,
 	_level: null,
 	_map: null,
@@ -24,6 +25,7 @@ MainGame.prototype =
 	init: function (width, height)
 	{
 		this._game = new Phaser.Game(width, height, Phaser.AUTO, '', { preload: this._preload.bind(this), create: this._create.bind(this), update: this._update.bind(this), render: this._render.bind(this) });
+		this._msgProcessor = new MainGame.MessageProcessor(this);
 		this._level = new MainGame.Level(this._game, 100, 100, 64, 64);
 		this._gui = new MainGame.GUI(this);
 	},
@@ -57,12 +59,14 @@ MainGame.prototype =
 		playerSprite.animations.add('right', [8, 9, 10, 11], playerFPS, true);
 		this._game.physics.enable(playerSprite);
 		playerSprite.body.collideWorldBounds = true;
-		this._player = new MainGame.Characters.Player(this._game, playerSprite);
+		this._player = new MainGame.Characters.Player(this, playerSprite);
 		this._player.bindCamera(this._game.camera);
 	},
 
 	_update: function ()
 	{
+		this._msgProcessor.update();
+		this._player.update();
 		this._game.physics.arcade.collide(this._player._sprite, this._level.get_itemsLayer());
 
 		if ((this._keyboard.up.isUp && this._previousKeyboard.up) || (this._keyboard.down.isUp && this._previousKeyboard.down))
@@ -103,6 +107,16 @@ MainGame.prototype =
 		this._game.debug.bodyInfo(this._player._sprite, 32, 320);
 	},
 
+	addMsg: function addMsg(msg, data)
+	{
+		this._msgProcessor.addMsg(msg, data);
+	},
+
+	subscribe: function subsribe(msg, handler, context)
+	{
+		this._msgProcessor.subscribe(msg, handler, context);
+	},
+
 	get_phaserGame: function get_phaserGame()
 	{
 		return this._game;
@@ -111,6 +125,11 @@ MainGame.prototype =
 	get_level: function get_level()
 	{
 		return this._level;
+	},
+
+	get_player: function get_player()
+	{
+		return this._player;
 	}
 }
 
@@ -230,18 +249,26 @@ MainGame.Characters.Player = function (game, sprite)
 {
 	this._game = game;
 	this._sprite = sprite;
+	this._game.subscribe(MainGame.Message.MouseClicked, this._onMouseDown, this);
 }
 
 MainGame.Characters.Player.prototype =
 {
 	_game: null,
 	_sprite: null,
+	_posTile: {},
+	_selected: null,
 	_VERTICALSPEED: 200,
 	_HORIZONTALSPEED: 200,
 
 	bindCamera: function bindCamera(camera)
 	{
 		camera.follow(this._sprite);
+	},
+
+	update:function update() 
+	{
+		this._updatePosition();
 	},
 
 	move: function move(dir)
@@ -281,6 +308,33 @@ MainGame.Characters.Player.prototype =
 			default:
 				break;
 		}
+	},
+
+	get_posTile: function get_posTile()
+	{
+		return this._posTile;
+	},
+
+	_updatePosition: function _updatePosition()
+	{
+		var layer = this._game.get_level().get_bgLayer();
+		this._posTile = { x: layer.getTileX(this._sprite.world.x), y: layer.getTileY(this._sprite.world.y) }
+	},
+
+	_onMouseDown: function _onMouseDown(msg, data)
+	{
+		if (msg === MainGame.Message.MouseClicked)
+		{
+			if (data.x === this._posTile.x && data.y === this._posTile.y)
+			{
+				this._selected = true;
+			}
+			else
+			{
+				this._selected = false;
+			}
+		}
+		console.log(this._selected);
 	}
 }
 
@@ -324,25 +378,102 @@ MainGame.GUI.prototype =
 
 	_onMouseButtonDown: function _onMouseButtonDown(pointer, event)
 	{
-		switch(pointer.button)
+		switch (pointer.button)
 		{
 			case 0:// left button
 				var layer = this._mainGame.get_level().get_bgLayer();
-
+				var currentTile = { x: layer.getTileX(pointer.worldX), y: layer.getTileY(pointer.worldY) };
+				// set current marker
 				if (!this._currentSelectedMarker)
 				{
 					this._currentSelectedMarker = this._createMarker(2, 0xffffff, 1, 0, 0, 48, 48);
 				}
-				this._currentSelectedMarker.x = layer.getTileX(pointer.worldX) * 48;
-				this._currentSelectedMarker.y = layer.getTileY(pointer.worldY) * 48;
+				this._currentSelectedMarker.x = currentTile.x * 48;
+				this._currentSelectedMarker.y = currentTile.y * 48;
+				// send message
+				this._mainGame.addMsg(MainGame.Message.MouseClicked, currentTile);
 				break;
 			case 1:// middle button
 				break;
-			case 2://right button
+			case 2:// right button
 				break;
 			default:
 				break;
 		}
-		
+
 	}
+}
+
+MainGame.MessageProcessor = function (game)
+{
+	this._mainGame = game;
+	this.init();
+}
+
+MainGame.MessageProcessor.prototype =
+{
+	_mainGame: null,
+	_queue: null,
+	_processors: null,
+
+	init: function init()
+	{
+		this._queue = [];
+		this._processors = {};
+	},
+
+	addMsg: function addMsg(msg, data)
+	{
+		this._queue.push({ msg: msg, data: data });
+	},
+
+	clearQueue: function clearQueue()
+	{
+		this._queue = [];
+	},
+
+	subscribe: function subscribe(msg, handler, context)
+	{
+		var handlers = this._processors[msg];
+		var obj = { handler: handler, context: context };
+		if (!handlers)
+		{
+			handlers = [];
+		}
+		if (handlers.indexOf(obj) < 0)
+		{
+			handlers.push(obj);
+		}
+		this._processors[msg] = handlers;
+	},
+
+	update: function update()
+	{
+		var i, j, msgObj, msg, data, handlers, handlerObj, handler, context, abort;
+		for (i = 0; i < this._queue.length; i++)
+		{
+			msgObj = this._queue[i];
+			msg = msgObj.msg;
+			data = msgObj.data;
+			handlers = this._processors[msg];
+			if (handlers)
+			{
+				for (j = 0; j < handlers.length; j++)
+				{
+					handlerObj = handlers[j];
+					handler = handlerObj.handler;
+					context = handlerObj.context;
+					abort = handler.call(context, msg, data);
+					if (abort) break;
+				}
+			}
+		}
+		this.clearQueue();
+	}
+}
+
+MainGame.Message =
+{
+	MouseClicked: 1,
+
 }
