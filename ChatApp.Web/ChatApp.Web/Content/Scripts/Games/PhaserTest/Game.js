@@ -16,14 +16,14 @@ MainGame.prototype =
 	_CAMERAHORIZONTALSPEED: 3,
 	_WORLDBOUNDS: { x1: -200, y1: -200, x2: 5100, y2: 5100 },
 
-
+    layer1:null,
 	layer2: null,
 
 
 	init: function (width, height)
 	{
 		this._game = new Phaser.Game(width, height, Phaser.AUTO, '', { preload: this._preload.bind(this), create: this._create.bind(this), update: this._update.bind(this), render: this._render.bind(this) });
-		this._level = new MainGame.Level(this, 100, 100, 64, 64);
+		this._level = new MainGame.Level(this._game, 100, 100, 64, 64);
 	},
 
 	_preload: function ()
@@ -37,32 +37,17 @@ MainGame.prototype =
 
 	_create: function ()
 	{
-		//this._logo = this._game.add.sprite(this._game.world.centerX, this._game.world.centerY, 'ground');
-		//this._logo.animations.add('left', [0, 1, 2, 3, 4, 5], 10, true);
-		//this._logo.anchor.setTo(0.5, 0.5);
 		this._game.physics.startSystem(Phaser.Physics.ARCADE);
 		this._game.camera.setSize(800, 600);
 		this._keyboard = this._game.input.keyboard.createCursorKeys();
 		this._previousKeyboard = { up: false, down: false, left: false, right: false };
-		//this._level.init();
-		this._map = this._game.add.tilemap('terrain');
-		this._map.addTilesetImage('background', 'terrain_image');
-		this._map.addTilesetImage('obstacles', 'terrain_tiles');
-		//this._map.setLayer(0);
-		var layer1 = this._map.createLayer('background');
-		layer1.resizeWorld();
-		this._game.camera.setBoundsToWorld();
-		this.layer2 = this._map.createLayer('obstacles');
-		this.layer2.debug = true;
-		layer1.debug = true;
-		this._map.setCollision(401, true, this.layer2);
-		this._map.setLayer(this.layer2);
-		//layer.resizeWorld();
+		this._level.init();
 
 		//alway added last so it is displayed on top of others
 		var playerFPS = 10;
 		var playerSprite = this._game.add.sprite(0, 0, 'player');
 		playerSprite.anchor.setTo(0.5, 0.5);
+		playerSprite.scale.setTo(1, 0.75);
 		playerSprite.animations.add('up', [4, 5, 6, 7], playerFPS, true);
 		playerSprite.animations.add('down', [0, 1, 2, 3], playerFPS, true);
 		playerSprite.animations.add('left', [12, 13, 14, 15], playerFPS, true);
@@ -75,15 +60,15 @@ MainGame.prototype =
 
 	_update: function ()
 	{
-		this._game.physics.arcade.collide(this._player._sprite, this.layer2);
-		var vel = this._player._sprite.body.velocity;
+		this._game.physics.arcade.collide(this._player._sprite, this._level.get_itemsLayer());
+		
 		if ((this._keyboard.up.isUp && this._previousKeyboard.up) || (this._keyboard.down.isUp && this._previousKeyboard.down))
 		{
-			vel.y = 0;
+		    this._player.clearSpeed('y');
 		}
 		if ((this._keyboard.left.isUp && this._previousKeyboard.left) || (this._keyboard.right.isUp && this._previousKeyboard.right))
 		{
-			vel.x = 0;
+		    this._player.clearSpeed('x');
 		}
 		var dirs = ['up', 'down', 'left', 'right'];
 		for (var dir = 0; dir < dirs.length; dir++)
@@ -91,26 +76,21 @@ MainGame.prototype =
 			this._previousKeyboard[dirs[dir]] = this._keyboard[dirs[dir]].isDown;
 		}
 
-		//this._logo.animations.play('left');
 		if (this._keyboard.up.isDown)
 		{
-			//this._player.move('up');
-			vel.y = -200;
+			this._player.move('up');
 		}
 		if (this._keyboard.down.isDown)
 		{
-			//this._player.move('down');
-			vel.y = 200;
+			this._player.move('down');
 		}
 		if (this._keyboard.left.isDown)
 		{
-			//this._player.move('left');
-			vel.x = -200;
+			this._player.move('left');
 		}
 		if (this._keyboard.right.isDown)
 		{
-			//this._player.move('right');
-			vel.x = 200;
+			this._player.move('right');
 		}
 	},
 
@@ -128,7 +108,7 @@ MainGame.prototype =
 
 MainGame.Level = function (game, w, h, cellW, cellH)
 {
-	this._mainGame = game;
+	this._game = game;
 	this._w = w;
 	this._h = h;
 	this._cellW = cellW;
@@ -137,7 +117,9 @@ MainGame.Level = function (game, w, h, cellW, cellH)
 
 MainGame.Level.prototype =
 {
-	_mainGame: null,
+    _game: null,
+    _map: null,
+    _layers:null,
 	_w: null,
 	_h: null,
 	_cellW: null,
@@ -148,16 +130,24 @@ MainGame.Level.prototype =
 
 	init: function init(cellData)
 	{
-		if (!cellData)
-		{
-			this._set_randomGround();
-		}
-		else
-		{
-			this._set_cellData(cellData);
-		}
+	    this._map = this._game.add.tilemap('terrain');
+	    this._map.addTilesetImage('bg', 'terrain_image');
+	    this._map.addTilesetImage('obstacles', 'terrain_tiles');
+	    this._layers = [];
+	    this._layers.push(this._map.createLayer('bg'));
+	    this._layers.push(this._map.createLayer('items'));
+	    
+	    var currentLayer = this._layers[this._layers.length - 1];
+	    currentLayer.visible = false;
+	    currentLayer.debug = true;
+	    currentLayer.resizeWorld();
+	    this._game.camera.setBoundsToWorld();
+	    this._map.setCollision(401, true, currentLayer);
+	},
 
-		this._createBuildContextMenu();
+	get_itemsLayer:function get_itemsLayer() 
+	{
+	    return this._layers[this._layers.length-1];
 	},
 
 	_set_randomGround: function set_randomGround()
@@ -233,8 +223,8 @@ MainGame.Characters.Player.prototype =
 {
 	_game: null,
 	_sprite: null,
-	_VERTICALSPEED: 3,
-	_HORIZONTALSPEED: 3,
+	_VERTICALSPEED: 200,
+	_HORIZONTALSPEED: 200,
 
 	bindCamera: function bindCamera(camera)
 	{
@@ -243,24 +233,40 @@ MainGame.Characters.Player.prototype =
 
 	move: function move(dir)
 	{
+	    var vel = this._sprite.body.velocity;
 		var c = dir.toLowerCase();
 		switch (c)
 		{
 			case 'up':
-				this._sprite.position.y -= this._VERTICALSPEED;
+				vel.y = -this._VERTICALSPEED;
 				break;
 			case 'down':
-				this._sprite.position.y += this._VERTICALSPEED;
+			    vel.y = this._VERTICALSPEED;
 				break;
 			case 'left':
-				this._sprite.position.x -= this._HORIZONTALSPEED;
+			    vel.x = -this._HORIZONTALSPEED;
 				break;
 			case 'right':
-				this._sprite.position.x += this._HORIZONTALSPEED;
+			    vel.x = this._HORIZONTALSPEED;
 				break;
 			default:
 				//shouldn't be here
 		}
 		this._sprite.animations.play(c);
+	},
+
+	clearSpeed: function clearSpeed(axis)
+	{
+	    switch(axis.toLowerCase())
+	    {
+	        case 'x':
+	            this._sprite.body.velocity.x = 0;
+	            break;
+	        case 'y':
+	            this._sprite.body.velocity.y = 0;
+	            break;
+	        default:
+	            break;
+	    }
 	}
 }
