@@ -26,7 +26,7 @@ MainGame.prototype =
 	{
 		this._game = new Phaser.Game(width, height, Phaser.AUTO, '', { preload: this._preload.bind(this), create: this._create.bind(this), update: this._update.bind(this), render: this._render.bind(this) });
 		this._msgProcessor = new MainGame.MessageProcessor(this);
-		this._level = new MainGame.Level(this._game, 100, 100, 64, 64);
+		this._level = new MainGame.Level(this._game, 100, 100, 48, 48);
 		this._gui = new MainGame.GUI(this);
 	},
 
@@ -43,7 +43,7 @@ MainGame.prototype =
 	_create: function ()
 	{
 		this._game.physics.startSystem(Phaser.Physics.ARCADE);
-		this._game.camera.setSize(800, 600);
+		this._game.camera.setSize(960, 600);
 		this._keyboard = this._game.input.keyboard.createCursorKeys();
 		this._previousKeyboard = { up: false, down: false, left: false, right: false };
 		this._level.init();
@@ -385,6 +385,10 @@ MainGame.GUI.prototype =
 
 	_onMouseMove: function _onMouseMove(pointer)
 	{
+		//check if within camera
+		var camera = this._mainGame.get_phaserGame().camera;
+		if (pointer.x >= camera.width || pointer.x <= 0 || pointer.y >= camera.height || pointer.y <= 0)
+			return;
 		//update marker position
 		var layer = this._mainGame.get_level().get_bgLayer();
 		this._marker.x = layer.getTileX(pointer.worldX) * 48;
