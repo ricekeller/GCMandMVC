@@ -266,7 +266,7 @@ MainGame.Characters.Player.prototype =
 		camera.follow(this._sprite);
 	},
 
-	update: function update()
+	update:function update() 
 	{
 		this._updatePosition();
 	},
@@ -471,18 +471,6 @@ MainGame.MessageProcessor.prototype =
 		this.clearQueue();
 	}
 }
-
-
-MainGame.Characters.StateMachine = function (game)
-{
-	this._mainGame = game;
-}
-
-MainGame.Characters.StateMachine.prototype =
-{
-	_mainGame: null,
-}
-
 
 MainGame.Message =
 {
