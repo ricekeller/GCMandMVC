@@ -196,6 +196,7 @@
     <Content Include="Views\test\testm.cshtml" />
     <Content Include="Views\Home\_GetNews.cshtml" />
     <Content Include="Views\Shared\Phaser.cshtml" />
+    <Content Include="Views\Shared\Caocao.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

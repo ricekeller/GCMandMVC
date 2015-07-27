@@ -45,5 +45,10 @@ namespace ChatApp.Web.Controllers
 		{
 			return View("Phaser");
 		}
+
+		public ActionResult caocao()
+		{
+			return View("Caocao");
+		}
     }
 }
