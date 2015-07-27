@@ -353,6 +353,7 @@ MainGame.GUI.prototype =
 	_currentSelectedMarker: null,
 	_rightPanel: null,
 	_rightPanelToggleButton: null,
+	_cursorOnGUI:null,
 
 	init: function init()
 	{
@@ -369,6 +370,8 @@ MainGame.GUI.prototype =
 		this._rightPanelToggleButton.inputEnabled = true;
 		this._rightPanelToggleButton.events.onInputDown.add(this._onRightPanelToggleButtonDown, this);
 		this._rightPanelToggleButton.events.onInputUp.add(this._onRightPanelToggleButtonUp, this);
+		this._rightPanelToggleButton.events.onInputOver.add(this._onMouseOverGUI, this);
+		this._rightPanelToggleButton.events.onInputOut.add(this._onMouseOutGUI, this);
 		this._rightPanel.add(this._rightPanelToggleButton);
 		//hook up mousemove and mouse down event
 		this._mainGame.get_phaserGame().input.addMoveCallback(this._onMouseMove, this);
@@ -385,6 +388,7 @@ MainGame.GUI.prototype =
 
 	_onMouseMove: function _onMouseMove(pointer)
 	{
+		if (this._cursorOnGUI) return;
 		//check if within camera
 		var camera = this._mainGame.get_phaserGame().camera;
 		if (pointer.x >= camera.width || pointer.x <= 0 || pointer.y >= camera.height || pointer.y <= 0)
@@ -393,11 +397,11 @@ MainGame.GUI.prototype =
 		var layer = this._mainGame.get_level().get_bgLayer();
 		this._marker.x = layer.getTileX(pointer.worldX) * 48;
 		this._marker.y = layer.getTileY(pointer.worldY) * 48;
-
 	},
 
 	_onMouseButtonDown: function _onMouseButtonDown(pointer, event)
 	{
+		if (this._cursorOnGUI) return;
 		switch (pointer.button)
 		{
 			case 0:// left button
@@ -430,6 +434,14 @@ MainGame.GUI.prototype =
 	_onRightPanelToggleButtonUp: function _onRightPanelToggleButtonUp(pointer, event)
 	{
 		this._rightPanelToggleButton.animations.play('mouseup');
+	},
+	_onMouseOverGUI: function _onMouseOverGUI(pointer,event)
+	{
+		this._cursorOnGUI = true;
+	},
+	_onMouseOutGUI: function _onMouseOutGUI(pointer,event)
+	{
+		this._cursorOnGUI = false;
 	}
 }
 
