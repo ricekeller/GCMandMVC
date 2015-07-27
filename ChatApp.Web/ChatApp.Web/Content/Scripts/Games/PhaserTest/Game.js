@@ -37,6 +37,7 @@ MainGame.prototype =
 		this._game.load.image('terrain_tiles', '../Content/Images/Games/PhaserTest/empty.png');
 		//this._game.load.spritesheet('ground', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
 		this._game.load.spritesheet('player', '../Content/Images/Games/PhaserTest/player1.png', 32, 64);
+		this._game.load.spritesheet('btn_rightpanel', '../Content/Images/Games/PhaserTest/btn_rightpanel.png', 142, 28);
 	},
 
 	_create: function ()
@@ -350,10 +351,25 @@ MainGame.GUI.prototype =
 	_mainGame: null,
 	_marker: null,
 	_currentSelectedMarker: null,
+	_rightPanel: null,
+	_rightPanelToggleButton: null,
 
 	init: function init()
 	{
+		//moving marker
 		this._marker = this._createMarker(2, 0x00ff00, 1, 0, 0, 48, 48);
+		//right panel group
+		this._rightPanel = this._mainGame.get_phaserGame().add.group();
+		this._rightPanel.fixedToCamera = true;
+		this._rightPanel.cameraOffset.setTo(800, 0);
+		//right panel toggle button
+		this._rightPanelToggleButton = this._mainGame.get_phaserGame().add.sprite(0, 0, 'btn_rightpanel');
+		this._rightPanelToggleButton.animations.add('mousedown', [0, 1, 2, 3], 10, false);
+		this._rightPanelToggleButton.animations.add('mouseup', [3, 2, 1, 0], 10, false);
+		this._rightPanelToggleButton.inputEnabled = true;
+		this._rightPanelToggleButton.events.onInputDown.add(this._onRightPanelToggleButtonDown, this);
+		this._rightPanelToggleButton.events.onInputUp.add(this._onRightPanelToggleButtonUp, this);
+		this._rightPanel.add(this._rightPanelToggleButton);
 		//hook up mousemove and mouse down event
 		this._mainGame.get_phaserGame().input.addMoveCallback(this._onMouseMove, this);
 		this._mainGame.get_phaserGame().input.onDown.add(this._onMouseButtonDown, this);
@@ -401,6 +417,15 @@ MainGame.GUI.prototype =
 				break;
 		}
 
+	},
+
+	_onRightPanelToggleButtonDown: function _onRightPanelToggleButtonDown(pointer, event)
+	{
+		this._rightPanelToggleButton.animations.play('mousedown');
+	},
+	_onRightPanelToggleButtonUp: function _onRightPanelToggleButtonUp(pointer, event)
+	{
+		this._rightPanelToggleButton.animations.play('mouseup');
 	}
 }
 
