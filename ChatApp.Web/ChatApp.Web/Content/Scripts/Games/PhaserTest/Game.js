@@ -356,7 +356,6 @@ MainGame.GUI.prototype =
 	_rightPanel: null,
 	_rightPanelToggleButton: null,
 	_rightPanelContainer: null,
-	_isRightPanelOpen: true,
 	_isCursorOnGUI: null,
 
 
@@ -408,14 +407,7 @@ MainGame.GUI.prototype =
 
 	update: function update()
 	{
-		if (this._isRightPanelOpen)
-		{
-			this._rightPanelContainer.visible = true;
-		}
-		else
-		{
-			this._rightPanelContainer.visible = false;
-		}
+
 	},
 
 	_createMarker: function _createMarker(lineWidth, color, alpha, x, y, width, height)
@@ -426,7 +418,7 @@ MainGame.GUI.prototype =
 		return m;
 	},
 
-	_bindMoveEvent:function _bindMoveEvent(sprite) 
+	_bindMoveEvent: function _bindMoveEvent(sprite)
 	{
 		sprite.inputEnabled = true;
 		sprite.events.onInputOver.add(this._onMouseOverGUI, this);
@@ -481,7 +473,7 @@ MainGame.GUI.prototype =
 	_onRightPanelToggleButtonUp: function _onRightPanelToggleButtonUp(pointer, event)
 	{
 		this._rightPanelToggleButton.animations.play('mouseup');
-		this._isRightPanelOpen = !this._isRightPanelOpen;
+		this._rightPanelContainer.visible = !this._rightPanelContainer.visible;
 	},
 	_onMouseOverGUI: function _onMouseOverGUI(pointer, event)
 	{
