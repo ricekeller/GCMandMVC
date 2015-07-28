@@ -252,7 +252,8 @@ MainGame.Characters.Player = function (game, sprite)
 {
 	this._game = game;
 	this._sprite = sprite;
-	this._game.subscribe(MainGame.Message.MouseClicked, this._onMouseDown, this);
+	this._hookupEvent();
+	//this._game.subscribe(MainGame.Message.MouseClicked, this._onMouseDown, this);
 }
 
 MainGame.Characters.Player.prototype =
@@ -261,6 +262,7 @@ MainGame.Characters.Player.prototype =
 	_sprite: null,
 	_posTile: {},
 	_selected: null,
+	_infoDisplay: null,
 	_VERTICALSPEED: 200,
 	_HORIZONTALSPEED: 200,
 
@@ -324,20 +326,58 @@ MainGame.Characters.Player.prototype =
 		this._posTile = { x: layer.getTileX(this._sprite.world.x), y: layer.getTileY(this._sprite.world.y) }
 	},
 
-	_onMouseDown: function _onMouseDown(msg, data)
+	_hookupEvent: function _hookupEvent()
 	{
-		if (msg === MainGame.Message.MouseClicked)
-		{
-			if (data.x === this._posTile.x && data.y === this._posTile.y)
-			{
-				this._selected = true;
-			}
-			else
-			{
-				this._selected = false;
-			}
-		}
+		this._sprite.inputEnabled = true;
+		this._sprite.events.onInputDown.add(this._onMouseDown, this);
+		this._sprite.events.onInputUp.add(this._onMouseUp, this);
+		this._sprite.events.onInputOver.add(this._onMouseOver, this);
+		this._sprite.events.onInputOut.add(this._onMouseOut, this);
+	},
+
+	_generateInfoDisplay: function _generateInfoDisplay()
+	{
+		//TODO:implement real
+		this._infoDisplay = { visible: true };
+	},
+
+	_onMouseDown: function _onMouseDown(sprite, event)
+	{
+		//if (msg === MainGame.Message.MouseClicked)
+		//{
+		//	if (data.x === this._posTile.x && data.y === this._posTile.y)
+		//	{
+		//		this._selected = true;
+		//	}
+		//	else
+		//	{
+		//		this._selected = false;
+		//	}
+		//}
+		this._selected = true;
 		console.log(this._selected);
+	},
+
+	_onMouseUp: function _onMouseUp(sprite, event)
+	{
+
+	},
+
+	_onMouseOver: function _onMouseOver(sprite, event)
+	{
+		if (!this._selected)
+		{
+			this._generateInfoDisplay();
+			this._infoDisplay.visible = true;
+		}
+	},
+
+	_onMouseOut: function _onMouseOut(sprite, event)
+	{
+		if (!this._selected && this._infoDisplay)
+		{
+			this._infoDisplay.visible = false;
+		}
 	}
 }
 
