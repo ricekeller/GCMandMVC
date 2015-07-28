@@ -38,6 +38,7 @@ MainGame.prototype =
 		//this._game.load.spritesheet('ground', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
 		this._game.load.spritesheet('player', '../Content/Images/Games/PhaserTest/player1.png', 32, 64);
 		this._game.load.spritesheet('btn_rightpanel', '../Content/Images/Games/PhaserTest/btn_rightpanel.png', 142, 28);
+		this._game.load.spritesheet('bg_rightpanel', '../Content/Images/Games/PhaserTest/bg_rightpanel.png', 192, 16);
 	},
 
 	_create: function ()
@@ -68,6 +69,7 @@ MainGame.prototype =
 	{
 		this._msgProcessor.update();
 		this._player.update();
+		this._gui.update();
 		this._game.physics.arcade.collide(this._player._sprite, this._level.get_itemsLayer());
 
 		if ((this._keyboard.up.isUp && this._previousKeyboard.up) || (this._keyboard.down.isUp && this._previousKeyboard.down))
@@ -353,7 +355,10 @@ MainGame.GUI.prototype =
 	_currentSelectedMarker: null,
 	_rightPanel: null,
 	_rightPanelToggleButton: null,
-	_cursorOnGUI:null,
+	_rightPanelContainer: null,
+	_isRightPanelOpen: true,
+	_isCursorOnGUI: null,
+
 
 	init: function init()
 	{
@@ -367,15 +372,50 @@ MainGame.GUI.prototype =
 		this._rightPanelToggleButton = this._mainGame.get_phaserGame().add.sprite(0, 0, 'btn_rightpanel');
 		this._rightPanelToggleButton.animations.add('mousedown', [0, 1, 2, 3], 10, false);
 		this._rightPanelToggleButton.animations.add('mouseup', [3, 2, 1, 0], 10, false);
-		this._rightPanelToggleButton.inputEnabled = true;
+		this._bindMoveEvent(this._rightPanelToggleButton);
 		this._rightPanelToggleButton.events.onInputDown.add(this._onRightPanelToggleButtonDown, this);
 		this._rightPanelToggleButton.events.onInputUp.add(this._onRightPanelToggleButtonUp, this);
-		this._rightPanelToggleButton.events.onInputOver.add(this._onMouseOverGUI, this);
-		this._rightPanelToggleButton.events.onInputOut.add(this._onMouseOutGUI, this);
+		this._rightPanelToggleButton.width = 150;
+		this._rightPanelToggleButton.height = 50;
 		this._rightPanel.add(this._rightPanelToggleButton);
+		//right panel container
+		var up, center, bottom;
+		this._rightPanelContainer = this._mainGame.get_phaserGame().add.group();
+		this._rightPanelContainer.width = 150;
+		this._rightPanelContainer.height = 550;
+		this._rightPanelContainer.position.setTo(0, 50);
+		this._rightPanelContainer.debug = true;
+		up = this._mainGame.get_phaserGame().add.sprite(0, 0, 'bg_rightpanel');
+		up.width = 150;
+		this._bindMoveEvent(up);
+		center = this._mainGame.get_phaserGame().add.sprite(0, 16, 'bg_rightpanel');
+		center.frame = 1;
+		center.width = 150;
+		center.height = 508;
+		this._bindMoveEvent(center);
+		bottom = this._mainGame.get_phaserGame().add.sprite(0, 524, 'bg_rightpanel');
+		bottom.frame = 3;
+		bottom.width = 150;
+		this._bindMoveEvent(bottom);
+		this._rightPanelContainer.add(up);
+		this._rightPanelContainer.add(center);
+		this._rightPanelContainer.add(bottom);
+		this._rightPanel.add(this._rightPanelContainer);
 		//hook up mousemove and mouse down event
 		this._mainGame.get_phaserGame().input.addMoveCallback(this._onMouseMove, this);
 		this._mainGame.get_phaserGame().input.onDown.add(this._onMouseButtonDown, this);
+	},
+
+	update: function update()
+	{
+		if (this._isRightPanelOpen)
+		{
+			this._rightPanelContainer.visible = true;
+		}
+		else
+		{
+			this._rightPanelContainer.visible = false;
+		}
 	},
 
 	_createMarker: function _createMarker(lineWidth, color, alpha, x, y, width, height)
@@ -386,9 +426,16 @@ MainGame.GUI.prototype =
 		return m;
 	},
 
+	_bindMoveEvent:function _bindMoveEvent(sprite) 
+	{
+		sprite.inputEnabled = true;
+		sprite.events.onInputOver.add(this._onMouseOverGUI, this);
+		sprite.events.onInputOut.add(this._onMouseOutGUI, this);
+	},
+
 	_onMouseMove: function _onMouseMove(pointer)
 	{
-		if (this._cursorOnGUI) return;
+		if (this._isCursorOnGUI) return;
 		//check if within camera
 		var camera = this._mainGame.get_phaserGame().camera;
 		if (pointer.x >= camera.width || pointer.x <= 0 || pointer.y >= camera.height || pointer.y <= 0)
@@ -401,7 +448,7 @@ MainGame.GUI.prototype =
 
 	_onMouseButtonDown: function _onMouseButtonDown(pointer, event)
 	{
-		if (this._cursorOnGUI) return;
+		if (this._isCursorOnGUI) return;
 		switch (pointer.button)
 		{
 			case 0:// left button
@@ -434,14 +481,15 @@ MainGame.GUI.prototype =
 	_onRightPanelToggleButtonUp: function _onRightPanelToggleButtonUp(pointer, event)
 	{
 		this._rightPanelToggleButton.animations.play('mouseup');
+		this._isRightPanelOpen = !this._isRightPanelOpen;
 	},
-	_onMouseOverGUI: function _onMouseOverGUI(pointer,event)
+	_onMouseOverGUI: function _onMouseOverGUI(pointer, event)
 	{
-		this._cursorOnGUI = true;
+		this._isCursorOnGUI = true;
 	},
-	_onMouseOutGUI: function _onMouseOutGUI(pointer,event)
+	_onMouseOutGUI: function _onMouseOutGUI(pointer, event)
 	{
-		this._cursorOnGUI = false;
+		this._isCursorOnGUI = false;
 	}
 }
 
