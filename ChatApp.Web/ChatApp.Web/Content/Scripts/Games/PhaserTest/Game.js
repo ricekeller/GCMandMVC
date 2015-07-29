@@ -35,10 +35,13 @@ MainGame.prototype =
 		this._game.load.tilemap('terrain', '../Content/Images/Games/PhaserTest/1-1.json', null, Phaser.Tilemap.TILED_JSON);
 		this._game.load.image('terrain_image', '../Content/Images/Games/PhaserTest/1-1.jpg');
 		this._game.load.image('terrain_tiles', '../Content/Images/Games/PhaserTest/empty.png');
-		//this._game.load.spritesheet('ground', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
+		this._game.load.spritesheet('all_pack', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
 		this._game.load.spritesheet('player', '../Content/Images/Games/PhaserTest/player1.png', 32, 64);
 		this._game.load.spritesheet('btn_rightpanel', '../Content/Images/Games/PhaserTest/btn_rightpanel.png', 142, 28);
 		this._game.load.spritesheet('bg_rightpanel', '../Content/Images/Games/PhaserTest/bg_rightpanel.png', 192, 16);
+		this._game.load.image('dialogbox', '../Content/Images/Games/PhaserTest/dialog_box.png');
+		this._game.load.image('status_bar', '../Content/Images/Games/PhaserTest/EmptyBar.png');
+		this._game.load.image('hp_icon', '../Content/Images/Games/PhaserTest/heart.png');
 	},
 
 	_create: function ()
@@ -265,6 +268,15 @@ MainGame.Characters.Player.prototype =
 	_infoDisplay: null,
 	_VERTICALSPEED: 200,
 	_HORIZONTALSPEED: 200,
+	_name: 'test',
+	_level: 1,
+	_exp: 0,
+	_hp: 1,
+	_fullHP: 1,
+	_mp: 1,
+	_fullMP: 1,
+	_attackPower: 1,
+	_defensePower: 1,
 
 	bindCamera: function bindCamera(camera)
 	{
@@ -335,12 +347,6 @@ MainGame.Characters.Player.prototype =
 		this._sprite.events.onInputOut.add(this._onMouseOut, this);
 	},
 
-	_generateInfoDisplay: function _generateInfoDisplay()
-	{
-		//TODO:implement real
-		this._infoDisplay = { visible: true };
-	},
-
 	_onMouseDown: function _onMouseDown(sprite, event)
 	{
 		//if (msg === MainGame.Message.MouseClicked)
@@ -365,19 +371,26 @@ MainGame.Characters.Player.prototype =
 
 	_onMouseOver: function _onMouseOver(sprite, event)
 	{
-		if (!this._selected)
-		{
-			this._generateInfoDisplay();
-			this._infoDisplay.visible = true;
-		}
+		//if (!this._selected)
+		//{
+		//	this._generateInfoDisplay();
+		//	this._infoDisplay.visible = true;
+		//}
+		//console.log('over');
+		this._game.addMsg(MainGame.Message.MouseOverCharacter, {
+			name: this._name, level: this._level, hp: this._hp,
+			mp: this._mp, pos: { x: this._sprite.x, y: this._sprite.y },
+			fullHP: this._fullHP, fullMP: this._fullMP
+		});
 	},
 
 	_onMouseOut: function _onMouseOut(sprite, event)
 	{
-		if (!this._selected && this._infoDisplay)
-		{
-			this._infoDisplay.visible = false;
-		}
+		//if (!this._selected && this._infoDisplay)
+		//{
+		//	this._infoDisplay.visible = false;
+		//}
+		this._game.addMsg(MainGame.Message.MouseOutCharacter);
 	}
 }
 
@@ -397,6 +410,12 @@ MainGame.GUI.prototype =
 	_rightPanelToggleButton: null,
 	_rightPanelContainer: null,
 	_isCursorOnGUI: null,
+	_characterInfo: null,
+	_characterInfoText: null,
+	_characterInfoHPBar: null,
+	_characterInfoHPBarText: null,
+	_characterInfoMPBar: null,
+	_characterInfoMPBarText: null,
 
 
 	init: function init()
@@ -440,9 +459,32 @@ MainGame.GUI.prototype =
 		this._rightPanelContainer.add(center);
 		this._rightPanelContainer.add(bottom);
 		this._rightPanel.add(this._rightPanelContainer);
+		//character info group
+		this._characterInfo = this._mainGame.get_phaserGame().add.group();
+		this._characterInfo.position.setTo(100, 100);
+		this._characterInfo.width = 100;
+		this._characterInfo.height = 80;
+		//box container
+		var box = this._mainGame.get_phaserGame().add.sprite(0, 0, 'dialogbox', 0, this._characterInfo);
+		box.anchor.setTo(0, 0);
+		box.width = 100, box.height = 80;
+		//hp and mp icon
+		var hp, mp;
+		hp = this._mainGame.get_phaserGame().add.sprite(5, 24, 'hp_icon', 0, this._characterInfo);
+		hp.width = 24, hp.height = 24;
+		mp = this._mainGame.get_phaserGame().add.sprite(7, 48, 'all_pack', 157, this._characterInfo);
+		mp.width = 20, mp.height = 20;
+		//empty bar
+		var bar = this._mainGame.get_phaserGame().add.sprite(30, 28, 'status_bar', 0, this._characterInfo);
+		bar.width = 60, bar.height = 24;
+		bar = this._mainGame.get_phaserGame().add.sprite(30, 50, 'status_bar', 0, this._characterInfo);
+		bar.width = 60, bar.height = 24;
 		//hook up mousemove and mouse down event
 		this._mainGame.get_phaserGame().input.addMoveCallback(this._onMouseMove, this);
 		this._mainGame.get_phaserGame().input.onDown.add(this._onMouseButtonDown, this);
+		//subscribe messages
+		this._mainGame.subscribe(MainGame.Message.MouseOverCharacter, this._onMouseOverCharacter, this);
+		this._mainGame.subscribe(MainGame.Message.MouseOutCharacter, this._onMouseOutCharacter, this);
 	},
 
 	update: function update()
@@ -463,6 +505,64 @@ MainGame.GUI.prototype =
 		sprite.inputEnabled = true;
 		sprite.events.onInputOver.add(this._onMouseOverGUI, this);
 		sprite.events.onInputOut.add(this._onMouseOutGUI, this);
+	},
+
+	_generateCharacterInfoDisplay: function _generateCharacterInfoDisplay(data)
+	{
+		//text
+		if (!this._characterInfoText)
+		{
+			this._characterInfoText = this._mainGame.get_phaserGame().add.text(0, 3, '', null, this._characterInfo);
+			this._characterInfoText.anchor.set(0.5);
+			this._characterInfoText.align = 'center';
+			this._characterInfoText.fontSize = 13;
+			this._characterInfoText.stroke = '#000000';
+			this._characterInfoText.strokeThickness = 6;
+			this._characterInfoText.fill = '#43d637';
+			this._characterInfoText.position.setTo(50, 15);
+		}
+		this._characterInfoText.setText(data.name + '  Lv:' + data.level);
+		//hp,mp bar
+		if (!this._characterInfoHPBar)
+		{
+			this._characterInfoHPBar = this._mainGame.get_phaserGame().add.graphics(33, 30, this._characterInfo);
+		}
+		if (!this._characterInfoMPBar)
+		{
+			this._characterInfoMPBar = this._mainGame.get_phaserGame().add.graphics(33, 52, this._characterInfo);
+		}
+		this._characterInfoHPBar.lineWidth = 1;
+		this._characterInfoMPBar.lineWidth = 1;
+		this._characterInfoHPBar.beginFill(0xff0000, 1);
+		this._characterInfoHPBar.drawRoundedRect(0, 0, data.hp / data.fullHP * 55, 11, 5);
+		this._characterInfoHPBar.endFill();
+		this._characterInfoMPBar.beginFill(0x0000ff, 1);
+		this._characterInfoMPBar.drawRoundedRect(0, 0, data.mp / data.fullMP * 55, 11, 5);
+		this._characterInfoMPBar.endFill();
+		//hp,mp bar text
+		if (!this._characterInfoHPBarText)
+		{
+			this._characterInfoHPBarText = this._mainGame.get_phaserGame().add.text(60, 38, '', null, this._characterInfo);
+			this._characterInfoHPBarText.anchor.set(0.5);
+			this._characterInfoHPBarText.align = 'center';
+			this._characterInfoHPBarText.fontSize = 9;
+			this._characterInfoHPBarText.stroke = '#000000';
+			this._characterInfoHPBarText.strokeThickness = 6;
+			this._characterInfoHPBarText.fill = '#43d637';
+			//this._characterInfoHPBarText.position.setTo(50, 15);
+		}
+		if (!this._characterInfoMPBarText)
+		{
+			this._characterInfoMPBarText = this._mainGame.get_phaserGame().add.text(60, 60, '', null, this._characterInfo);
+			this._characterInfoMPBarText.anchor.set(0.5);
+			this._characterInfoMPBarText.align = 'center';
+			this._characterInfoMPBarText.fontSize = 9;
+			this._characterInfoMPBarText.stroke = '#000000';
+			this._characterInfoMPBarText.strokeThickness = 6;
+			this._characterInfoMPBarText.fill = '#43d637';
+		}
+		this._characterInfoHPBarText.setText(data.hp + '/' + data.fullHP);
+		this._characterInfoMPBarText.setText(data.mp + '/' + data.fullMP);
 	},
 
 	_onMouseMove: function _onMouseMove(pointer)
@@ -522,6 +622,22 @@ MainGame.GUI.prototype =
 	_onMouseOutGUI: function _onMouseOutGUI(pointer, event)
 	{
 		this._isCursorOnGUI = false;
+	},
+	_onMouseOverCharacter: function _onMouseOverCharacter(msg, data)
+	{
+		if (msg === MainGame.Message.MouseOverCharacter && data)
+		{
+			this._generateCharacterInfoDisplay(data);
+			this._characterInfo.position.setTo(data.pos.x, data.pos.y);
+			this._characterInfo.visible = true;
+		}
+	},
+	_onMouseOutCharacter: function _onMouseOutCharacter(msg, data)
+	{
+		if (msg === MainGame.Message.MouseOutCharacter)
+		{
+			this._characterInfo.visible = false;
+		}
 	}
 }
 
@@ -608,5 +724,6 @@ MainGame.Characters.StateMachine.prototype =
 MainGame.Message =
 {
 	MouseClicked: 1,
-
+	MouseOverCharacter: 2,
+	MouseOutCharacter: 3,
 }
