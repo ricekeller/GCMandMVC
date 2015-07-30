@@ -55,6 +55,7 @@ MainGame.prototype =
 
 		this._generateTeam();
 		this.subscribe(MainGame.Message.CharacterSelected, this._onCharacterSelected, this);
+		this.subscribe(MainGame.Message.CharacterDeselected,this._onCharacterDeselected,this);
 	},
 
 	_update: function ()
@@ -170,6 +171,14 @@ MainGame.prototype =
 		if (msg === MainGame.Message.CharacterSelected)
 		{
 			this._selectedCharacter = data;
+		}
+	},
+
+	_onCharacterDeselected:function _onCharacterDeselected(msg,data) 
+	{
+		if(msg===MainGame.Message.CharacterDeselected)
+		{
+			this._selectedCharacter=null;
 		}
 	}
 }
@@ -451,12 +460,14 @@ MainGame.GUI.prototype =
 	_characterInfoMPBar: null,
 	_characterInfoMPBarText: null,
 	_canMoveArea: null,
+	_currentGUIState:null,
 
 
 	init: function init()
 	{
 		//init any arrays,objs
 		this._canMoveArea = [];
+		this._currentGUIState = MainGame.GUI.State.General;
 		//moving marker
 		this._marker = this._createMarker(2, 0x00ff00, 1, 0, 0, 48, 48);
 		//right panel group
@@ -634,6 +645,24 @@ MainGame.GUI.prototype =
 		this._characterInfoMPBarText.setText(data.mp + '/' + data.fullMP);
 	},
 
+	_goBackToPreviousState:function _goBackToPreviousState() 
+	{
+		switch(this._currentGUIState)
+		{
+			case MainGame.GUI.State.CharacterSelected:
+				//set current state to the previous one, clear can move area and raise the event.
+				this._currentGUIState = MainGame.GUI.State.General;
+				for (var i = 0; i < this._canMoveArea.length; i++)
+				{
+					this._canMoveArea[i].kill();
+				}
+				this._canMoveArea = [];
+				this._mainGame.addMsg(MainGame.Message.CharacterDeselected);
+				break;
+
+		}
+	},
+
 	_onMouseMove: function _onMouseMove(pointer)
 	{
 		if (this._isCursorOnGUI) return;
@@ -658,12 +687,13 @@ MainGame.GUI.prototype =
 			//tint map and paint cell
 			switch (pointer.button)
 			{
-				case 0://left:should do nothing because GUI element will handle it.
+				case 0://left
+
 					break;
 				case 1://middle
 					break;
 				case 2://right:go back to previous state
-
+					this._goBackToPreviousState();
 					break;
 			}
 		}
@@ -734,7 +764,6 @@ MainGame.GUI.prototype =
 			var selectedCharacter = data;
 			if (selectedCharacter)
 			{
-				//TODO:implement the 'can move' area, maybe not in update, should only in event handler
 				var tile = selectedCharacter.get_posTile();
 				var moveSpeed = selectedCharacter.get_moveSpeed();
 				var queue = new Queue();
@@ -753,6 +782,7 @@ MainGame.GUI.prototype =
 						this._paintSingleTile(cur.x + 1, cur.y, visited, queue, cur.moved, 0x0000ff);
 					}
 				}
+				this._currentGUIState = MainGame.GUI.State.CharacterSelected;
 			}
 		}
 	}
@@ -761,7 +791,8 @@ MainGame.GUI.prototype =
 
 MainGame.GUI.State =
 {
-	CharacterSelected: 1,
+	General:1,
+	CharacterSelected: 2,
 
 }
 
@@ -880,4 +911,5 @@ MainGame.Message =
 	MouseOverCharacter: 2,
 	MouseOutCharacter: 3,
 	CharacterSelected: 4,
+	CharacterDeselected:5,
 }
