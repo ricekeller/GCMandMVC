@@ -35,13 +35,14 @@ MainGame.prototype =
 		this._game.load.tilemap('terrain', '../Content/Images/Games/PhaserTest/1-1.json', null, Phaser.Tilemap.TILED_JSON);
 		this._game.load.image('terrain_image', '../Content/Images/Games/PhaserTest/1-1.jpg');
 		this._game.load.image('terrain_tiles', '../Content/Images/Games/PhaserTest/empty.png');
+		this._game.load.image('dialogbox', '../Content/Images/Games/PhaserTest/dialog_box.png');
+		this._game.load.image('status_bar', '../Content/Images/Games/PhaserTest/EmptyBar.png');
+		this._game.load.image('hp_icon', '../Content/Images/Games/PhaserTest/heart.png');
 		this._game.load.spritesheet('all_pack', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
 		this._game.load.spritesheet('player', '../Content/Images/Games/PhaserTest/player1.png', 32, 64);
 		this._game.load.spritesheet('btn_rightpanel', '../Content/Images/Games/PhaserTest/btn_rightpanel.png', 142, 28);
 		this._game.load.spritesheet('bg_rightpanel', '../Content/Images/Games/PhaserTest/bg_rightpanel.png', 192, 16);
-		this._game.load.image('dialogbox', '../Content/Images/Games/PhaserTest/dialog_box.png');
-		this._game.load.image('status_bar', '../Content/Images/Games/PhaserTest/EmptyBar.png');
-		this._game.load.image('hp_icon', '../Content/Images/Games/PhaserTest/heart.png');
+		this._game.load.spritesheet('bg_menu', '../Content/Images/Games/PhaserTest/bg_menu.png', 145, 28);
 	},
 
 	_create: function ()
@@ -55,7 +56,7 @@ MainGame.prototype =
 
 		this._generateTeam();
 		this.subscribe(MainGame.Message.CharacterSelected, this._onCharacterSelected, this);
-		this.subscribe(MainGame.Message.CharacterDeselected,this._onCharacterDeselected,this);
+		this.subscribe(MainGame.Message.CharacterDeselected, this._onCharacterDeselected, this);
 	},
 
 	_update: function ()
@@ -143,11 +144,11 @@ MainGame.prototype =
 		this._playerTeam = new MainGame.Team(this);
 		this._enemyTeam = new MainGame.Team(this);
 		this._otherTeams = [];
-		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 48 },'test1'));
-		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 144 },'ttttt2'));
+		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 48 }, 'test1'));
+		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 144 }, 'ttttt2'));
 
-		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 48 },'46343545346'));
-		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 144 },'rewgargaer'));
+		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 48 }, '46343545346'));
+		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 144 }, 'rewgargaer'));
 	},
 
 	_createCharacter: function _createCharacter(spriteKey, pos, name)
@@ -174,11 +175,11 @@ MainGame.prototype =
 		}
 	},
 
-	_onCharacterDeselected:function _onCharacterDeselected(msg,data) 
+	_onCharacterDeselected: function _onCharacterDeselected(msg, data)
 	{
-		if(msg===MainGame.Message.CharacterDeselected)
+		if (msg === MainGame.Message.CharacterDeselected)
 		{
-			this._selectedCharacter=null;
+			this._selectedCharacter = null;
 		}
 	}
 }
@@ -295,7 +296,7 @@ MainGame.Level.prototype =
 }
 
 MainGame.Characters = MainGame.Characters || {};
-MainGame.Characters.Player = function (game, sprite,name)
+MainGame.Characters.Player = function (game, sprite, name)
 {
 	this._game = game;
 	this._sprite = sprite;
@@ -460,7 +461,8 @@ MainGame.GUI.prototype =
 	_characterInfoMPBar: null,
 	_characterInfoMPBarText: null,
 	_canMoveArea: null,
-	_currentGUIState:null,
+	_currentGUIState: null,
+	_mainCharacterMenu: null,
 
 
 	init: function init()
@@ -470,6 +472,28 @@ MainGame.GUI.prototype =
 		this._currentGUIState = MainGame.GUI.State.General;
 		//moving marker
 		this._marker = this._createMarker(2, 0x00ff00, 1, 0, 0, 48, 48);
+		//create right panel
+		this._createRightPanel();
+		//create charater hover infobox
+		this._createCharacterHoverInfobox();
+		//create main character menu
+		this._createMainCharacterMenu();
+		//hook up mousemove and mouse down event
+		this._mainGame.get_phaserGame().input.addMoveCallback(this._onMouseMove, this);
+		this._mainGame.get_phaserGame().input.onDown.add(this._onMouseButtonDown, this);
+		//subscribe messages
+		this._mainGame.subscribe(MainGame.Message.MouseOverCharacter, this._onMouseOverCharacter, this);
+		this._mainGame.subscribe(MainGame.Message.MouseOutCharacter, this._onMouseOutCharacter, this);
+		this._mainGame.subscribe(MainGame.Message.CharacterSelected, this._onCharacterSelected, this);
+	},
+
+	update: function update()
+	{
+
+	},
+
+	_createRightPanel: function _createRightPanel()
+	{
 		//right panel group
 		this._rightPanel = this._mainGame.get_phaserGame().add.group();
 		this._rightPanel.fixedToCamera = true;
@@ -507,6 +531,10 @@ MainGame.GUI.prototype =
 		this._rightPanelContainer.add(center);
 		this._rightPanelContainer.add(bottom);
 		this._rightPanel.add(this._rightPanelContainer);
+	},
+
+	_createCharacterHoverInfobox: function _createCharacterHoverInfobox()
+	{
 		//character info group
 		this._characterInfo = this._mainGame.get_phaserGame().add.group();
 		this._characterInfo.position.setTo(100, 100);
@@ -527,18 +555,28 @@ MainGame.GUI.prototype =
 		bar.width = 60, bar.height = 24;
 		bar = this._mainGame.get_phaserGame().add.sprite(30, 50, 'status_bar', 0, this._characterInfo);
 		bar.width = 60, bar.height = 24;
-		//hook up mousemove and mouse down event
-		this._mainGame.get_phaserGame().input.addMoveCallback(this._onMouseMove, this);
-		this._mainGame.get_phaserGame().input.onDown.add(this._onMouseButtonDown, this);
-		//subscribe messages
-		this._mainGame.subscribe(MainGame.Message.MouseOverCharacter, this._onMouseOverCharacter, this);
-		this._mainGame.subscribe(MainGame.Message.MouseOutCharacter, this._onMouseOutCharacter, this);
-		this._mainGame.subscribe(MainGame.Message.CharacterSelected, this._onCharacterSelected, this);
 	},
 
-	update: function update()
+	_createMainCharacterMenu: function _createMainCharacterMenu()
 	{
+		//the group
+		this._mainCharacterMenu = this._mainGame.get_phaserGame().add.group();
+		//the container
+		var up, center, bottom;
+		up = this._mainGame.get_phaserGame().add.sprite(0, 0, 'bg_menu', 0, this._mainCharacterMenu);
+		up.width = 150;
+		this._bindMoveEvent(up);
+		center = this._mainGame.get_phaserGame().add.sprite(0, 24, 'bg_menu', 1, this._mainCharacterMenu);
+		center.width = 150;
+		center.height = 200;
+		this._bindMoveEvent(center);
+		bottom = this._mainGame.get_phaserGame().add.sprite(0, 210, 'bg_menu', 2, this._mainCharacterMenu);
+		bottom.width = 150;
+		this._bindMoveEvent(bottom);
+		//add 5 buttons
 
+		//debug only
+		this._mainCharacterMenu.position.setTo(200, 200);
 	},
 
 	_paintSingleTile: function _paintSingleTile(x, y, visitedObj, queue, curMove, color)
@@ -645,9 +683,9 @@ MainGame.GUI.prototype =
 		this._characterInfoMPBarText.setText(data.mp + '/' + data.fullMP);
 	},
 
-	_goBackToPreviousState:function _goBackToPreviousState() 
+	_goBackToPreviousState: function _goBackToPreviousState()
 	{
-		switch(this._currentGUIState)
+		switch (this._currentGUIState)
 		{
 			case MainGame.GUI.State.CharacterSelected:
 				//set current state to the previous one, clear can move area and raise the event.
@@ -791,7 +829,7 @@ MainGame.GUI.prototype =
 
 MainGame.GUI.State =
 {
-	General:1,
+	General: 1,
 	CharacterSelected: 2,
 
 }
@@ -842,7 +880,7 @@ MainGame.MessageProcessor.prototype =
 	update: function update()
 	{
 		var i, j, msgObj, msg, data, handlers, handlerObj, handler, context, abort;
-		while(!this._queue.isEmpty())
+		while (!this._queue.isEmpty())
 		{
 			msgObj = this._queue.dequeue();
 			msg = msgObj.msg;
@@ -910,5 +948,5 @@ MainGame.Message =
 	MouseOverCharacter: 2,
 	MouseOutCharacter: 3,
 	CharacterSelected: 4,
-	CharacterDeselected:5,
+	CharacterDeselected: 5,
 }

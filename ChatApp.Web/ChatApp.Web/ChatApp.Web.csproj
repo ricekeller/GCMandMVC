@@ -151,6 +151,7 @@
     <Content Include="Content\Images\Games\PhaserTest\empty.png" />
     <Content Include="Content\Images\Games\PhaserTest\EmptyBar.png" />
     <Content Include="Content\Images\Games\PhaserTest\heart.png" />
+    <Content Include="Content\Images\Games\PhaserTest\bg_menu.png" />
     <Content Include="Content\Images\Games\PhaserTest\player1.png" />
     <Content Include="Content\Images\Games\PhaserTest\terrain_1.png" />
     <Content Include="Content\Images\Games\ThreeTest\terrain_1.png" />
