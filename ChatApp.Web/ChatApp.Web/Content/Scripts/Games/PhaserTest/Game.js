@@ -810,18 +810,18 @@ MainGame.MessageProcessor.prototype =
 
 	init: function init()
 	{
-		this._queue = [];
+		this._queue = new Queue();
 		this._processors = {};
 	},
 
 	addMsg: function addMsg(msg, data)
 	{
-		this._queue.push({ msg: msg, data: data });
+		this._queue.enqueue({ msg: msg, data: data });
 	},
 
 	clearQueue: function clearQueue()
 	{
-		this._queue = [];
+		this._queue = new Queue();
 	},
 
 	subscribe: function subscribe(msg, handler, context)
@@ -842,9 +842,9 @@ MainGame.MessageProcessor.prototype =
 	update: function update()
 	{
 		var i, j, msgObj, msg, data, handlers, handlerObj, handler, context, abort;
-		for (i = 0; i < this._queue.length; i++)
+		while(!this._queue.isEmpty())
 		{
-			msgObj = this._queue[i];
+			msgObj = this._queue.dequeue();
 			msg = msgObj.msg;
 			data = msgObj.data;
 			handlers = this._processors[msg];
@@ -860,7 +860,6 @@ MainGame.MessageProcessor.prototype =
 				}
 			}
 		}
-		this.clearQueue();
 	}
 }
 
