@@ -13,14 +13,14 @@ MainGame.prototype =
 	_keyboard: null,
 	_previousKeyboard: null,
 	_player: null,
+	_playerTeam: null,
+	_enemyTeam: null,
+	_otherTeams: null,
 	_gui: null,
+	_selectedCharacter: null,
 	_CAMERAVERTICALSPEED: 3,
 	_CAMERAHORIZONTALSPEED: 3,
 	_WORLDBOUNDS: { x1: -200, y1: -200, x2: 5100, y2: 5100 },
-
-	layer1: null,
-	layer2: null,
-
 
 	init: function (width, height)
 	{
@@ -53,64 +53,63 @@ MainGame.prototype =
 		this._level.init();
 		this._gui.init();
 
-		//alway added last so it is displayed on top of others
-		var playerFPS = 10;
-		var playerSprite = this._game.add.sprite(0, 0, 'player');
-		playerSprite.anchor.setTo(0.5, 0.5);
-		playerSprite.scale.setTo(1, 0.75);
-		playerSprite.animations.add('up', [4, 5, 6, 7], playerFPS, true);
-		playerSprite.animations.add('down', [0, 1, 2, 3], playerFPS, true);
-		playerSprite.animations.add('left', [12, 13, 14, 15], playerFPS, true);
-		playerSprite.animations.add('right', [8, 9, 10, 11], playerFPS, true);
-		this._game.physics.enable(playerSprite);
-		playerSprite.body.collideWorldBounds = true;
-		this._player = new MainGame.Characters.Player(this, playerSprite);
-		this._player.bindCamera(this._game.camera);
+		this._generateTeam();
+		this.subscribe(MainGame.Message.CharacterSelected, this._onCharacterSelected, this);
 	},
 
 	_update: function ()
 	{
 		this._msgProcessor.update();
-		this._player.update();
+		//this._player.update();
+		this._playerTeam.update();
+		this._enemyTeam.update();
+		for (var i = 0; i < this._otherTeams.length; i++)
+		{
+			this._otherTeams.update();
+		}
 		this._gui.update();
-		this._game.physics.arcade.collide(this._player._sprite, this._level.get_itemsLayer());
 
-		if ((this._keyboard.up.isUp && this._previousKeyboard.up) || (this._keyboard.down.isUp && this._previousKeyboard.down))
-		{
-			this._player.clearSpeed('y');
-		}
-		if ((this._keyboard.left.isUp && this._previousKeyboard.left) || (this._keyboard.right.isUp && this._previousKeyboard.right))
-		{
-			this._player.clearSpeed('x');
-		}
-		var dirs = ['up', 'down', 'left', 'right'];
-		for (var dir = 0; dir < dirs.length; dir++)
-		{
-			this._previousKeyboard[dirs[dir]] = this._keyboard[dirs[dir]].isDown;
-		}
+
+		//if ((this._keyboard.up.isUp && this._previousKeyboard.up) || (this._keyboard.down.isUp && this._previousKeyboard.down))
+		//{
+		//	this._player.clearSpeed('y');
+		//}
+		//if ((this._keyboard.left.isUp && this._previousKeyboard.left) || (this._keyboard.right.isUp && this._previousKeyboard.right))
+		//{
+		//	this._player.clearSpeed('x');
+		//}
+		//var dirs = ['up', 'down', 'left', 'right'];
+		//for (var dir = 0; dir < dirs.length; dir++)
+		//{
+		//	this._previousKeyboard[dirs[dir]] = this._keyboard[dirs[dir]].isDown;
+		//}
 
 		if (this._keyboard.up.isDown)
 		{
-			this._player.move('up');
+			//this._player.move('up');
+			this._game.camera.y -= this._CAMERAVERTICALSPEED;
 		}
 		if (this._keyboard.down.isDown)
 		{
-			this._player.move('down');
+			//this._player.move('down');
+			this._game.camera.y += this._CAMERAVERTICALSPEED;
 		}
 		if (this._keyboard.left.isDown)
 		{
-			this._player.move('left');
+			//this._player.move('left');
+			this._game.camera.x -= this._CAMERAHORIZONTALSPEED;
 		}
 		if (this._keyboard.right.isDown)
 		{
-			this._player.move('right');
+			//this._player.move('right');
+			this._game.camera.x += this._CAMERAHORIZONTALSPEED;
 		}
 	},
 
 	_render: function ()
 	{
 		this._game.debug.cameraInfo(this._game.camera, 32, 32);
-		this._game.debug.bodyInfo(this._player._sprite, 32, 320);
+		this._game.debug.bodyInfo(this._playerTeam._characters[0]._sprite, 32, 320);
 	},
 
 	addMsg: function addMsg(msg, data)
@@ -133,9 +132,45 @@ MainGame.prototype =
 		return this._level;
 	},
 
-	get_player: function get_player()
+	get_selectedCharacter: function get_selectedCharacter()
 	{
-		return this._player;
+		return this._selectedCharacter;
+	},
+
+	_generateTeam: function _generateTeam()
+	{
+		this._playerTeam = new MainGame.Team(this);
+		this._enemyTeam = new MainGame.Team(this);
+		this._otherTeams = [];
+		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 48 },'test1'));
+		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 144 },'ttttt2'));
+
+		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 48 },'46343545346'));
+		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 144 },'rewgargaer'));
+	},
+
+	_createCharacter: function _createCharacter(spriteKey, pos, name)
+	{
+		var playerFPS = 10;
+		var playerSprite = this._game.add.sprite(pos.x, pos.y, spriteKey);
+		playerSprite.anchor.setTo(0, 0);
+		playerSprite.scale.setTo(1, 0.75);
+		playerSprite.animations.add('up', [4, 5, 6, 7], playerFPS, true);
+		playerSprite.animations.add('down', [0, 1, 2, 3], playerFPS, true);
+		playerSprite.animations.add('left', [12, 13, 14, 15], playerFPS, true);
+		playerSprite.animations.add('right', [8, 9, 10, 11], playerFPS, true);
+		this._game.physics.enable(playerSprite);
+		playerSprite.body.collideWorldBounds = true;
+		return new MainGame.Characters.Player(this, playerSprite, name);
+		//this._player.bindCamera(this._game.camera);
+	},
+
+	_onCharacterSelected: function _onCharacterSelected(msg, data)
+	{
+		if (msg === MainGame.Message.CharacterSelected)
+		{
+			this._selectedCharacter = data;
+		}
 	}
 }
 
@@ -251,12 +286,12 @@ MainGame.Level.prototype =
 }
 
 MainGame.Characters = MainGame.Characters || {};
-MainGame.Characters.Player = function (game, sprite)
+MainGame.Characters.Player = function (game, sprite,name)
 {
 	this._game = game;
 	this._sprite = sprite;
+	this._name = name;
 	this._hookupEvent();
-	//this._game.subscribe(MainGame.Message.MouseClicked, this._onMouseDown, this);
 }
 
 MainGame.Characters.Player.prototype =
@@ -264,7 +299,7 @@ MainGame.Characters.Player.prototype =
 	_game: null,
 	_sprite: null,
 	_posTile: {},
-	_selected: null,
+	_isSelected: null,
 	_infoDisplay: null,
 	_VERTICALSPEED: 200,
 	_HORIZONTALSPEED: 200,
@@ -277,6 +312,7 @@ MainGame.Characters.Player.prototype =
 	_fullMP: 1,
 	_attackPower: 1,
 	_defensePower: 1,
+	_moveSpeed: 4,
 
 	bindCamera: function bindCamera(camera)
 	{
@@ -285,6 +321,7 @@ MainGame.Characters.Player.prototype =
 
 	update: function update()
 	{
+		this._game.get_phaserGame().physics.arcade.collide(this._sprite, this._game.get_level().get_itemsLayer());
 		this._updatePosition();
 	},
 
@@ -332,6 +369,21 @@ MainGame.Characters.Player.prototype =
 		return this._posTile;
 	},
 
+	get_isSelected: function get_isSelected()
+	{
+		return this._isSelected;
+	},
+
+	cancelSelect: function cancelSelect()
+	{
+		this._isSelected = false;
+	},
+
+	get_moveSpeed: function get_moveSpeed()
+	{
+		return this._moveSpeed;
+	},
+
 	_updatePosition: function _updatePosition()
 	{
 		var layer = this._game.get_level().get_bgLayer();
@@ -349,19 +401,11 @@ MainGame.Characters.Player.prototype =
 
 	_onMouseDown: function _onMouseDown(sprite, event)
 	{
-		//if (msg === MainGame.Message.MouseClicked)
-		//{
-		//	if (data.x === this._posTile.x && data.y === this._posTile.y)
-		//	{
-		//		this._selected = true;
-		//	}
-		//	else
-		//	{
-		//		this._selected = false;
-		//	}
-		//}
-		this._selected = true;
-		console.log(this._selected);
+		if (!this._game.get_selectedCharacter())
+		{
+			this._isSelected = true;
+			this._game.addMsg(MainGame.Message.CharacterSelected, this);
+		}
 	},
 
 	_onMouseUp: function _onMouseUp(sprite, event)
@@ -371,12 +415,6 @@ MainGame.Characters.Player.prototype =
 
 	_onMouseOver: function _onMouseOver(sprite, event)
 	{
-		//if (!this._selected)
-		//{
-		//	this._generateInfoDisplay();
-		//	this._infoDisplay.visible = true;
-		//}
-		//console.log('over');
 		this._game.addMsg(MainGame.Message.MouseOverCharacter, {
 			name: this._name, level: this._level, hp: this._hp,
 			mp: this._mp, pos: { x: this._sprite.x, y: this._sprite.y },
@@ -386,10 +424,6 @@ MainGame.Characters.Player.prototype =
 
 	_onMouseOut: function _onMouseOut(sprite, event)
 	{
-		//if (!this._selected && this._infoDisplay)
-		//{
-		//	this._infoDisplay.visible = false;
-		//}
 		this._game.addMsg(MainGame.Message.MouseOutCharacter);
 	}
 }
@@ -416,10 +450,13 @@ MainGame.GUI.prototype =
 	_characterInfoHPBarText: null,
 	_characterInfoMPBar: null,
 	_characterInfoMPBarText: null,
+	_canMoveArea: null,
 
 
 	init: function init()
 	{
+		//init any arrays,objs
+		this._canMoveArea = [];
 		//moving marker
 		this._marker = this._createMarker(2, 0x00ff00, 1, 0, 0, 48, 48);
 		//right panel group
@@ -485,11 +522,43 @@ MainGame.GUI.prototype =
 		//subscribe messages
 		this._mainGame.subscribe(MainGame.Message.MouseOverCharacter, this._onMouseOverCharacter, this);
 		this._mainGame.subscribe(MainGame.Message.MouseOutCharacter, this._onMouseOutCharacter, this);
+		this._mainGame.subscribe(MainGame.Message.CharacterSelected, this._onCharacterSelected, this);
 	},
 
 	update: function update()
 	{
 
+	},
+
+	_paintSingleTile: function _paintSingleTile(x, y, visitedObj, queue, curMove, color)
+	{
+		//check bounds
+		if (x < 0 || x > 19 || y < 0 || y > 19)
+		{
+			return;
+		}
+		//check if visited
+		if (visitedObj[y] && visitedObj[y][x])
+		{
+			return;
+		}
+		//check if can move
+		var data = this._mainGame.get_level().get_itemsLayer().layer.data;
+		if (data && data[y] && data[x] && !data[y][x].canCollide)
+		{
+			//paint, add to group, add to visited
+			var g = this._mainGame.get_phaserGame().add.graphics(0, 0);
+			g.beginFill(color, 0.3);
+			g.drawRect(x * 48, y * 48, 48, 48);
+			g.endFill();
+			this._canMoveArea.push(g);
+			if (!visitedObj[y])
+			{
+				visitedObj[y] = {};
+			}
+			visitedObj[y][x] = true;
+			queue.enqueue({ x: x, y: y, moved: curMove + 1 });
+		}
 	},
 
 	_createMarker: function _createMarker(lineWidth, color, alpha, x, y, width, height)
@@ -580,30 +649,49 @@ MainGame.GUI.prototype =
 
 	_onMouseButtonDown: function _onMouseButtonDown(pointer, event)
 	{
+		//if on GUI, do nothing because GUI elements have their own handler.
 		if (this._isCursorOnGUI) return;
-		switch (pointer.button)
-		{
-			case 0:// left button
-				var layer = this._mainGame.get_level().get_bgLayer();
-				var currentTile = { x: layer.getTileX(pointer.worldX), y: layer.getTileY(pointer.worldY) };
-				// set current marker
-				if (!this._currentSelectedMarker)
-				{
-					this._currentSelectedMarker = this._createMarker(2, 0xffffff, 1, 0, 0, 48, 48);
-				}
-				this._currentSelectedMarker.x = currentTile.x * 48;
-				this._currentSelectedMarker.y = currentTile.y * 48;
-				// send message
-				this._mainGame.addMsg(MainGame.Message.MouseClicked, currentTile);
-				break;
-			case 1:// middle button
-				break;
-			case 2:// right button
-				break;
-			default:
-				break;
-		}
 
+		var isCharacterSelected = this._mainGame.get_selectedCharacter() ? this._mainGame.get_selectedCharacter().get_isSelected() : false;
+		if (isCharacterSelected)
+		{
+			//tint map and paint cell
+			switch (pointer.button)
+			{
+				case 0://left:should do nothing because GUI element will handle it.
+					break;
+				case 1://middle
+					break;
+				case 2://right:go back to previous state
+
+					break;
+			}
+		}
+		else
+		{
+			switch (pointer.button)
+			{
+				case 0:// left button
+					var layer = this._mainGame.get_level().get_bgLayer();
+					var currentTile = { x: layer.getTileX(pointer.worldX), y: layer.getTileY(pointer.worldY) };
+					// set current marker
+					if (!this._currentSelectedMarker)
+					{
+						this._currentSelectedMarker = this._createMarker(2, 0xffffff, 1, 0, 0, 48, 48);
+					}
+					this._currentSelectedMarker.x = currentTile.x * 48;
+					this._currentSelectedMarker.y = currentTile.y * 48;
+					// send message
+					this._mainGame.addMsg(MainGame.Message.MouseClicked, currentTile);
+					break;
+				case 1:// middle button
+					break;
+				case 2:// right button
+					break;
+				default:
+					break;
+			}
+		}
 	},
 
 	_onRightPanelToggleButtonDown: function _onRightPanelToggleButtonDown(pointer, event)
@@ -638,7 +726,43 @@ MainGame.GUI.prototype =
 		{
 			this._characterInfo.visible = false;
 		}
+	},
+	_onCharacterSelected: function _onCharacterSelected(msg, data)
+	{
+		if (msg === MainGame.Message.CharacterSelected)
+		{
+			var selectedCharacter = data;
+			if (selectedCharacter)
+			{
+				//TODO:implement the 'can move' area, maybe not in update, should only in event handler
+				var tile = selectedCharacter.get_posTile();
+				var moveSpeed = selectedCharacter.get_moveSpeed();
+				var queue = new Queue();
+				var visited = {};
+				var cur = null;
+				queue.enqueue({ x: tile.x, y: tile.y, moved: 0 });
+				visited[tile.y] = {}, visited[tile.y][tile.x] = true;
+				while (!queue.isEmpty())
+				{
+					cur = queue.dequeue();
+					if (cur.moved < moveSpeed)
+					{
+						this._paintSingleTile(cur.x, cur.y - 1, visited, queue, cur.moved, 0x0000ff);
+						this._paintSingleTile(cur.x, cur.y + 1, visited, queue, cur.moved, 0x0000ff);
+						this._paintSingleTile(cur.x - 1, cur.y, visited, queue, cur.moved, 0x0000ff);
+						this._paintSingleTile(cur.x + 1, cur.y, visited, queue, cur.moved, 0x0000ff);
+					}
+				}
+			}
+		}
 	}
+}
+
+
+MainGame.GUI.State =
+{
+	CharacterSelected: 1,
+
 }
 
 MainGame.MessageProcessor = function (game)
@@ -710,6 +834,35 @@ MainGame.MessageProcessor.prototype =
 }
 
 
+MainGame.Team = function (game)
+{
+	this._mainGame = game;
+	this._characters = [];
+}
+
+MainGame.Team.prototype =
+{
+	_mainGame: null,
+	_characters: null,
+
+	add: function add(character)
+	{
+		if (this._characters.indexOf(character) === -1)
+		{
+			this._characters.push(character);
+		}
+	},
+
+	update: function update()
+	{
+		for (var i = 0; i < this._characters.length; i++)
+		{
+			this._characters[i].update();
+		}
+	}
+}
+
+
 MainGame.Characters.StateMachine = function (game)
 {
 	this._mainGame = game;
@@ -726,4 +879,5 @@ MainGame.Message =
 	MouseClicked: 1,
 	MouseOverCharacter: 2,
 	MouseOutCharacter: 3,
+	CharacterSelected: 4,
 }
