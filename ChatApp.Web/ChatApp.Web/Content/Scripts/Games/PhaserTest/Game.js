@@ -26,7 +26,7 @@ MainGame.prototype =
 	{
 		this._game = new Phaser.Game(width, height, Phaser.AUTO, '', { preload: this._preload.bind(this), create: this._create.bind(this), update: this._update.bind(this), render: this._render.bind(this) });
 		this._msgProcessor = new MainGame.MessageProcessor(this);
-		this._level = new MainGame.Level(this._game, 100, 100, 48, 48);
+		this._level = new MainGame.Level(this, 100, 100, 48, 48);
 		this._gui = new MainGame.GUI(this);
 	},
 
@@ -187,7 +187,7 @@ MainGame.prototype =
 
 MainGame.Level = function (game, w, h, cellW, cellH)
 {
-	this._game = game;
+	this._mainGame = game;
 	this._w = w;
 	this._h = h;
 	this._cellW = cellW;
@@ -196,7 +196,7 @@ MainGame.Level = function (game, w, h, cellW, cellH)
 
 MainGame.Level.prototype =
 {
-	_game: null,
+	_mainGame: null,
 	_map: null,
 	_layers: null,
 	_w: null,
@@ -206,10 +206,12 @@ MainGame.Level.prototype =
 	_ground: null,
 	_currentSelectedCell: null,
 	_buildContextMenu: null,
+	_charactersPositions: null,
 
 	init: function init(cellData)
 	{
-		this._map = this._game.add.tilemap('terrain');
+		//load map and create layers
+		this._map = this._mainGame.get_phaserGame().add.tilemap('terrain');
 		this._map.addTilesetImage('bg', 'terrain_image');
 		this._map.addTilesetImage('obstacles', 'terrain_tiles');
 		this._layers = [];
@@ -220,8 +222,21 @@ MainGame.Level.prototype =
 		currentLayer.visible = false;
 		currentLayer.debug = true;
 		currentLayer.resizeWorld();
-		this._game.camera.setBoundsToWorld();
+		this._mainGame.get_phaserGame().camera.setBoundsToWorld();
+		//set collision
 		this._map.setCollision(401, true, currentLayer);
+		//initialize _characterPositions
+		this._charactersPositions = [];
+		for (var i = 0; i < this._map.height; i++)
+		{
+			this._charactersPositions.push([]);
+			for (var j = 0; j < this._map.width; j++)
+			{
+				this._charactersPositions[i].push(null);
+			}
+		}
+		//subscribe messages
+		this._mainGame.subscribe(MainGame.Message.CharacterPositionChanged, this._onCharacterPositionChanged, this);
 	},
 
 	get_itemsLayer: function get_itemsLayer()
@@ -232,6 +247,38 @@ MainGame.Level.prototype =
 	get_bgLayer: function get_bgLayer()
 	{
 		return this._layers[0];
+	},
+
+	hasCharacter: function hasCharacter(tile)
+	{
+		return !!this._charactersPositions[tile.y][tile.x];
+	},
+
+	getCharacterAtPos: function getCharacterAtPos(tile)
+	{
+		return this._charactersPositions[tile.y][tile.x];
+	},
+
+	_onCharacterPositionChanged: function _onCharacterPositionChanged(msg, data)
+	{
+		/**
+		 * data: Character object.
+		 */
+		if (msg === MainGame.Message.CharacterPositionChanged)
+		{
+			//find old pos and set it to null
+			var old = data.get_previousPos();
+			var now = data.get_posTile();
+			if (old && old.x && old.y)
+			{
+				this._charactersPositions[old.y][old.x] = null;
+			}
+			//assign the data obj to new pos
+			if (now && now.x && now.y && !this._charactersPositions[now.y][now.x])
+			{
+				this._charactersPositions[now.y][now.x] = data;
+			}
+		}
 	},
 
 	_set_randomGround: function set_randomGround()
@@ -303,6 +350,7 @@ MainGame.Characters.Player = function (game, sprite, name)
 	this._sprite = sprite;
 	this._name = name;
 	this._hookupEvent();
+	this._updatePosition();
 }
 
 MainGame.Characters.Player.prototype =
@@ -310,6 +358,7 @@ MainGame.Characters.Player.prototype =
 	_game: null,
 	_sprite: null,
 	_posTile: {},
+	_previousPosTile: {},
 	_isSelected: null,
 	_infoDisplay: null,
 	_VERTICALSPEED: 200,
@@ -333,7 +382,6 @@ MainGame.Characters.Player.prototype =
 	update: function update()
 	{
 		this._game.get_phaserGame().physics.arcade.collide(this._sprite, this._game.get_level().get_itemsLayer());
-		this._updatePosition();
 	},
 
 	move: function move(dir)
@@ -360,6 +408,16 @@ MainGame.Characters.Player.prototype =
 		this._sprite.animations.play(c);
 	},
 
+	moveTo: function moveTo(dest)
+	{
+		/**
+		 * should update posTile, send message at the end.
+		 */
+
+
+		this._updatePosition();
+	},
+
 	clearSpeed: function clearSpeed(axis)
 	{
 		switch (axis.toLowerCase())
@@ -380,6 +438,11 @@ MainGame.Characters.Player.prototype =
 		return this._posTile;
 	},
 
+	get_previousPos: function get_previousPos()
+	{
+		return this._previousPosTile;
+	},
+
 	get_isSelected: function get_isSelected()
 	{
 		return this._isSelected;
@@ -398,7 +461,9 @@ MainGame.Characters.Player.prototype =
 	_updatePosition: function _updatePosition()
 	{
 		var layer = this._game.get_level().get_bgLayer();
+		this._previousPosTile = { x: this._posTile.x, y: this._posTile.y };
 		this._posTile = { x: layer.getTileX(this._sprite.world.x), y: layer.getTileY(this._sprite.world.y) }
+		this._game.addMsg(MainGame.Message.CharacterPositionChanged, this);
 	},
 
 	_hookupEvent: function _hookupEvent()
@@ -601,8 +666,8 @@ MainGame.GUI.prototype =
 		var btn = this._mainGame.get_phaserGame().add.sprite(0, 0, btnKey, 0, btnGroup);
 		btn.width = 150;
 		btn.height = 30;
-		btn.animations.add('mousedown', [0, 1, 2, 3], 10, false);
-		btn.animations.add('mouseup', [3, 2, 1, 0], 10, false);
+		btn.animations.add('mousedown', [0, 1, 2, 3], 20, false);
+		btn.animations.add('mouseup', [3, 2, 1, 0], 20, false);
 		var left, right;
 		left = this._mainGame.get_phaserGame().add.sprite(14, 7, iconKey, 0, btnGroup);
 		right = this._mainGame.get_phaserGame().add.sprite(122, 7, iconKey, 0, btnGroup);
@@ -740,7 +805,7 @@ MainGame.GUI.prototype =
 		switch (this._currentGUIState)
 		{
 			case MainGame.GUI.State.CharacterSelected:
-				//set current state to the previous one, clear can move area and raise the event.
+				//set current state to the previous one, clear can-move-area and raise the event.
 				this._currentGUIState = MainGame.GUI.State.General;
 				for (var i = 0; i < this._canMoveArea.length; i++)
 				{
@@ -790,11 +855,18 @@ MainGame.GUI.prototype =
 		var isCharacterSelected = this._mainGame.get_selectedCharacter() ? this._mainGame.get_selectedCharacter().get_isSelected() : false;
 		if (isCharacterSelected)
 		{
-			//tint map and paint cell
 			switch (pointer.button)
 			{
 				case 0://left
+					switch (this._currentGUIState)
+					{
+						case MainGame.GUI.State.CharacterSelected:
+							//detact if character can be moved to dest. If can, move selected character to destination, change state
+							//check collision
 
+							//check other characters
+							break;
+					}
 					break;
 				case 1://middle
 					break;
@@ -1017,4 +1089,5 @@ MainGame.Message =
 	MouseOutCharacter: 3,
 	CharacterSelected: 4,
 	CharacterDeselected: 5,
+	CharacterPositionChanged: 6,
 }
