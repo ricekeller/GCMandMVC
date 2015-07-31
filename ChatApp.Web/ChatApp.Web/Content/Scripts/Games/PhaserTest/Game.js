@@ -38,6 +38,7 @@ MainGame.prototype =
 		this._game.load.image('dialogbox', '../Content/Images/Games/PhaserTest/dialog_box.png');
 		this._game.load.image('status_bar', '../Content/Images/Games/PhaserTest/EmptyBar.png');
 		this._game.load.image('hp_icon', '../Content/Images/Games/PhaserTest/heart.png');
+		this._game.load.image('sword_general', '../Content/Images/Games/PhaserTest/sword.png');
 		this._game.load.spritesheet('all_pack', '../Content/Images/Games/PhaserTest/terrain_1.png', 32, 32);
 		this._game.load.spritesheet('player', '../Content/Images/Games/PhaserTest/player1.png', 32, 64);
 		this._game.load.spritesheet('btn_rightpanel', '../Content/Images/Games/PhaserTest/btn_rightpanel.png', 142, 28);
@@ -568,15 +569,66 @@ MainGame.GUI.prototype =
 		this._bindMoveEvent(up);
 		center = this._mainGame.get_phaserGame().add.sprite(0, 24, 'bg_menu', 1, this._mainCharacterMenu);
 		center.width = 150;
-		center.height = 200;
+		center.height = 140;
 		this._bindMoveEvent(center);
-		bottom = this._mainGame.get_phaserGame().add.sprite(0, 210, 'bg_menu', 2, this._mainCharacterMenu);
+		bottom = this._mainGame.get_phaserGame().add.sprite(0, 145, 'bg_menu', 2, this._mainCharacterMenu);
 		bottom.width = 150;
 		this._bindMoveEvent(bottom);
 		//add 5 buttons
-
+		var btnAtt = this._createButton('btn_rightpanel', 'sword_general', 'attack');
+		btnAtt.position.setTo(0, 10);
+		var btnMagic = this._createButton('btn_rightpanel', 'sword_general', 'Magic');
+		btnMagic.position.setTo(0, 40);
+		var btnItem = this._createButton('btn_rightpanel', 'sword_general', 'Items');
+		btnItem.position.setTo(0, 70);
+		var btnFinish = this._createButton('btn_rightpanel', 'sword_general', 'Finish');
+		btnFinish.position.setTo(0, 100);
+		var btnCancel = this._createButton('btn_rightpanel', 'sword_general', 'Cancel');
+		btnCancel.position.setTo(0, 130);
+		this._mainCharacterMenu.add(btnAtt);
+		this._mainCharacterMenu.add(btnMagic);
+		this._mainCharacterMenu.add(btnItem);
+		this._mainCharacterMenu.add(btnFinish);
+		this._mainCharacterMenu.add(btnCancel);
 		//debug only
 		this._mainCharacterMenu.position.setTo(200, 200);
+	},
+
+	_createButton: function _createButton(btnKey, iconKey, caption)
+	{
+		var btnGroup = this._mainGame.get_phaserGame().add.group();
+		btnGroup.visible = true;
+		var btn = this._mainGame.get_phaserGame().add.sprite(0, 0, btnKey, 0, btnGroup);
+		btn.width = 150;
+		btn.height = 30;
+		btn.animations.add('mousedown', [0, 1, 2, 3], 10, false);
+		btn.animations.add('mouseup', [3, 2, 1, 0], 10, false);
+		var left, right;
+		left = this._mainGame.get_phaserGame().add.sprite(14, 7, iconKey, 0, btnGroup);
+		right = this._mainGame.get_phaserGame().add.sprite(122, 7, iconKey, 0, btnGroup);
+		left.width = 15, left.height = 15;
+		right.width = 15, right.height = 15;
+		var text = this._mainGame.get_phaserGame().add.text(75, 17, caption, null, btnGroup);
+		text.anchor.set(0.5);
+		text.align = 'center';
+		text.fontSize = 13;
+		text.stroke = '#000000';
+		text.strokeThickness = 6;
+		text.fill = '#43d637';
+		//hookup event
+		this._bindMoveEvent(btn);
+		this._bindMoveEvent(left);
+		this._bindMoveEvent(right);
+		this._bindMoveEvent(text);
+		btn.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		btn.events.onInputUp.add(this._playMouseUpAnimation, btn);
+		left.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		left.events.onInputUp.add(this._playMouseUpAnimation, btn);
+		right.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		right.events.onInputUp.add(this._playMouseUpAnimation, btn);
+		text.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		text.events.onInputUp.add(this._playMouseUpAnimation, btn);
+		return btnGroup;
 	},
 
 	_paintSingleTile: function _paintSingleTile(x, y, visitedObj, queue, curMove, color)
@@ -699,6 +751,22 @@ MainGame.GUI.prototype =
 				break;
 
 		}
+	},
+
+	_playMouseDownAnimation: function _playMouseDownAnimation(pointer, event)
+	{
+		/**
+		 *  'this' keyword in this function should be the sprite, so when binding, should pass the sprite as context
+		 */
+		this.animations.play('mousedown');
+	},
+
+	_playMouseUpAnimation: function _playMouseUpAnimation(pointer, event)
+	{
+		/**
+		 *  'this' keyword in this function should be the sprite, so when binding, should pass the sprite as context
+		 */
+		this.animations.play('mouseup');
 	},
 
 	_onMouseMove: function _onMouseMove(pointer)
