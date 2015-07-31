@@ -708,6 +708,11 @@ MainGame.GUI.prototype =
 		{
 			return;
 		}
+		//check if has other characters
+		if (this._mainGame.get_level().hasCharacter({ x: x, y: y }))
+		{
+			return;
+		}
 		//check if can move
 		var data = this._mainGame.get_level().get_itemsLayer().layer.data;
 		if (data && data[y] && data[x] && !data[y][x].canCollide)
