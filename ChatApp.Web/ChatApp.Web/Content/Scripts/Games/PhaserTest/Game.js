@@ -1189,6 +1189,54 @@ MainGame.Characters.StateMachine.prototype =
 }
 
 
+MainGame.Characters.AttackRange = function (game,type)
+{
+	this._mainGame = game;
+	this._createRangeWithType(type);
+}
+
+MainGame.Characters.AttackRange.Types =
+{
+	Square:1,
+	Cross_1: 2,
+}
+
+MainGame.Characters.AttackRange.prototype =
+{
+	_mainGame: null,
+	_rangeCells:null,
+
+	get_range: function get_range()
+	{
+		return this._rangeCells;
+	},
+
+	_createRangeWithType: function _createRangeWithType(type)
+	{
+		this._rangeCells=[];
+		switch(type)
+		{
+			case MainGame.Characters.AttackRange.Types.Square:
+				this._rangeCells.push({ dX: -1, dY: -1 });
+				this._rangeCells.push({ dX: 0, dY: -1 });
+				this._rangeCells.push({ dX: 1, dY: -1 });
+				this._rangeCells.push({ dX: -1, dY: 0 });
+				this._rangeCells.push({ dX: 1, dY: 0 });
+				this._rangeCells.push({ dX: -1, dY: 1 });
+				this._rangeCells.push({ dX: 0, dY: 1 });
+				this._rangeCells.push({ dX: 1, dY: 1 });
+				break;
+			case MainGame.Characters.AttackRange.Types.Cross_1:
+				this._rangeCells.push({ dX: 0, dY: -1 });
+				this._rangeCells.push({ dX: -1, dY: 0 });
+				this._rangeCells.push({ dX: 1, dY: 0 });
+				this._rangeCells.push({ dX: 0, dY: 1 });
+				break;
+		}
+	},
+}
+
+
 MainGame.Message =
 {
 	MouseClicked: 1,
