@@ -652,15 +652,15 @@ MainGame.GUI.prototype =
 		bottom.width = 150;
 		this._bindMoveEvent(bottom);
 		//add 5 buttons
-		var btnAtt = this._createButton('btn_rightpanel', 'sword_general', 'attack');
+		var btnAtt = this._createButton('btn_rightpanel', 'sword_general', 'Attack', 'btnAttack');
 		btnAtt.position.setTo(0, 10);
-		var btnMagic = this._createButton('btn_rightpanel', 'sword_general', 'Magic');
+		var btnMagic = this._createButton('btn_rightpanel', 'sword_general', 'Magic', 'btnMagic');
 		btnMagic.position.setTo(0, 40);
-		var btnItem = this._createButton('btn_rightpanel', 'sword_general', 'Items');
+		var btnItem = this._createButton('btn_rightpanel', 'sword_general', 'Items', 'btnItems');
 		btnItem.position.setTo(0, 70);
-		var btnFinish = this._createButton('btn_rightpanel', 'sword_general', 'Finish');
+		var btnFinish = this._createButton('btn_rightpanel', 'sword_general', 'Finish', 'btnFinish');
 		btnFinish.position.setTo(0, 100);
-		var btnCancel = this._createButton('btn_rightpanel', 'sword_general', 'Cancel');
+		var btnCancel = this._createButton('btn_rightpanel', 'sword_general', 'Cancel', 'btnCancel');
 		btnCancel.position.setTo(0, 130);
 		this._mainCharacterMenu.add(btnAtt);
 		this._mainCharacterMenu.add(btnMagic);
@@ -671,7 +671,7 @@ MainGame.GUI.prototype =
 		this._mainCharacterMenu.position.setTo(200, 200);
 	},
 
-	_createButton: function _createButton(btnKey, iconKey, caption)
+	_createButton: function _createButton(btnKey, iconKey, caption, name)
 	{
 		var btnGroup = this._mainGame.get_phaserGame().add.group();
 		btnGroup.visible = true;
@@ -680,6 +680,7 @@ MainGame.GUI.prototype =
 		btn.height = 30;
 		btn.animations.add('mousedown', [0, 1, 2, 3], 20, false);
 		btn.animations.add('mouseup', [3, 2, 1, 0], 20, false);
+		btn.name = name;
 		var left, right;
 		left = this._mainGame.get_phaserGame().add.sprite(14, 7, iconKey, 0, btnGroup);
 		right = this._mainGame.get_phaserGame().add.sprite(122, 7, iconKey, 0, btnGroup);
@@ -698,12 +699,16 @@ MainGame.GUI.prototype =
 		this._bindMoveEvent(right);
 		this._bindMoveEvent(text);
 		btn.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		btn.events.onInputDown.add(this._onMenuButtonDown, btn);
 		btn.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		left.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		left.events.onInputDown.add(this._onMenuButtonDown, btn);
 		left.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		right.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		right.events.onInputDown.add(this._onMenuButtonDown, btn);
 		right.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		text.events.onInputDown.add(this._playMouseDownAnimation, btn);
+		text.events.onInputDown.add(this._onMenuButtonDown, btn);
 		text.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		return btnGroup;
 	},
@@ -847,11 +852,13 @@ MainGame.GUI.prototype =
 		var pos = this._findProperMenuPos(characterTile);
 		this._mainCharacterMenu.position.setTo(pos.x, pos.y);
 		this._mainCharacterMenu.visible = true;
+		this._mainGame.get_phaserGame().world.bringToTop(this._mainCharacterMenu);
 	},
 
 	_hideMainCharacterMenu: function _hideMainCharacterMenu()
 	{
 		this._mainCharacterMenu.visible = false;
+		this._mainGame.get_phaserGame().world.sendToBack(this._mainCharacterMenu);
 	},
 
 	_findProperMenuPos: function _findProperMenuPos(characterTile)
@@ -1040,6 +1047,30 @@ MainGame.GUI.prototype =
 			}
 		}
 	},
+	_onMenuButtonDown: function _onMenuButtonDown(pointer,event)
+	{
+		/**
+		 *  'this' keyword in this function should be the sprite, so when binding, should pass the sprite as context
+		 */
+		switch(this.name)
+		{
+			case 'btnAttack':
+
+				break;
+			case 'btnMagic':
+
+				break;
+			case 'btnItems':
+
+				break;
+			case 'btnFinish':
+
+				break;
+			case 'btnCancel':
+
+				break;
+		}
+	}
 }
 
 
