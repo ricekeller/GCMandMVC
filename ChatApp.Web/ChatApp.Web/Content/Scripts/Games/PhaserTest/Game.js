@@ -351,6 +351,7 @@ MainGame.Characters.Player = function (game, sprite, name)
 	this._name = name;
 	this._hookupEvent();
 	this._updatePosition();
+	this._sendPositionChangedMessage();
 }
 
 MainGame.Characters.Player.prototype =
@@ -411,11 +412,16 @@ MainGame.Characters.Player.prototype =
 	moveTo: function moveTo(dest)
 	{
 		/**
-		 * should update posTile, send message at the end.
+		 * should update posTile
 		 */
-
-
+		this._sprite.position.setTo(dest.x * 48, dest.y * 48);
 		this._updatePosition();
+		this._sendPositionChangedMessage();
+	},
+
+	goBack: function goBack()
+	{
+		this.moveTo(this._previousPosTile);
 	},
 
 	clearSpeed: function clearSpeed(axis)
@@ -462,7 +468,11 @@ MainGame.Characters.Player.prototype =
 	{
 		var layer = this._game.get_level().get_bgLayer();
 		this._previousPosTile = { x: this._posTile.x, y: this._posTile.y };
-		this._posTile = { x: layer.getTileX(this._sprite.world.x), y: layer.getTileY(this._sprite.world.y) }
+		this._posTile = { x: layer.getTileX(this._sprite.position.x), y: layer.getTileY(this._sprite.position.y) }
+	},
+
+	_sendPositionChangedMessage: function _sendPositionChangedMessage()
+	{
 		this._game.addMsg(MainGame.Message.CharacterPositionChanged, this);
 	},
 
@@ -527,6 +537,7 @@ MainGame.GUI.prototype =
 	_characterInfoMPBar: null,
 	_characterInfoMPBarText: null,
 	_canMoveArea: null,
+	_canMoveAreaTileIndex: null,
 	_currentGUIState: null,
 	_mainCharacterMenu: null,
 
@@ -535,6 +546,7 @@ MainGame.GUI.prototype =
 	{
 		//init any arrays,objs
 		this._canMoveArea = [];
+		this._canMoveAreaTileIndex = {};
 		this._currentGUIState = MainGame.GUI.State.General;
 		//moving marker
 		this._marker = this._createMarker(2, 0x00ff00, 1, 0, 0, 48, 48);
@@ -696,42 +708,6 @@ MainGame.GUI.prototype =
 		return btnGroup;
 	},
 
-	_paintSingleTile: function _paintSingleTile(x, y, visitedObj, queue, curMove, color)
-	{
-		//check bounds
-		if (x < 0 || x > 19 || y < 0 || y > 19)
-		{
-			return;
-		}
-		//check if visited
-		if (visitedObj[y] && visitedObj[y][x])
-		{
-			return;
-		}
-		//check if has other characters
-		if (this._mainGame.get_level().hasCharacter({ x: x, y: y }))
-		{
-			return;
-		}
-		//check if can move
-		var data = this._mainGame.get_level().get_itemsLayer().layer.data;
-		if (data && data[y] && data[x] && !data[y][x].canCollide)
-		{
-			//paint, add to group, add to visited
-			var g = this._mainGame.get_phaserGame().add.graphics(0, 0);
-			g.beginFill(color, 0.3);
-			g.drawRect(x * 48, y * 48, 48, 48);
-			g.endFill();
-			this._canMoveArea.push(g);
-			if (!visitedObj[y])
-			{
-				visitedObj[y] = {};
-			}
-			visitedObj[y][x] = true;
-			queue.enqueue({ x: x, y: y, moved: curMove + 1 });
-		}
-	},
-
 	_createMarker: function _createMarker(lineWidth, color, alpha, x, y, width, height)
 	{
 		var m = this._mainGame.get_phaserGame().add.graphics();
@@ -812,14 +788,15 @@ MainGame.GUI.prototype =
 			case MainGame.GUI.State.CharacterSelected:
 				//set current state to the previous one, clear can-move-area and raise the event.
 				this._currentGUIState = MainGame.GUI.State.General;
-				for (var i = 0; i < this._canMoveArea.length; i++)
-				{
-					this._canMoveArea[i].kill();
-				}
-				this._canMoveArea = [];
+				this._clearCanMoveArea();
 				this._mainGame.addMsg(MainGame.Message.CharacterDeselected);
 				break;
-
+			case MainGame.GUI.State.CharacterMoved:
+				this._mainGame.get_selectedCharacter().goBack();
+				this._unhideCanMoveArea();
+				this._hideMainCharacterMenu();
+				this._currentGUIState = MainGame.GUI.State.CharacterSelected;
+				break;
 		}
 	},
 
@@ -837,6 +814,90 @@ MainGame.GUI.prototype =
 		 *  'this' keyword in this function should be the sprite, so when binding, should pass the sprite as context
 		 */
 		this.animations.play('mouseup');
+	},
+
+	_clearCanMoveArea: function _clearCanMoveArea()
+	{
+		for (var i = 0; i < this._canMoveArea.length; i++)
+		{
+			this._canMoveArea[i].kill();
+		}
+		this._canMoveArea = [];
+		this._canMoveAreaTileIndex = {};
+	},
+
+	_hideCanMoveArea: function _hideCanMoveArea()
+	{
+		for (var i = 0; i < this._canMoveArea.length; i++)
+		{
+			this._canMoveArea[i].visible = false;
+		}
+	},
+
+	_unhideCanMoveArea: function _unhideCanMoveArea()
+	{
+		for (var i = 0; i < this._canMoveArea.length; i++)
+		{
+			this._canMoveArea[i].visible = true;
+		}
+	},
+
+	_displayMainCharacterMenu: function _displayMainCharacterMenu(characterTile)
+	{
+		var pos = this._findProperMenuPos(characterTile);
+		this._mainCharacterMenu.position.setTo(pos.x, pos.y);
+		this._mainCharacterMenu.visible = true;
+	},
+
+	_hideMainCharacterMenu: function _hideMainCharacterMenu()
+	{
+		this._mainCharacterMenu.visible = false;
+	},
+
+	_findProperMenuPos: function _findProperMenuPos(characterTile)
+	{
+		return { x: (characterTile.x + 1) * 48, y: characterTile.y * 48 };
+	},
+
+	_paintSingleTile: function _paintSingleTile(x, y, visitedObj, queue, curMove, color)
+	{
+		//check bounds
+		if (x < 0 || x > 19 || y < 0 || y > 19)
+		{
+			return;
+		}
+		//check if visited
+		if (visitedObj[y] && visitedObj[y][x])
+		{
+			return;
+		}
+		//check if has other characters
+		if (this._mainGame.get_level().hasCharacter({ x: x, y: y }))
+		{
+			return;
+		}
+		//check if can move
+		var data = this._mainGame.get_level().get_itemsLayer().layer.data;
+		if (data && data[y] && data[x] && !data[y][x].canCollide)
+		{
+			//paint, add to group, add to visited
+			var g = this._mainGame.get_phaserGame().add.graphics(0, 0);
+			g.beginFill(color, 0.3);
+			g.drawRect(x * 48, y * 48, 48, 48);
+			g.endFill();
+			this._canMoveArea.push(g);
+			if (!this._canMoveAreaTileIndex[y])
+			{
+				this._canMoveAreaTileIndex[y] = {};
+			}
+			this._canMoveAreaTileIndex[y][x] = g;
+			if (!visitedObj[y])
+			{
+				visitedObj[y] = {};
+			}
+			visitedObj[y][x] = true;
+			queue.enqueue({ x: x, y: y, moved: curMove + 1 });
+		}
 	},
 
 	_onMouseMove: function _onMouseMove(pointer)
@@ -867,9 +928,19 @@ MainGame.GUI.prototype =
 					{
 						case MainGame.GUI.State.CharacterSelected:
 							//detact if character can be moved to dest. If can, move selected character to destination, change state
-							//check collision
-
-							//check other characters
+							var layer = this._mainGame.get_level().get_bgLayer();
+							var currentTile = { x: layer.getTileX(pointer.worldX), y: layer.getTileY(pointer.worldY) };
+							if (this._canMoveAreaTileIndex[currentTile.y] && this._canMoveAreaTileIndex[currentTile.y][currentTile.x])
+							{
+								//move the character
+								this._mainGame.get_selectedCharacter().moveTo(currentTile);
+								//change the GUI state
+								this._currentGUIState = MainGame.GUI.State.CharacterMoved;
+								//show the character menu
+								this._displayMainCharacterMenu(currentTile);
+								//hide the can-move-area
+								this._hideCanMoveArea();
+							}
 							break;
 					}
 					break;
@@ -968,7 +1039,7 @@ MainGame.GUI.prototype =
 				this._currentGUIState = MainGame.GUI.State.CharacterSelected;
 			}
 		}
-	}
+	},
 }
 
 
@@ -976,7 +1047,7 @@ MainGame.GUI.State =
 {
 	General: 1,
 	CharacterSelected: 2,
-
+	CharacterMoved: 3,
 }
 
 MainGame.MessageProcessor = function (game)
