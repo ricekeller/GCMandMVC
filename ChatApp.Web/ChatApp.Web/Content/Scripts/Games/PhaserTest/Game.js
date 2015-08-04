@@ -145,14 +145,14 @@ MainGame.prototype =
 		this._playerTeam = new MainGame.Team(this);
 		this._enemyTeam = new MainGame.Team(this);
 		this._otherTeams = [];
-		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 48 }, 'test1'));
-		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 144 }, 'ttttt2'));
+		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 48 }, 'test1', MainGame.Characters.AttackRange.Types.Square));
+		this._playerTeam.add(this._createCharacter('player', { x: 480, y: 144 }, 'ttttt2', MainGame.Characters.AttackRange.Types.Cross_1));
 
-		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 48 }, '46343545346'));
-		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 144 }, 'rewgargaer'));
+		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 48 }, '46343545346', MainGame.Characters.AttackRange.Types.Square));
+		this._enemyTeam.add(this._createCharacter('player', { x: 300, y: 144 }, 'rewgargaer', MainGame.Characters.AttackRange.Types.Cross_1));
 	},
 
-	_createCharacter: function _createCharacter(spriteKey, pos, name)
+	_createCharacter: function _createCharacter(spriteKey, pos, name, attackType)
 	{
 		var playerFPS = 10;
 		var playerSprite = this._game.add.sprite(pos.x, pos.y, spriteKey);
@@ -164,7 +164,7 @@ MainGame.prototype =
 		playerSprite.animations.add('right', [8, 9, 10, 11], playerFPS, true);
 		this._game.physics.enable(playerSprite);
 		playerSprite.body.collideWorldBounds = true;
-		return new MainGame.Characters.Player(this, playerSprite, name);
+		return new MainGame.Characters.Player(this, playerSprite, name, attackType);
 		//this._player.bindCamera(this._game.camera);
 	},
 
@@ -344,11 +344,12 @@ MainGame.Level.prototype =
 }
 
 MainGame.Characters = MainGame.Characters || {};
-MainGame.Characters.Player = function (game, sprite, name)
+MainGame.Characters.Player = function (game, sprite, name, attackType)
 {
 	this._game = game;
 	this._sprite = sprite;
 	this._name = name;
+	this._attackRange = new MainGame.Characters.AttackRange(game, attackType);
 	this._hookupEvent();
 	this._updatePosition();
 	this._sendPositionChangedMessage();
@@ -374,6 +375,7 @@ MainGame.Characters.Player.prototype =
 	_attackPower: 1,
 	_defensePower: 1,
 	_moveSpeed: 4,
+	_attackRange: null,
 
 	bindCamera: function bindCamera(camera)
 	{
@@ -464,6 +466,11 @@ MainGame.Characters.Player.prototype =
 		return this._moveSpeed;
 	},
 
+	get_attackRange: function get_attackRange()
+	{
+		return this._attackRange.get_range();
+	},
+
 	_updatePosition: function _updatePosition()
 	{
 		var layer = this._game.get_level().get_bgLayer();
@@ -540,6 +547,8 @@ MainGame.GUI.prototype =
 	_canMoveAreaTileIndex: null,
 	_currentGUIState: null,
 	_mainCharacterMenu: null,
+	_canAttackArea: null,
+	_canAttackAreaTileIndex: null,
 
 
 	init: function init()
@@ -547,6 +556,8 @@ MainGame.GUI.prototype =
 		//init any arrays,objs
 		this._canMoveArea = [];
 		this._canMoveAreaTileIndex = {};
+		this._canAttackArea = [];
+		this._canAttackAreaTileIndex = {};
 		this._currentGUIState = MainGame.GUI.State.General;
 		//moving marker
 		this._marker = this._createMarker(2, 0x00ff00, 1, 0, 0, 48, 48);
@@ -567,7 +578,7 @@ MainGame.GUI.prototype =
 
 	update: function update()
 	{
-
+		//this._mainGame.get_phaserGame().world.bringToTop(this._marker);
 	},
 
 	_createRightPanel: function _createRightPanel()
@@ -699,16 +710,16 @@ MainGame.GUI.prototype =
 		this._bindMoveEvent(right);
 		this._bindMoveEvent(text);
 		btn.events.onInputDown.add(this._playMouseDownAnimation, btn);
-		btn.events.onInputDown.add(this._onMenuButtonDown, btn);
+		btn.events.onInputDown.add(this._onMenuButtonDown, { btn: btn, context: this });
 		btn.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		left.events.onInputDown.add(this._playMouseDownAnimation, btn);
-		left.events.onInputDown.add(this._onMenuButtonDown, btn);
+		left.events.onInputDown.add(this._onMenuButtonDown, { btn: btn, context: this });
 		left.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		right.events.onInputDown.add(this._playMouseDownAnimation, btn);
-		right.events.onInputDown.add(this._onMenuButtonDown, btn);
+		right.events.onInputDown.add(this._onMenuButtonDown, { btn: btn, context: this });
 		right.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		text.events.onInputDown.add(this._playMouseDownAnimation, btn);
-		text.events.onInputDown.add(this._onMenuButtonDown, btn);
+		text.events.onInputDown.add(this._onMenuButtonDown, { btn: btn, context: this });
 		text.events.onInputUp.add(this._playMouseUpAnimation, btn);
 		return btnGroup;
 	},
@@ -794,11 +805,13 @@ MainGame.GUI.prototype =
 				//set current state to the previous one, clear can-move-area and raise the event.
 				this._currentGUIState = MainGame.GUI.State.General;
 				this._clearCanMoveArea();
+				this._clearCanAttackArea();
 				this._mainGame.addMsg(MainGame.Message.CharacterDeselected);
 				break;
 			case MainGame.GUI.State.CharacterMoved:
 				this._mainGame.get_selectedCharacter().goBack();
 				this._unhideCanMoveArea();
+				this._clearAndDrawAttackArea();
 				this._hideMainCharacterMenu();
 				this._currentGUIState = MainGame.GUI.State.CharacterSelected;
 				break;
@@ -844,6 +857,32 @@ MainGame.GUI.prototype =
 		for (var i = 0; i < this._canMoveArea.length; i++)
 		{
 			this._canMoveArea[i].visible = true;
+		}
+	},
+
+	_clearCanAttackArea: function _clearCanAttackArea()
+	{
+		for (var i = 0; i < this._canAttackArea.length; i++)
+		{
+			this._canAttackArea[i].kill();
+		}
+		this._canAttackArea = [];
+		this._canAttackAreaTileIndex = {};
+	},
+
+	_hideCanAttackArea: function _hideCanAttackArea()
+	{
+		for (var i = 0; i < this._canAttackArea.length; i++)
+		{
+			this._canAttackArea[i].visible = false;
+		}
+	},
+
+	_showCanAttackArea: function _showCanAttackArea()
+	{
+		for (var i = 0; i < this._canAttackArea.length; i++)
+		{
+			this._canAttackArea[i].visible = true;
 		}
 	},
 
@@ -907,6 +946,40 @@ MainGame.GUI.prototype =
 		}
 	},
 
+	_clearAndDrawAttackArea: function _clearAndDrawAttackArea(selectedCharacter)
+	{
+		this._clearCanAttackArea();
+		if (!selectedCharacter) selectedCharacter = this._mainGame.get_selectedCharacter();
+		var range = selectedCharacter.get_attackRange();
+		var curTile = selectedCharacter.get_posTile();
+		var dt = null;
+		for (var i = 0; i < range.length; i++)
+		{
+			dt = range[i];
+			this._paintAttackTile(curTile.x + dt.dX, curTile.y + dt.dY, 0xff0000);
+		}
+	},
+
+	_paintAttackTile: function _paintAttackTile(x, y, color)
+	{
+		//check bounds
+		if (x < 0 || x > 19 || y < 0 || y > 19)
+		{
+			return;
+		}
+		//paint, add to group, add to visited
+		var g = this._mainGame.get_phaserGame().add.graphics(0, 0);
+
+		g.lineStyle(5, color, 0.3);
+		g.drawRect(x * 48, y * 48, 48, 48);
+		this._canAttackArea.push(g);
+		if (!this._canAttackAreaTileIndex[y])
+		{
+			this._canAttackAreaTileIndex[y] = {};
+		}
+		this._canAttackAreaTileIndex[y][x] = g;
+	},
+
 	_onMouseMove: function _onMouseMove(pointer)
 	{
 		if (this._isCursorOnGUI) return;
@@ -945,8 +1018,9 @@ MainGame.GUI.prototype =
 								this._currentGUIState = MainGame.GUI.State.CharacterMoved;
 								//show the character menu
 								this._displayMainCharacterMenu(currentTile);
-								//hide the can-move-area
+								//hide the can-move-area and can-attack-area
 								this._hideCanMoveArea();
+								this._hideCanAttackArea();
 							}
 							break;
 					}
@@ -1025,6 +1099,7 @@ MainGame.GUI.prototype =
 			var selectedCharacter = data;
 			if (selectedCharacter)
 			{
+				//calculate can-move-area
 				var tile = selectedCharacter.get_posTile();
 				var moveSpeed = selectedCharacter.get_moveSpeed();
 				var queue = new Queue();
@@ -1043,19 +1118,26 @@ MainGame.GUI.prototype =
 						this._paintSingleTile(cur.x + 1, cur.y, visited, queue, cur.moved, 0x0000ff);
 					}
 				}
+				//calculate can-attack-area
+				this._clearAndDrawAttackArea(selectedCharacter);
 				this._currentGUIState = MainGame.GUI.State.CharacterSelected;
 			}
 		}
 	},
-	_onMenuButtonDown: function _onMenuButtonDown(pointer,event)
+	_onMenuButtonDown: function _onMenuButtonDown(pointer, event)
 	{
 		/**
-		 *  'this' keyword in this function should be the sprite, so when binding, should pass the sprite as context
+		 *  'this' keyword in this function should be the object: {btn:btn,context:GUI obj}, so when binding, should pass the sprite as context
 		 */
-		switch(this.name)
+		var that = this.context;
+		switch (this.btn.name)
 		{
 			case 'btnAttack':
-
+				if (that._currentGUIState === MainGame.GUI.State.CharacterMoved)
+				{
+					that._hideMainCharacterMenu();
+					that._clearAndDrawAttackArea();
+				}
 				break;
 			case 'btnMagic':
 
@@ -1189,7 +1271,7 @@ MainGame.Characters.StateMachine.prototype =
 }
 
 
-MainGame.Characters.AttackRange = function (game,type)
+MainGame.Characters.AttackRange = function (game, type)
 {
 	this._mainGame = game;
 	this._createRangeWithType(type);
@@ -1197,14 +1279,14 @@ MainGame.Characters.AttackRange = function (game,type)
 
 MainGame.Characters.AttackRange.Types =
 {
-	Square:1,
+	Square: 1,
 	Cross_1: 2,
 }
 
 MainGame.Characters.AttackRange.prototype =
 {
 	_mainGame: null,
-	_rangeCells:null,
+	_rangeCells: null,
 
 	get_range: function get_range()
 	{
@@ -1213,8 +1295,8 @@ MainGame.Characters.AttackRange.prototype =
 
 	_createRangeWithType: function _createRangeWithType(type)
 	{
-		this._rangeCells=[];
-		switch(type)
+		this._rangeCells = [];
+		switch (type)
 		{
 			case MainGame.Characters.AttackRange.Types.Square:
 				this._rangeCells.push({ dX: -1, dY: -1 });
