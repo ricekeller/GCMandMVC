@@ -165,7 +165,7 @@ MainGame.prototype =
 		this._game.physics.enable(playerSprite);
 		playerSprite.body.collideWorldBounds = true;
 		return new MainGame.Characters.Player(this, playerSprite, name, attackType);
-		//this._player.bindCamera(this._game.camera);
+		//debug
 	},
 
 	_onCharacterSelected: function _onCharacterSelected(msg, data)
@@ -574,11 +574,12 @@ MainGame.GUI.prototype =
 		this._mainGame.subscribe(MainGame.Message.MouseOverCharacter, this._onMouseOverCharacter, this);
 		this._mainGame.subscribe(MainGame.Message.MouseOutCharacter, this._onMouseOutCharacter, this);
 		this._mainGame.subscribe(MainGame.Message.CharacterSelected, this._onCharacterSelected, this);
+		this._mainGame.subscribe(MainGame.Message.CharacterPositionChanged, this._onCharacterPosChanged, this);
 	},
 
 	update: function update()
 	{
-		//this._mainGame.get_phaserGame().world.bringToTop(this._marker);
+		
 	},
 
 	_createRightPanel: function _createRightPanel()
@@ -905,6 +906,16 @@ MainGame.GUI.prototype =
 		return { x: (characterTile.x + 1) * 48, y: characterTile.y * 48 };
 	},
 
+	_updateCharacterInfoPos: function _updateCharacterInfoPos()
+	{
+		var cha = this._mainGame.get_selectedCharacter();
+		if (cha)
+		{
+			var pos = cha.get_posTile();
+			this._characterInfo.position.setTo((pos.x + 1) * 48, pos.y * 48);
+		}
+	},
+
 	_paintSingleTile: function _paintSingleTile(x, y, visitedObj, queue, curMove, color)
 	{
 		//check bounds
@@ -1151,6 +1162,13 @@ MainGame.GUI.prototype =
 			case 'btnCancel':
 
 				break;
+		}
+	},
+	_onCharacterPosChanged: function _onCharacterPosChanged(msg, data)
+	{
+		if (msg === MainGame.Message.CharacterPositionChanged)
+		{
+			this._updateCharacterInfoPos();
 		}
 	}
 }
