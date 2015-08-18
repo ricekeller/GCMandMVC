@@ -21,3 +21,4 @@ D:\Bak\codes\GCMandMVC\mongotest\bin\Debug\mongotest.pdb
 D:\Bak\codes\GCMandMVC\mongotest\obj\Debug\mongotest.exe
 D:\Bak\codes\GCMandMVC\mongotest\obj\Debug\mongotest.pdb
 E:\Dev\ChatApp\mongotest\obj\Debug\mongotest.csprojResolveAssemblyReference.cache
+D:\Bak\codes\GCMandMVC\mongotest\obj\Debug\mongotest.csprojResolveAssemblyReference.cache
