@@ -549,6 +549,9 @@ MainGame.GUI.prototype =
 	_mainCharacterMenu: null,
 	_canAttackArea: null,
 	_canAttackAreaTileIndex: null,
+	_isAttackClicked: false,
+	_isMagicClicked: false,
+	_isItemClicked:false,
 
 
 	init: function init()
@@ -579,7 +582,7 @@ MainGame.GUI.prototype =
 
 	update: function update()
 	{
-		
+
 	},
 
 	_createRightPanel: function _createRightPanel()
@@ -1034,6 +1037,25 @@ MainGame.GUI.prototype =
 								this._hideCanAttackArea();
 							}
 							break;
+						case MainGame.GUI.State.CharacterMoved:
+							//do proper action here based on character's action, clear the action after finished
+							if (this._isAttackClicked)
+							{
+								
+								this._isAttackClicked = false;
+							}
+							else if (this._isMagicClicked)
+							{
+								
+								this._isMagicClicked = false;
+							}
+							else if (this._isItemClicked)
+							{
+								
+								this._isItemClicked = false;
+							}
+							console.log("moved");
+							break;
 					}
 					break;
 				case 1://middle
@@ -1148,6 +1170,7 @@ MainGame.GUI.prototype =
 				{
 					that._hideMainCharacterMenu();
 					that._clearAndDrawAttackArea();
+					that._isAttackClicked = true;
 				}
 				break;
 			case 'btnMagic':
