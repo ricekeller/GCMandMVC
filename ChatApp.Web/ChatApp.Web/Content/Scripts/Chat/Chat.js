@@ -6,12 +6,15 @@ $(document).ready(function ()
 		var obj = { "MessageContent": $("#push").val(), "Sender": $("#username").val(), "ClientId": clientId };
 		var data = JSON.stringify(obj);
 		$.ajax({
+			type: "POST",
 			url: "/api/chatapi/",
 			data: data,
-			cache: false,
-			type: 'POST',
+			success: function (e)
+			{
+				console.log("success:" + e);
+			},
 			dataType: "json",
-			contentType: 'application/json; charset=utf-8'
+			contentType: "application/json;charset=utf-8",
 		});
 		$("#push").val('');
 	});

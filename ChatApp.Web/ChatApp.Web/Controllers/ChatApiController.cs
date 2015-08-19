@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using System.Web.Http;
 using System.Web.Mvc;
 using ChatApp.Web.Models.Chat;
@@ -17,8 +18,24 @@ namespace ChatApp.Web.Controllers
 	public class ChatApiController : ApiController
 	{
 		private static readonly ConcurrentDictionary<string, ClientInfo> _subscribers = new ConcurrentDictionary<string, ClientInfo>();
+		private static readonly BlockingCollection<Message> _messageQueue = new BlockingCollection<Message>(new ConcurrentQueue<Message>());
 		private static RNGCryptoServiceProvider rnd = new RNGCryptoServiceProvider();
 		private static int CLIENTIDLENGTH = 16;
+		private static Thread worker = new Thread(new ThreadStart(ProcessMessage));
+
+		static ChatApiController()
+		{
+			worker.Start();
+		}
+		private static void ProcessMessage()
+		{
+			while(true)
+			{
+				Message m = _messageQueue.Take();
+				UpdateDisplayName(m);
+				SendMessage(m);
+			}
+		}
 
 		public HttpResponseMessage Get(HttpRequestMessage request)
 		{
@@ -29,7 +46,7 @@ namespace ChatApp.Web.Controllers
 
 		private static void OnStreamAvailable(Stream stream, HttpContent content, TransportContext context)
 		{
-			StreamWriter sw = new StreamWriter(stream,Encoding.Default,2);
+			StreamWriter sw = new StreamWriter(stream);
 			sw.AutoFlush = true;
 			string id = GenerateID();
 			_subscribers.GetOrAdd(id, new ClientInfo() { StreamWriter = sw });
@@ -58,11 +75,10 @@ namespace ChatApp.Web.Controllers
 		public void Post(Message m)
 		{
 			m.Timestamp = DateTime.Now.ToString("MM/dd/yyyy HH:MM:ss");
-			UpdateDisplayName(m);
-			ProcessMessage(m);
+			_messageQueue.Add(m);
 		}
 
-		private void UpdateDisplayName(Message m)
+		private static void UpdateDisplayName(Message m)
 		{
 			if (string.IsNullOrWhiteSpace(m.ClientId)) return;
 			ClientInfo c = null;
@@ -75,7 +91,7 @@ namespace ChatApp.Web.Controllers
 			}
 		}
 
-		private static void ProcessMessage(Message m)
+		private static void SendMessage(Message m)
 		{
 			foreach (KeyValuePair<string, ClientInfo> kv in _subscribers)
 			{
