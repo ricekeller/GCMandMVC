@@ -115,6 +115,7 @@
     <Compile Include="Controllers\Admin\AdminController.cs" />
     <Compile Include="Controllers\Admin\APIKeyController.cs" />
     <Compile Include="Controllers\Admin\MessagePortalController.cs" />
+    <Compile Include="Controllers\ChatApiController.cs" />
     <Compile Include="Controllers\ChatController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Models\ApiIdentity.cs" />
     <Compile Include="Models\Attributes\BasicWebApiAuthenticationAttribute.cs" />
     <Compile Include="Models\Attributes\CheckAjaxRequestAttribute.cs" />
+    <Compile Include="Models\Chat\ClientInfo.cs" />
     <Compile Include="Models\Chat\Message.cs" />
     <Compile Include="Models\CustomMembershipProvider.cs" />
     <Compile Include="Models\CustomMembershipUser.cs" />
@@ -163,6 +165,7 @@
     <Content Include="Content\Images\loading-blue.gif" />
     <Content Include="Content\CSS\glisse.css" />
     <Content Include="Content\Images\tnb.jpg" />
+    <Content Include="Content\Scripts\Chat\Chat.js" />
     <Content Include="Content\Scripts\Games\phaser.js" />
     <Content Include="Content\Scripts\Games\PhaserTest\Game.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\CameraController.js" />
@@ -207,6 +210,7 @@
     <Content Include="Views\Home\_GetNews.cshtml" />
     <Content Include="Views\Shared\Phaser.cshtml" />
     <Content Include="Views\Shared\Caocao.cshtml" />
+    <Content Include="Views\Chat\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

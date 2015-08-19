@@ -1,5 +1,28 @@
-﻿@{
-    ViewBag.Title = "Index";
-}
+﻿<!DOCTYPE html>
 
-<h2>Index</h2>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Chat/Chat.js"></script>
+</head>
+<body>
+	<h2>Index</h2>
+	<div id="body">
+		<section class="content-wrapper main-content clear-fix">
+
+			<div id="console">
+			</div>
+
+			<label for="username">Enter username to start chatting</label>
+			<input type="text" id="username" />
+
+			<div id="chatControl" value="send">
+				<textarea type="text" id="push"></textarea>
+				<button id="pushbtn">Send</button>
+			</div>
+		</section>
+	</div>
+</body>
+</html>
