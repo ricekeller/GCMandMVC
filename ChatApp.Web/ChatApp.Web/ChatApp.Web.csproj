@@ -127,6 +127,9 @@
     <Compile Include="Models\ApiIdentity.cs" />
     <Compile Include="Models\Attributes\BasicWebApiAuthenticationAttribute.cs" />
     <Compile Include="Models\Attributes\CheckAjaxRequestAttribute.cs" />
+    <Compile Include="Models\Chat\ChatCenter.cs" />
+    <Compile Include="Models\Chat\Chatroom.cs" />
+    <Compile Include="Models\Chat\ChatUser.cs" />
     <Compile Include="Models\Chat\ClientInfo.cs" />
     <Compile Include="Models\Chat\Message.cs" />
     <Compile Include="Models\CustomMembershipProvider.cs" />
@@ -135,7 +138,9 @@
     <Compile Include="Models\GCMServerHelper.cs" />
     <Compile Include="Models\PasswordSaltedHash.cs" />
     <Compile Include="Models\Utils.cs" />
+    <Compile Include="Models\ViewModels\ChatDashboardViewModel.cs" />
     <Compile Include="Models\ViewModels\CreateAccountViewModel.cs" />
+    <Compile Include="Models\ViewModels\CreateChatroomViewModel.cs" />
     <Compile Include="Models\ViewModels\LoginViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -143,6 +148,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\CSS\Chat\Chat.css" />
     <Content Include="Content\CSS\img\loader.gif" />
     <Content Include="Content\CSS\img\bg_maincontainer.jpg" />
     <Content Include="Content\CSS\PhotoViewer.css" />

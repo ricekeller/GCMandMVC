@@ -1,0 +1,48 @@
+﻿body {
+	padding:0;
+	margin:0;
+}
+
+#body
+{
+	width:100vw;
+	height:100vh;
+	overflow:hidden;
+	display:table;
+}
+
+#content
+{
+	width:50%;
+	height:100%;
+	background-color:aqua;
+	margin:auto;
+}
+
+#upper
+{
+	background-color:aquamarine;
+	height:20%;
+}
+
+#middle
+{
+	background-color:bisque;
+	height:55%;
+}
+
+#bottom
+{
+	background-color:azure;
+	height:20%;
+}
+
+#commands_container
+{
+	
+}
+
+#commands_container div:hover
+{
+	background-color:chartreuse;
+}

@@ -5,24 +5,53 @@
 	<meta name="viewport" content="width=device-width" />
 	<title>@ViewBag.Title</title>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="~/Content/Scripts/Chat/Chat.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" href="~/Content/CSS/Chat/Chat.css" type="text/css" />
 </head>
 <body>
-	<h2>Index</h2>
 	<div id="body">
-		<section class="content-wrapper main-content clear-fix">
+		<div id="content">
+			<div id="upper">
 
-			<div id="console">
 			</div>
+			<div id="middle">
+				<section class="content-wrapper main-content clear-fix">
 
-			<label for="username">Enter username to start chatting</label>
-			<input type="text" id="username" />
+					<div id="console">
+					</div>
 
-			<div id="chatControl" value="send">
-				<textarea type="text" id="push"></textarea>
-				<button id="pushbtn">Send</button>
+					<label for="username">Enter username to start chatting</label>
+					<input type="text" id="username" />
+
+					<div id="chatControl" value="send">
+						<textarea type="text" id="push"></textarea>
+						<button id="pushbtn">Send</button>
+					</div>
+					<div id="info">
+
+					</div>
+					<div id="commands_container">
+						<div id="create_room"><span>Create Room</span></div>
+						<div id="join_room"><span>Join Room</span></div>
+					</div>
+				</section>
 			</div>
-		</section>
+			<div id="bottom">
+
+			</div>
+		</div>
+	</div>
+	<div id="create_room_popup">
+		<p>
+			<input id="is_private" type="checkbox" />
+			<label for="is_private">Private?</label>
+		</p>
+		<p>
+			<label for="room_pwd">Create Password:</label>
+			<input type="text" id="room_pwd" disabled />
+		</p>
 	</div>
 </body>
 </html>
