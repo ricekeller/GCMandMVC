@@ -1,14 +1,166 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Configuration;
+using System.Configuration.Provider;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
+using ChatApp.Web.BL;
+using ChatApp.Web.Properties;
+using MongoDB.Driver;
 
 namespace ChatApp.Web.Models
 {
 	public class CustomMembershipProvider:MembershipProvider
 	{
+		public const string DEFAULT_NAME = "MongoMembershipProvider";
+		public const string DEFAULT_DATABASE_NAME = "test";
+		public const string DEFAULT_USER_COLLECTION_SUFFIX = "users";
+		public const string DEFAULT_INVALID_CHARACTERS = ",%";
+		public const int NEW_PASSWORD_LENGTH = 8;
+		public const int MAX_USERNAME_LENGTH = 256;
+		public const int MAX_PASSWORD_LENGTH = 128;
+		public const int MAX_PASSWORD_ANSWER_LENGTH = 128;
+		public const int MAX_EMAIL_LENGTH = 256;
+		public const int MAX_PASSWORD_QUESTION_LENGTH = 256;
+
+		//
+		// If false, exceptions are thrown to the caller. If true,
+		// exceptions are written to the event log.
+		//
+		public bool WriteExceptionsToEventLog { get; set; }
+		public string InvalidUsernameCharacters { get; protected set; }
+		public string InvalidEmailCharacters { get; protected set; }
+		public string CollectionName { get; protected set; }
+		public MongoCollection<User> Collection { get; protected set; }
+		public MongoDatabase Database { get; protected set; }
+
+		// System.Web.Security.MembershipProvider properties.
+
+		protected string _applicationName;
+		protected bool _enablePasswordReset;
+		protected bool _enablePasswordRetrieval;
+		protected bool _requiresQuestionAndAnswer;
+		protected bool _requiresUniqueEmail;
+		protected int _maxInvalidPasswordAttempts;
+		protected int _passwordAttemptWindow;
+		protected MembershipPasswordFormat _passwordFormat;
+		protected int _minRequiredNonAlphanumericCharacters;
+		protected int _minRequiredPasswordLength;
+		protected string _passwordStrengthRegularExpression;
+
+
+		protected string _connectionString;
+		protected string _collectionSuffix;
+
+		public override void Initialize(string name, System.Collections.Specialized.NameValueCollection config)
+		{
+			if (null == config)
+				throw new ArgumentNullException("config");
+
+			if (String.IsNullOrWhiteSpace(name))
+				name = DEFAULT_NAME;
+
+			if (String.IsNullOrEmpty(config["description"]))
+			{
+				config.Remove("description");
+				config.Add("description", Resources.MembershipProvider_description);
+			}
+
+			base.Initialize(name, config);
+
+			// get config values
+
+			_applicationName = config["applicationName"] ?? System.Web.Hosting.HostingEnvironment.ApplicationVirtualPath;
+			_maxInvalidPasswordAttempts = Helper.GetConfigValue(config["maxInvalidPasswordAttempts"], 5);
+			_passwordAttemptWindow = Helper.GetConfigValue(config["passwordAttemptWindow"], 10);
+			_minRequiredNonAlphanumericCharacters = Helper.GetConfigValue(config["minRequiredNonAlphanumericCharacters"], 1);
+			_minRequiredPasswordLength = Helper.GetConfigValue(config["minRequiredPasswordLength"], 7);
+			_passwordStrengthRegularExpression = Helper.GetConfigValue(config["passwordStrengthRegularExpression"], "");
+			_enablePasswordReset = Helper.GetConfigValue(config["enablePasswordReset"], true);
+			_enablePasswordRetrieval = Helper.GetConfigValue(config["enablePasswordRetrieval"], false);
+			_requiresQuestionAndAnswer = Helper.GetConfigValue(config["requiresQuestionAndAnswer"], false);
+			_requiresUniqueEmail = Helper.GetConfigValue(config["requiresUniqueEmail"], true);
+			InvalidUsernameCharacters = Helper.GetConfigValue(config["invalidUsernameCharacters"], DEFAULT_INVALID_CHARACTERS);
+			InvalidEmailCharacters = Helper.GetConfigValue(config["invalidEmailCharacters"], DEFAULT_INVALID_CHARACTERS);
+			WriteExceptionsToEventLog = Helper.GetConfigValue(config["writeExceptionsToEventLog"], true);
+			_collectionSuffix = Helper.GetConfigValue(config["collectionSuffix"], DEFAULT_USER_COLLECTION_SUFFIX);
+
+			ValidatePwdStrengthRegularExpression();
+
+			if (_minRequiredNonAlphanumericCharacters > _minRequiredPasswordLength)
+				throw new ProviderException(Resources.MinRequiredNonalphanumericCharacters_can_not_be_more_than_MinRequiredPasswordLength);
+
+			string tempFormat = config["passwordFormat"] ?? "Hashed";
+
+			switch (tempFormat.ToLowerInvariant())
+			{
+				case "hashed":
+					_passwordFormat = MembershipPasswordFormat.Hashed;
+					break;
+				case "encrypted":
+					_passwordFormat = MembershipPasswordFormat.Encrypted;
+					break;
+				case "clear":
+					_passwordFormat = MembershipPasswordFormat.Clear;
+					break;
+				default:
+					throw new ProviderException(Resources.Provider_bad_password_format);
+			}
+
+			if ((PasswordFormat == MembershipPasswordFormat.Hashed) && EnablePasswordRetrieval)
+			{
+				throw new ProviderException(Resources.Provider_can_not_retrieve_hashed_password);
+			}
+
+			// Initialize Connection String
+			var temp = config["connectionStringName"];
+			if (String.IsNullOrWhiteSpace(temp))
+				throw new ProviderException(Resources.Connection_name_not_specified);
+
+			var connectionStringSettings = ConfigurationManager.ConnectionStrings[temp];
+			if (null == connectionStringSettings || String.IsNullOrWhiteSpace(connectionStringSettings.ConnectionString))
+				throw new ProviderException(String.Format(Resources.Connection_string_not_found, temp));
+
+			_connectionString = connectionStringSettings.ConnectionString;
+
+			// Check for invalid parameters in the config
+
+			config.Remove("connectionStringName");
+			config.Remove("enablePasswordRetrieval");
+			config.Remove("enablePasswordReset");
+			config.Remove("requiresQuestionAndAnswer");
+			config.Remove("applicationName");
+			config.Remove("requiresUniqueEmail");
+			config.Remove("maxInvalidPasswordAttempts");
+			config.Remove("passwordAttemptWindow");
+			config.Remove("commandTimeout");
+			config.Remove("passwordFormat");
+			config.Remove("name");
+			config.Remove("minRequiredPasswordLength");
+			config.Remove("minRequiredNonAlphanumericCharacters");
+			config.Remove("passwordStrengthRegularExpression");
+			config.Remove("writeExceptionsToEventLog");
+			config.Remove("invalidUsernameCharacters");
+			config.Remove("invalidEmailCharacters");
+			config.Remove("collectionSuffix");
+
+			if (config.Count > 0)
+			{
+				var key = config.GetKey(0);
+				if (!string.IsNullOrEmpty(key))
+				{
+					throw new ProviderException(String.Format(Resources.Provider_unrecognized_attribute, key));
+				}
+			}
+
+			// Initialize MongoDB Server
+			Database = GetMongoConnection(_connectionString);
+			CollectionName = Helper.GenerateCollectionName(_applicationName, _collectionSuffix);
+			Collection = Database.GetCollection<User>(CollectionName);
+		}
 		public override string ApplicationName
 		{
 			get
@@ -135,11 +287,14 @@ namespace ChatApp.Web.Models
 		}
 
 		/// <summary>
-		/// 
+		/// Gets the minimum length required for a password.
 		/// </summary>
+		/// <returns>
+		/// The minimum length required for a password.
+		/// </returns>
 		public override int MinRequiredPasswordLength
 		{
-			get { throw new NotImplementedException(); }
+			get { return _minRequiredPasswordLength; }
 		}
 
 		public override int PasswordAttemptWindow
@@ -235,6 +390,40 @@ namespace ChatApp.Web.Models
 				return false;
 			}
 			return true;
+		}
+
+		protected void ValidatePwdStrengthRegularExpression()
+		{
+			// Validate regular expression, if supplied.
+			if (null == _passwordStrengthRegularExpression)
+				_passwordStrengthRegularExpression = String.Empty;
+
+			_passwordStrengthRegularExpression = _passwordStrengthRegularExpression.Trim();
+
+			if (_passwordStrengthRegularExpression.Length <= 0)
+				return;
+
+			try
+			{
+				new Regex(_passwordStrengthRegularExpression);
+			}
+			catch (ArgumentException ex)
+			{
+				throw new ProviderException(ex.Message, ex);
+			}
+		}
+
+		/// <summary>
+		/// Gets the mongo connection.
+		/// </summary>
+		/// <param name="connectionString">The connection string.</param>
+		/// <returns></returns>
+		public static MongoDatabase GetMongoConnection(String connectionString)
+		{
+			UserClassMap.Register();
+			var mongoUrl = MongoUrl.Create(connectionString);
+			var server = new MongoClient(connectionString).GetServer();
+			return server.GetDatabase(mongoUrl.DatabaseName);
 		}
 	}
 }

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="AccountManagementBI.cs" />
     <Compile Include="APIKeyBI.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="LocationBI.cs" />
     <Compile Include="MediaBI.cs" />
     <Compile Include="MessagePortalBI.cs" />
