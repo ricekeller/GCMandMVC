@@ -33,7 +33,8 @@ namespace ChatApp.Web.Controllers
 
 		public ActionResult JoinRoom(string rId)
 		{
-			
+			//TODO:join
+			return View();
 		}
     }
 }

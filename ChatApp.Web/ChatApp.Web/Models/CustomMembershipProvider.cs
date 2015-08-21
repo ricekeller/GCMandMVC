@@ -31,6 +31,18 @@ namespace ChatApp.Web.Models
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="password"></param>
+		/// <param name="email"></param>
+		/// <param name="passwordQuestion"></param>
+		/// <param name="passwordAnswer"></param>
+		/// <param name="isApproved"></param>
+		/// <param name="providerUserKey"></param>
+		/// <param name="status"></param>
+		/// <returns></returns>
 		public override MembershipUser CreateUser(string username, string password, string email, string passwordQuestion, string passwordAnswer, bool isApproved, object providerUserKey, out MembershipCreateStatus status)
 		{
 			if(!ValidateUserName(username))
@@ -91,6 +103,12 @@ namespace ChatApp.Web.Models
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="userIsOnline"></param>
+		/// <returns></returns>
 		public override MembershipUser GetUser(string username, bool userIsOnline)
 		{
 			throw new NotImplementedException();
@@ -116,6 +134,9 @@ namespace ChatApp.Web.Models
 			get { throw new NotImplementedException(); }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public override int MinRequiredPasswordLength
 		{
 			get { throw new NotImplementedException(); }
@@ -141,6 +162,9 @@ namespace ChatApp.Web.Models
 			get { throw new NotImplementedException(); }
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public override bool RequiresUniqueEmail
 		{
 			get { throw new NotImplementedException(); }
@@ -161,6 +185,12 @@ namespace ChatApp.Web.Models
 			throw new NotImplementedException();
 		}
 
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="password"></param>
+		/// <returns></returns>
 		public override bool ValidateUser(string username, string password)
 		{
 			throw new NotImplementedException();
