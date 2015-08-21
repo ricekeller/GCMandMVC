@@ -98,6 +98,33 @@ namespace ChatApp.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The parameter &apos;{0}&apos; must not be empty..
+        /// </summary>
+        internal static string Parameter_can_not_be_empty {
+            get {
+                return ResourceManager.GetString("Parameter_can_not_be_empty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The parameter &apos;{0}&apos; must not contain the following character(s) &apos;{1}&apos;..
+        /// </summary>
+        internal static string Parameter_contains_invalid_characters {
+            get {
+                return ResourceManager.GetString("Parameter_contains_invalid_characters", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The parameter &apos;{0}&apos; is too long: it must not exceed {1} chars in length..
+        /// </summary>
+        internal static string Parameter_too_long {
+            get {
+                return ResourceManager.GetString("Parameter_too_long", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Password format specified is invalid..
         /// </summary>
         internal static string Provider_bad_password_format {
@@ -121,6 +148,15 @@ namespace ChatApp.Web.Properties {
         internal static string Provider_unrecognized_attribute {
             get {
                 return ResourceManager.GetString("Provider_unrecognized_attribute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An exception occurred. Please check the Event Log..
+        /// </summary>
+        internal static string ProviderException {
+            get {
+                return ResourceManager.GetString("ProviderException", resourceCulture);
             }
         }
     }

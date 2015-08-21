@@ -32,7 +32,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ChatApp.MongoDB
+namespace ChatApp.Web.Models
 {
 	/// <summary>
 	/// Salted password hashing with PBKDF2-SHA1.

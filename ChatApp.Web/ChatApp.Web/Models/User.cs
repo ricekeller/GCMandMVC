@@ -18,7 +18,7 @@ namespace ChatApp.Web.Models
 		public string Comment { get; set; }
 		public string Password { get; set; }
 		public MembershipPasswordFormat PasswordFormat { get; set; }
-		public string PasswordSalt { get; set; }
+		//public string PasswordSalt { get; set; }
 		public string PasswordQuestion { get; set; }
 		public string PasswordAnswer { get; set; }
 		public bool IsApproved { get; set; }
