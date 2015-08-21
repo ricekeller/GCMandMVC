@@ -30,5 +30,10 @@ namespace ChatApp.Web.Controllers
 			ChatCenter.CreateRoom(m.IsPrivate,m.Password,out rId);
 			return Json(rId);
 		}
+
+		public ActionResult JoinRoom(string rId)
+		{
+			
+		}
     }
 }
