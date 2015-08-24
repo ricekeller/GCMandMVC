@@ -126,6 +126,9 @@
   <data name="MembershipProvider_description" xml:space="preserve">
     <value>MongoDB membership provider</value>
   </data>
+  <data name="Membership_InvalidProviderUserKey" xml:space="preserve">
+    <value>The provider user key supplied is invalid.  It must be of type System.Guid.</value>
+  </data>
   <data name="MinRequiredNonalphanumericCharacters_can_not_be_more_than_MinRequiredPasswordLength" xml:space="preserve">
     <value>The minRequiredNonalphanumericCharacters can not be greater than minRequiredPasswordLength.</value>
   </data>

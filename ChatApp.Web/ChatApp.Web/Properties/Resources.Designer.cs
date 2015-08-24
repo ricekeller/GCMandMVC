@@ -79,6 +79,15 @@ namespace ChatApp.Web.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The provider user key supplied is invalid.  It must be of type System.Guid..
+        /// </summary>
+        internal static string Membership_InvalidProviderUserKey {
+            get {
+                return ResourceManager.GetString("Membership_InvalidProviderUserKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MongoDB membership provider.
         /// </summary>
         internal static string MembershipProvider_description {

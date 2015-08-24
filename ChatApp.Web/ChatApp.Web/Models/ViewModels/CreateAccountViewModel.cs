@@ -21,21 +21,18 @@ namespace ChatApp.Web.Models.ViewModels
 		[Compare("Password", ErrorMessage = "Provided passwords are not same!")]
 		public string ConfirmPassword { get; set; }
 
-		[Display(Name = "Display Name")]
-		[Range(2, 20)]
-		public string DisplayName { get; set; }
+		//[Display(Name = "Display Name")]
+		//[MaxLength(20)]
+		//[MinLength(2)]
+		//public string DisplayName { get; set; }
 
 		public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
 		{
-			var validPwd = Password.Length > 6 && Password.Where(Char.IsDigit).Count() > 3 && Password.Where(Char.IsLetter).Count() > 3;
+			var validPwd = Password.Length > 6 && Password.Where(Char.IsDigit).Count() >= 3
+				&& Password.Where(Char.IsLetter).Count() >= 3;
 			if (!validPwd)
 			{
-				yield return new ValidationResult("Password's length should be at least 6 and contains at least 3 numbers and 3 letters", new string[] { "Password" });
-			}
-
-			if (AccountManagementBI.IsUserExist(Email))
-			{
-				yield return new ValidationResult("Email already exists! Please use another one!", new string[] { "Email" });
+				yield return new ValidationResult("Password's length should be at least 6 and contains at least 3 numbers and 3 letters and 1 special character.", new string[] { "Password" });
 			}
 		}
 	}

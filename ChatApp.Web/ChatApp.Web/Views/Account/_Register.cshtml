@@ -16,9 +16,5 @@
         @Html.LabelFor(a => a.ConfirmPassword, new { @class = "editor-label" })
         @Html.PasswordFor(a => a.ConfirmPassword)
     </p>
-    <p>
-        @Html.LabelFor(a => a.DisplayName, new { @class = "editor-label" })
-        @Html.EditorFor(a => a.DisplayName)
-    </p>
     <input type="button" value="Register" onclick="_postFormData('register-form', '@Url.Action("register", "Account")');" />
 }

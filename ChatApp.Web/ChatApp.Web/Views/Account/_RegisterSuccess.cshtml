@@ -1,0 +1,19 @@
+﻿@model String
+
+<h1>User @Model created successfully!</h1>
+<p>This will return to home page in <span id="count">3</span> seconds.</p>
+
+<script type="text/javascript">
+	var count = 3;
+	function countJob()
+	{
+		count--;
+		$("#count").text(count);
+		if(count==0)
+		{
+			window.location = "/";
+		}
+		setTimeout(countJob, 1000);
+	}
+	setTimeout(countJob, 1000);
+</script>

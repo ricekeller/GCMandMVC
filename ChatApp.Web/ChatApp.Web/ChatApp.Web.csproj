@@ -145,6 +145,7 @@
     <Compile Include="Models\CustomRoleProvider.cs" />
     <Compile Include="Models\GCMServerHelper.cs" />
     <Compile Include="Models\PasswordSaltedHash.cs" />
+    <Compile Include="Models\SecUtility.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserClassMap.cs" />
     <Compile Include="Models\Utils.cs" />
@@ -232,6 +233,8 @@
     <Content Include="Views\Shared\Phaser.cshtml" />
     <Content Include="Views\Shared\Caocao.cshtml" />
     <Content Include="Views\Chat\Index.cshtml" />
+    <Content Include="Views\Account\_RegisterSuccess.cshtml" />
+    <Content Include="Views\Admin\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

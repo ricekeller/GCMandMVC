@@ -8,11 +8,11 @@ using ChatApp.Web.BL;
 
 namespace ChatApp.Web.Controllers.Admin
 {
+	[Authorize]
     public class AdminController : Controller
     {
         //
         // GET: /Admin/
-
         public ActionResult Index()
         {
             return View();

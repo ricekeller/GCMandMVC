@@ -10,15 +10,18 @@ using System.Web;
 using System.Web.Security;
 using ChatApp.Web.BL;
 using ChatApp.Web.Properties;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
+using MongoDB.Driver.Builders;
+using MongoDB.Driver.Linq;
 
 namespace ChatApp.Web.Models
 {
-	public class CustomMembershipProvider:MembershipProvider
+	public class CustomMembershipProvider : MembershipProvider
 	{
 		public const string DEFAULT_NAME = "MongoMembershipProvider";
 		public const string DEFAULT_DATABASE_NAME = "test";
-		public const string DEFAULT_USER_COLLECTION_SUFFIX = "users";
+		public const string DEFAULT_USER_COLLECTION_SUFFIX = "Users";
 		public const string DEFAULT_INVALID_CHARACTERS = ",%";
 		public const int NEW_PASSWORD_LENGTH = 8;
 		public const int MAX_USERNAME_LENGTH = 256;
@@ -59,6 +62,15 @@ namespace ChatApp.Web.Models
 		protected string _eventSource = DEFAULT_NAME;
 		protected string _eventLog = "Application";
 		protected string _exceptionMessage = Resources.ProviderException;
+
+		public struct MembershipElements
+		{
+			public string LowercaseUsername;
+			public string LowercaseEmail;
+			public string LastActivityDate;
+		}
+
+		public MembershipElements ElementNames { get; protected set; }
 
 		/// <summary>
 		/// Initializes the provider.
@@ -176,14 +188,14 @@ namespace ChatApp.Web.Models
 
 			// Initialize MongoDB Server
 			Database = GetMongoConnection(_connectionString);
-			CollectionName = Helper.GenerateCollectionName(_applicationName, _collectionSuffix);
+			CollectionName = _collectionSuffix;
 			Collection = Database.GetCollection<User>(CollectionName);
 		}
 		public override string ApplicationName
 		{
 			get
 			{
-				throw new NotImplementedException();
+				return _applicationName;
 			}
 			set
 			{
@@ -383,12 +395,12 @@ namespace ChatApp.Web.Models
 
 		public override bool EnablePasswordReset
 		{
-			get { throw new NotImplementedException(); }
+			get { return _enablePasswordReset; }
 		}
 
 		public override bool EnablePasswordRetrieval
 		{
-			get { throw new NotImplementedException(); }
+			get { return _enablePasswordRetrieval; }
 		}
 
 		public override MembershipUserCollection FindUsersByEmail(string emailToMatch, int pageIndex, int pageSize, out int totalRecords)
@@ -417,39 +429,97 @@ namespace ChatApp.Web.Models
 		}
 
 		/// <summary>
-		/// 
+		/// Gets information from the data source for a user. Provides an option to update the last-activity date/time stamp for the user.
 		/// </summary>
-		/// <param name="username"></param>
-		/// <param name="userIsOnline"></param>
-		/// <returns></returns>
+		/// <param name="username">The name of the user to get information for.</param>
+		/// <param name="userIsOnline">true to update the last-activity date/time stamp for the user; false to return user information without updating the last-activity date/time stamp for the user.</param>
+		/// <returns>
+		/// A <see cref="T:System.Web.Security.MembershipUser"/> object populated with the specified user's information from the data source.
+		/// </returns>
 		public override MembershipUser GetUser(string username, bool userIsOnline)
 		{
-			throw new NotImplementedException();
-		}
+			if (String.IsNullOrWhiteSpace(username)) return null;
 
-		public override MembershipUser GetUser(object providerUserKey, bool userIsOnline)
-		{
-			throw new NotImplementedException();
+			if (userIsOnline)
+			{
+				// update the last-activity date
+				var users = Collection;
+				var map = BsonClassMap.LookupClassMap(typeof(User));
+				var query = Query.EQ(ElementNames.LowercaseUsername, username.ToLowerInvariant());
+				var update = Update.Set(ElementNames.LastActivityDate, DateTime.UtcNow);
+				var result = users.FindAndModify(query, SortBy.Null, update, returnNew: true);
+				if (!result.Ok)
+				{
+					HandleDataExceptionAndThrow(new ProviderException(result.ErrorMessage), "GetUser");
+				}
+				var user = BsonSerializer.Deserialize<User>(result.ModifiedDocument);
+				return ToMembershipUser(user);
+			}
+			else
+			{
+				User user = Collection.AsQueryable().FirstOrDefault(u => u.LowercaseUsername == username.ToLowerInvariant());
+				return ToMembershipUser(user);
+			}
 		}
 
 		/// <summary>
-		/// 
+		/// Gets user information from the data source based on the unique identifier for the membership user. Provides an option to update the last-activity date/time stamp for the user.
 		/// </summary>
-		/// <param name="email"></param>
-		/// <returns></returns>
+		/// <param name="providerUserKey">The unique identifier for the membership user to get information for.</param>
+		/// <param name="userIsOnline">true to update the last-activity date/time stamp for the user; false to return user information without updating the last-activity date/time stamp for the user.</param>
+		/// <returns>
+		/// A <see cref="T:System.Web.Security.MembershipUser"/> object populated with the specified user's information from the data source.
+		/// </returns>
+		public override MembershipUser GetUser(object providerUserKey, bool userIsOnline)
+		{
+			if (!(providerUserKey is Guid))
+			{
+				throw new ArgumentException(Resources.Membership_InvalidProviderUserKey, "providerUserKey");
+			}
+			if (userIsOnline)
+			{
+				// update the last-activity date
+				var query = Query.EQ("_id", (Guid)providerUserKey);
+				var update = Update.Set(ElementNames.LastActivityDate, DateTime.UtcNow);
+				var result = Collection.FindAndModify(query, SortBy.Null, update, returnNew: true);
+				if (!result.Ok)
+				{
+					HandleDataExceptionAndThrow(new ProviderException(result.ErrorMessage), "GetUser");
+				}
+				var user = BsonSerializer.Deserialize<User>(result.ModifiedDocument);
+				return ToMembershipUser(user);
+			}
+			else
+			{
+				User user = Collection.AsQueryable().FirstOrDefault(u => u.Id == (Guid)providerUserKey);
+				return ToMembershipUser(user);
+			}
+		}
+
+		/// <summary>
+		/// Gets the user name associated with the specified e-mail address.
+		/// </summary>
+		/// <param name="email">The e-mail address to search for.</param>
+		/// <returns>
+		/// The user name associated with the specified e-mail address. If no match is found, return null.
+		/// </returns>
 		public override string GetUserNameByEmail(string email)
 		{
-			throw new NotImplementedException();
+			if (null == email)
+				return null;
+
+			var username = Collection.AsQueryable().Where(u => u.LowercaseEmail == email.ToLowerInvariant()).Select(u => u.Username).FirstOrDefault();
+			return username;
 		}
 
 		public override int MaxInvalidPasswordAttempts
 		{
-			get { throw new NotImplementedException(); }
+			get { return _maxInvalidPasswordAttempts; }
 		}
 
 		public override int MinRequiredNonAlphanumericCharacters
 		{
-			get { throw new NotImplementedException(); }
+			get { return _minRequiredNonAlphanumericCharacters; }
 		}
 
 		/// <summary>
@@ -465,22 +535,22 @@ namespace ChatApp.Web.Models
 
 		public override int PasswordAttemptWindow
 		{
-			get { throw new NotImplementedException(); }
+			get { return _passwordAttemptWindow; }
 		}
 
 		public override MembershipPasswordFormat PasswordFormat
 		{
-			get { throw new NotImplementedException(); }
+			get { return _passwordFormat; }
 		}
 
 		public override string PasswordStrengthRegularExpression
 		{
-			get { throw new NotImplementedException(); }
+			get { return _passwordStrengthRegularExpression; }
 		}
 
 		public override bool RequiresQuestionAndAnswer
 		{
-			get { throw new NotImplementedException(); }
+			get { return _requiresQuestionAndAnswer; }
 		}
 
 		/// <summary>
@@ -488,7 +558,7 @@ namespace ChatApp.Web.Models
 		/// </summary>
 		public override bool RequiresUniqueEmail
 		{
-			get { throw new NotImplementedException(); }
+			get { return _requiresUniqueEmail; }
 		}
 
 		public override string ResetPassword(string username, string answer)
@@ -519,16 +589,16 @@ namespace ChatApp.Web.Models
 
 		private bool ValidateUserName(string username)
 		{
-			if(string.IsNullOrWhiteSpace(username))
+			if (string.IsNullOrWhiteSpace(username))
 			{
 				return false;
 			}
-			if(!ValidateEmail(username))
+			if (!ValidateEmail(username))
 			{
 				return false;
 			}
 			RangeAttribute ra = new RangeAttribute(5, 100);
-			if(!ra.IsValid(username))
+			if (!ra.IsValid(username))
 			{
 				return false;
 			}
@@ -551,7 +621,7 @@ namespace ChatApp.Web.Models
 				return false;
 			}
 			EmailAddressAttribute eaa = new EmailAddressAttribute();
-			if(!eaa.IsValid(email))
+			if (!eaa.IsValid(email))
 			{
 				return false;
 			}
@@ -651,6 +721,18 @@ namespace ChatApp.Web.Models
 			message += "Exception: " + ex.ToString();
 
 			log.WriteEntry(message);
+		}
+
+		protected MembershipUser ToMembershipUser(User user)
+		{
+			if (null == user)
+				return null;
+
+			return new MembershipUser(this.Name, user.Username, user.Id, user.Email,
+				user.PasswordQuestion, user.Comment, user.IsApproved, user.IsLockedOut,
+				user.CreateDate, user.LastLoginDate, user.LastActivityDate, user.LastPasswordChangedDate,
+				user.LastLockedOutDate
+			);
 		}
 	}
 }

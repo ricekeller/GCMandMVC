@@ -8,29 +8,29 @@ using ChatApp.Web.Models.ViewModels;
 
 namespace ChatApp.Web.Controllers
 {
-    public class AccountController : Controller
-    {
-        //
-        // GET: /Account/
+	public class AccountController : Controller
+	{
+		//
+		// GET: /Account/
 
-        public ActionResult Index()
-        {
-            return View();
-        }
+		public ActionResult Index()
+		{
+			return View();
+		}
 
 		[HttpGet]
 		public PartialViewResult Login()
 		{
-			return PartialView("_Login",new LoginViewModel());
+			return PartialView("_Login", new LoginViewModel());
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public PartialViewResult Login(LoginViewModel lvm)
 		{
-			if(ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				if(Membership.ValidateUser(lvm.Email,lvm.Password))
+				if (Membership.ValidateUser(lvm.Email, lvm.Password))
 				{
 					FormsAuthentication.RedirectFromLoginPage(lvm.Email, lvm.RememberMe);
 				}
@@ -42,23 +42,26 @@ namespace ChatApp.Web.Controllers
 		[HttpGet]
 		public PartialViewResult Register()
 		{
-			return PartialView("_Register",new CreateAccountViewModel());
+			return PartialView("_Register", new CreateAccountViewModel());
 		}
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		public PartialViewResult Register(CreateAccountViewModel vm)
 		{
-			if(ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
-				MembershipUser u=Membership.CreateUser(vm.Email,vm.Password,vm.Email);
-				if(null!=u)
+				MembershipCreateStatus status;
+				MembershipUser u = Membership.CreateUser(vm.Email, vm.Password, vm.Email, null, null, true, out status);
+				if (status == MembershipCreateStatus.Success && null != u)
 				{
-					//TODO: do something
+					//TODO: do something, redirect
+					FormsAuthentication.SetAuthCookie(u.UserName, false);
+					return PartialView("_RegisterSuccess", vm.Password);
 				}
 				ModelState.AddModelError("", "Can not create user! Please try again!");
 			}
-			return PartialView("_Register",vm);
+			return PartialView("_Register", vm);
 		}
-    }
+	}
 }

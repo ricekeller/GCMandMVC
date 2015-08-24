@@ -37,7 +37,7 @@ namespace ChatApp.Web.Models
                     cm.GetMemberMap(c => c.PasswordAnswer).SetElementName("ans");
                     cm.GetMemberMap(c => c.PasswordFormat).SetElementName("fmt");
                     cm.GetMemberMap(c => c.PasswordQuestion).SetElementName("qstion");
-                    cm.GetMemberMap(c => c.PasswordSalt).SetElementName("salt");
+                    //cm.GetMemberMap(c => c.PasswordSalt).SetElementName("salt");
                     cm.GetMemberMap(c => c.Roles).SetElementName("roles").SetIgnoreIfNull(true);
                 });
             }
