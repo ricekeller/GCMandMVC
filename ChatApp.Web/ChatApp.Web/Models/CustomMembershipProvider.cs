@@ -577,14 +577,47 @@ namespace ChatApp.Web.Models
 		}
 
 		/// <summary>
-		/// 
+		/// Verifies that the specified user name and password exist in the data source.
 		/// </summary>
-		/// <param name="username"></param>
-		/// <param name="password"></param>
-		/// <returns></returns>
+		/// <param name="username">The name of the user to validate.</param>
+		/// <param name="password">The password for the specified user.</param>
+		/// <returns>
+		/// true if the specified username and password are valid; otherwise, false.
+		/// </returns>
 		public override bool ValidateUser(string username, string password)
 		{
-			throw new NotImplementedException();
+			if (!SecUtility.ValidateParameter(ref username, true, true, InvalidUsernameCharacters, MAX_USERNAME_LENGTH) || !SecUtility.ValidateParameter(ref password, true, true, null, MAX_PASSWORD_LENGTH))
+			{
+				return false;
+			}
+
+			User user = GetUserByName(username, "ValidateUser");
+			if (null == user || user.IsLockedOut || !user.IsApproved)
+			{
+				return false;
+			}
+
+
+			bool passwordsMatch = ComparePasswords(password, user.Password, user.PasswordFormat);
+			if (!passwordsMatch)
+			{
+				// update invalid try count
+				UpdateFailureCount(user, "password", isAuthenticated: false);
+				return false;
+			}
+
+			// User is authenticated. Update last activity and last login dates and failure counts.
+
+			user.LastActivityDate = DateTime.UtcNow;
+			user.LastLoginDate = DateTime.UtcNow;
+			user.FailedPasswordAnswerAttemptCount = 0;
+			user.FailedPasswordAttemptCount = 0;
+			user.FailedPasswordAnswerAttemptWindowStart = DateTime.MinValue;
+			user.FailedPasswordAttemptWindowStart = DateTime.MinValue;
+
+			var msg = String.Format("Error updating User '{0}'s last login date while validating", username);
+			Save(user, msg, "ValidateUser");
+			return true;
 		}
 
 		private bool ValidateUserName(string username)
@@ -733,6 +766,171 @@ namespace ChatApp.Web.Models
 				user.CreateDate, user.LastLoginDate, user.LastActivityDate, user.LastPasswordChangedDate,
 				user.LastLockedOutDate
 			);
+		}
+
+		/// <summary>
+		/// Convenience method that handles errors when retrieving a User
+		/// </summary>
+		/// <param name="username">The name of the user to retrieve</param>
+		/// <param name="action">The name of the action that attempted the retrieval. Used in case exceptions are raised and written to EventLog</param>
+		/// <returns></returns>
+		protected User GetUserByName(string username, string action)
+		{
+			if (String.IsNullOrWhiteSpace(username))
+			{
+				return null;
+			}
+
+			User user = null;
+
+			try
+			{
+				user = Collection.AsQueryable().SingleOrDefault(u => u.LowercaseUsername == username.ToLowerInvariant());
+			}
+			catch (Exception ex)
+			{
+				var msg = String.Format("Unable to retrieve User information for user '{0}'", username);
+				HandleDataExceptionAndThrow(new ProviderException(msg, ex), action);
+			}
+
+			return user;
+		}
+
+		/// <summary>
+		/// A helper method that performs the checks and updates associated User with password failure tracking
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="failureType"></param>
+		/// <param name="isAuthenticated"></param>
+		protected void UpdateFailureCount(User user, string failureType, bool isAuthenticated)
+		{
+			if (!((failureType == "password") || (failureType == "passwordAnswer")))
+			{
+				throw new ArgumentException("Invalid value for failureType parameter. Must be 'password' or 'passwordAnswer'.", "failureType");
+			}
+
+			if (user.IsLockedOut)
+				return; // Just exit without updating any fields if user is locked out
+
+
+			if (isAuthenticated)
+			{
+				// User is valid, so make sure Attempt Counts and IsLockedOut fields have been reset
+				if ((user.FailedPasswordAttemptCount > 0) || (user.FailedPasswordAnswerAttemptCount > 0))
+				{
+					user.FailedPasswordAnswerAttemptCount = 0;
+					user.FailedPasswordAttemptCount = 0;
+					user.FailedPasswordAnswerAttemptWindowStart = DateTime.MinValue;
+					user.FailedPasswordAttemptWindowStart = DateTime.MinValue;
+					var msg = String.Format("Unable to reset Authenticated User's FailedPasswordAttemptCount property for user '{0}'", user.Username);
+					Save(user, msg, "UpdateFailureCount");
+				}
+				return;
+			}
+
+
+
+			// If we get here that means isAuthenticated = false, which means the user did not log on successfully.
+			// Log the failure and possibly lock out the user if she exceeded the number of allowed attempts.
+
+			DateTime windowStart = DateTime.MinValue;
+			int failureCount = 0;
+
+			switch (failureType)
+			{
+				case "password":
+					windowStart = user.FailedPasswordAttemptWindowStart;
+					failureCount = user.FailedPasswordAttemptCount;
+					break;
+				case "passwordAnswer":
+					windowStart = user.FailedPasswordAnswerAttemptWindowStart;
+					failureCount = user.FailedPasswordAnswerAttemptCount;
+					break;
+				default:
+					break;
+			}
+
+			DateTime windowEnd = windowStart.AddMinutes(PasswordAttemptWindow);
+
+			if (failureCount == 0 || DateTime.UtcNow > windowEnd)
+			{
+				// First password failure or outside of PasswordAttemptWindow. 
+				// Start a new password failure count from 1 and a new window starting now.
+
+				switch (failureType)
+				{
+					case "password":
+						user.FailedPasswordAttemptCount = 1;
+						user.FailedPasswordAttemptWindowStart = DateTime.UtcNow;
+						break;
+					case "passwordAnswer":
+						user.FailedPasswordAnswerAttemptCount = 1;
+						user.FailedPasswordAnswerAttemptWindowStart = DateTime.UtcNow;
+						break;
+				}
+
+				var msg = String.Format("Unable to update failure count and window start for user '{0}'", user.Username);
+				Save(user, msg, "UpdateFailureCount");
+
+				return;
+			}
+
+
+			// within PasswordAttemptWindow
+
+			failureCount++;
+
+			if (failureCount >= MaxInvalidPasswordAttempts)
+			{
+				// Password attempts have exceeded the failure threshold. Lock out the user.
+				user.IsLockedOut = true;
+				user.LastLockedOutDate = DateTime.UtcNow;
+				user.FailedPasswordAttemptCount = failureCount;
+
+				var msg = String.Format("Unable to lock out user '{0}'", user.Username);
+				Save(user, msg, "UpdateFailureCount");
+
+				return;
+			}
+
+
+			// Password attempts have not exceeded the failure threshold. Update
+			// the failure counts. Leave the window the same.
+
+			switch (failureType)
+			{
+				case "password":
+					user.FailedPasswordAttemptCount = failureCount;
+					break;
+				case "passwordAnswer":
+					user.FailedPasswordAnswerAttemptCount = failureCount;
+					break;
+			}
+
+			{
+				var msg = String.Format("Unable to update failure count for user '{0}'", user.Username);
+				Save(user, msg, "UpdateFailureCount");
+			}
+		}
+
+		protected bool ComparePasswords(string password, string dbpassword, MembershipPasswordFormat passwordFormat)
+		{
+			//   Compares password values based on the MembershipPasswordFormat.
+			string pass1 = password;
+			string pass2 = dbpassword;
+
+			switch (passwordFormat)
+			{
+				case MembershipPasswordFormat.Encrypted:
+					//pass2 = UnEncodePassword(dbpassword, passwordFormat);
+					break;
+				case MembershipPasswordFormat.Hashed:
+					return PasswordSaltedHash.ValidatePassword(password, dbpassword);
+				default:
+					break;
+			}
+
+			return pass1 == pass2;
 		}
 	}
 }

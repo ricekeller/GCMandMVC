@@ -32,7 +32,9 @@ namespace ChatApp.Web.Controllers
 			{
 				if (Membership.ValidateUser(lvm.Email, lvm.Password))
 				{
-					FormsAuthentication.RedirectFromLoginPage(lvm.Email, lvm.RememberMe);
+					//FormsAuthentication.RedirectFromLoginPage(lvm.Email, lvm.RememberMe);
+					FormsAuthentication.SetAuthCookie(lvm.Email, false);
+					return PartialView("_LoginSuccess", lvm.Email);
 				}
 				ModelState.AddModelError("", "Incorrect email and/or password!");
 			}
