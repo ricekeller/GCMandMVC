@@ -3,6 +3,11 @@
 	margin:0;
 }
 
+.hidden
+{
+    display:none;
+}
+
 #body
 {
 	width:100vw;

@@ -8,11 +8,11 @@ using ChatApp.Web.Models.ViewModels;
 
 namespace ChatApp.Web.Controllers
 {
+    [Authorize]
     public class ChatController : Controller
     {
         //
         // GET: /Chat/
-
         public ActionResult Index()
         {
             return View();

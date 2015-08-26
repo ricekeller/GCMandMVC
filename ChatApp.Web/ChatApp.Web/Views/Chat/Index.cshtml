@@ -14,16 +14,13 @@
 	<div id="body">
 		<div id="content">
 			<div id="upper">
-
+                <p>Welcome @HttpContext.Current.User.Identity.Name</p>
 			</div>
 			<div id="middle">
 				<section class="content-wrapper main-content clear-fix">
 
 					<div id="console">
 					</div>
-
-					<label for="username">Enter username to start chatting</label>
-					<input type="text" id="username" />
 
 					<div id="chatControl" value="send">
 						<textarea type="text" id="push"></textarea>
@@ -43,7 +40,7 @@
 			</div>
 		</div>
 	</div>
-	<div id="create_room_popup">
+	<div id="create_room_popup" class="hidden">
 		<p>
 			<input id="is_private" type="checkbox" />
 			<label for="is_private">Private?</label>
