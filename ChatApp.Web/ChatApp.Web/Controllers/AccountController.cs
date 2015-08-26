@@ -32,7 +32,6 @@ namespace ChatApp.Web.Controllers
 			{
 				if (Membership.ValidateUser(lvm.Email, lvm.Password))
 				{
-					//FormsAuthentication.RedirectFromLoginPage(lvm.Email, lvm.RememberMe);
 					FormsAuthentication.SetAuthCookie(lvm.Email, false);
 					return PartialView("_LoginSuccess", lvm.Email);
 				}
@@ -57,7 +56,6 @@ namespace ChatApp.Web.Controllers
 				MembershipUser u = Membership.CreateUser(vm.Email, vm.Password, vm.Email, null, null, true, out status);
 				if (status == MembershipCreateStatus.Success && null != u)
 				{
-					//TODO: do something, redirect
 					FormsAuthentication.SetAuthCookie(u.UserName, false);
 					return PartialView("_RegisterSuccess", vm.Password);
 				}
