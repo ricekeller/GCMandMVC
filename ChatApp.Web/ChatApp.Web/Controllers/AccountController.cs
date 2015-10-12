@@ -38,7 +38,7 @@ namespace ChatApp.Web.Controllers
 			return RedirectToAction("Index", "Home");
 		}
 
-		public ActionResult Profile()
+		public ActionResult ProfileDetail()
 		{
 			return View();
 		}

@@ -9,7 +9,7 @@
 		@{
 			if (null != HttpContext.Current.User && null != HttpContext.Current.User.Identity && !string.IsNullOrWhiteSpace(HttpContext.Current.User.Identity.Name))
 			{
-				<span>Welcome @Html.ActionLink(HttpContext.Current.User.Identity.Name, "profile", "Account")</span>
+				<span>Welcome @Html.ActionLink(HttpContext.Current.User.Identity.Name, "ProfileDetail", "Account")</span>
 				<span>|</span>
 				<span>@Html.ActionLink("Log out","Logout","Account")</span>
 			}
