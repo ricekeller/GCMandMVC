@@ -1,11 +1,24 @@
 ﻿<div id="UpperBarContainer">
-    <div id="ubLeft">
+	<div id="ubLeft">
 
-    </div>
-    <div id="ubCenter">
+	</div>
+	<div id="ubCenter">
 
-    </div>
-    <div id="ubRight">
-
-    </div>
+	</div>
+	<div id="ubRight">
+		@{
+			if (null != HttpContext.Current.User && null != HttpContext.Current.User.Identity && !string.IsNullOrWhiteSpace(HttpContext.Current.User.Identity.Name))
+			{
+				<span>Welcome @Html.ActionLink(HttpContext.Current.User.Identity.Name, "profile", "Account")</span>
+				<span>|</span>
+				<span>@Html.ActionLink("Log out","Logout","Account")</span>
+			}
+			else
+			{
+				<span>@Html.ActionLink("Log in","Index","Account")</span>
+				<span>|</span>
+				<span>@Html.ActionLink("Sign up","Signup","Account")</span>
+			}
+		}
+	</div>
 </div>
