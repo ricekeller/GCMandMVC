@@ -139,15 +139,12 @@
 	border-color: rgb(255, 255, 255);
 	border-radius: 2px;
 	border-style: none;
-	border-bottom-width: 0;
+	border-width: 0;
 	border-image-outset: 0;
 	border-image-repeat: stretch;
 	border-image-slice: 100%;
 	border-image-source: none;
 	border-image-width: 1;
-	border-left-width: 0;
-	border-right-width: 0;
-	border-top-width: 0;
 	box-shadow: rgba(0, 0, 0, 0.298039) 0 1px 1px 0, rgba(255, 255, 255, 0.14902) 0 0 0 1px inset;
 	-moz-box-sizing: border-box;
 	-webkit-box-sizing: border-box;
