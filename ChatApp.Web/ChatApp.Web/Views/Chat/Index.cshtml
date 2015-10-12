@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+	ViewBag.Title = "Index";
+}
+@using ChatApp.Web.Models.Chat;
+
+@model List<Chatroom>
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -14,26 +20,60 @@
 	<div id="body">
 		<div id="content">
 			<div id="upper">
-                <p>Welcome @HttpContext.Current.User.Identity.Name</p>
+				<p>Welcome @HttpContext.Current.User.Identity.Name</p>
 			</div>
 			<div id="middle">
-				<section class="content-wrapper main-content clear-fix">
+				@*<section class="content-wrapper main-content clear-fix">
 
-					<div id="console">
-					</div>
+						<div id="console">
+						</div>
 
-					<div id="chatControl" value="send">
-						<textarea type="text" id="push"></textarea>
-						<button id="pushbtn">Send</button>
-					</div>
-					<div id="info">
+						<div id="chatControl" value="send">
+							<textarea type="text" id="push"></textarea>
+							<button id="pushbtn">Send</button>
+						</div>
+						<div id="info">
 
+						</div>
+						<div id="commands_container">
+
+						</div>
+					</section>*@
+				<div id="rooms">
+					<div id="header-table" class="csstable">
+						<div class="th">
+							<span class="td tdName">Name</span>
+							<span class="td tdCount">Number of people</span>
+							<span class="td tdPrivate">Is private?</span>
+						</div>
 					</div>
-					<div id="commands_container">
-						<div id="create_room"><span>Create Room</span></div>
-						<div id="join_room"><span>Join Room</span></div>
+					<div id="room-list-container">
+						<div id="room-list" class="csstable">
+
+							@foreach (Chatroom cr in Model)
+							{
+								<div class="tr">
+									<span class="td tdName">
+										@cr.ToString()
+									</span>
+									<span class="td tdCount">
+										12
+									</span>
+									<span class="td tdPrivate">
+										@Html.CheckBox("Is private?", cr.IsPrivate, new { disabled = "disable" })
+									</span>
+								</div>
+							}
+						</div>
 					</div>
-				</section>
+				</div>
+				<div id="general-info">
+
+				</div>
+				<div id="controls" class="csstable">
+					<div id="create_room" class="button tr"><span>Create Room</span></div>
+					<div id="join_room" class="button tr"><span>Join Room</span></div>
+				</div>
 			</div>
 			<div id="bottom">
 

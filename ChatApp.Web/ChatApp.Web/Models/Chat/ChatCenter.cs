@@ -91,7 +91,6 @@ namespace ChatApp.Web.Models.Chat
 				}
 				return false;
 			}
-
 		}
 	}
 }

@@ -49,7 +49,7 @@ $(document).ready(function ()
 
 	$.get("/Chat/GetDashboardInfo", function (data)
 	{
-		$("#info").text("Total # of rooms:" + data.NumofRooms + "\r\n" + "Total # of users:" + data.NumofUsers);
+		$("#general-info").text("Total # of rooms:" + data.NumofRooms + "\r\n" + "Total # of users:" + data.NumofUsers);
 	});
 	$("#create_room").click(function (e)
 	{

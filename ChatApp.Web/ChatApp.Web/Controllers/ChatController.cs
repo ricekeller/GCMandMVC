@@ -13,7 +13,7 @@ namespace ChatApp.Web.Controllers
     {
         public ActionResult Index()
         {
-            return View();
+            return View(ChatCenter.GetRooms());
         }
 
 		public JsonResult GetDashboardInfo()
