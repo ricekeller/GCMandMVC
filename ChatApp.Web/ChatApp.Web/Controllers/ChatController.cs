@@ -11,8 +11,6 @@ namespace ChatApp.Web.Controllers
     [Authorize]
     public class ChatController : Controller
     {
-        //
-        // GET: /Chat/
         public ActionResult Index()
         {
             return View();
@@ -33,7 +31,18 @@ namespace ChatApp.Web.Controllers
 
 		public ActionResult JoinRoom(string rId)
 		{
-			//TODO:join
+			if(ChatCenter.AddUserToRoom(HttpContext.User.Identity.Name,rId))
+			{
+				return RedirectToAction("InRoom");
+			}
+			else
+			{
+				return RedirectToAction("Index");
+			}
+		}
+
+		public ActionResult InRoom()
+		{
 			return View();
 		}
     }

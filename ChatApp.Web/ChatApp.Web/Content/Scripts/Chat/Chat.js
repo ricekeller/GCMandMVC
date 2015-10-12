@@ -70,12 +70,13 @@ $(document).ready(function ()
 					var isPrivate = $("#is_private").is(":checked");
 					var pwd = isPrivate ? $("#room_pwd").val() : "";
 					var data = { IsPrivate: isPrivate, Password: pwd };
-
+					var $this = $(this);
 					$.post("/Chat/CreateRoom", data, function (data)
 					{
 						if(data)
 						{
-
+							window.location.href = "/Chat/JoinRoom/?rId=" + data;
+							$this.dialog("close");
 						}
 					});
 				},

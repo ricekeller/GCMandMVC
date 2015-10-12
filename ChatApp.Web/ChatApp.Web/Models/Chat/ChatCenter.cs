@@ -73,7 +73,7 @@ namespace ChatApp.Web.Models.Chat
 				{
 					if (null != r && r.RemoveUser(uId))
 					{
-						if(_rooms.TryGetValue(rId,out r)&&null!=r&&r.AddUser(uId))
+						if(_rooms.TryGetValue(rId,out r)&&null!=r&&r.AddUser(uId)&&_userToRoomIndex.TryAdd(uId,rId))
 						{
 							return true;
 						}
@@ -85,7 +85,7 @@ namespace ChatApp.Web.Models.Chat
 			}
 			else
 			{
-				if (_rooms.TryGetValue(rId, out r) && null != r && r.AddUser(uId))
+				if (_rooms.TryGetValue(rId, out r) && null != r && r.AddUser(uId)&&_userToRoomIndex.TryAdd(uId,rId))
 				{
 					return true;
 				}
