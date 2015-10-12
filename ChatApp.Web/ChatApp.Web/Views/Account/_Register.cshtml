@@ -2,19 +2,39 @@
 
 @using (Html.BeginForm("register", "account", FormMethod.Post, new { id = "register-form" }))
 {
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(false)
-    <p>
-        @Html.LabelFor(a => a.Email, new { @class = "editor-label" })
-        @Html.EditorFor(a => a.Email)
-    </p>
-    <p>
-        @Html.LabelFor(a => a.Password, new { @class = "editor-label" })
-        @Html.PasswordFor(a => a.Password)
-    </p>
-    <p>
-        @Html.LabelFor(a => a.ConfirmPassword, new { @class = "editor-label" })
-        @Html.PasswordFor(a => a.ConfirmPassword)
-    </p>
-    <input type="button" value="Register" onclick="_postFormData('register-form', '@Url.Action("register", "Account")');" />
+	@Html.AntiForgeryToken()
+	@Html.ValidationSummary(false)
+	<div class="tr">
+		<span class="td">
+			@Html.LabelFor(a => a.Email, new { @class = "editor-label" })
+		</span>
+		<span class="td">
+			@Html.EditorFor(a => a.Email)
+		</span>
+	</div>
+	<div class="tr">
+		<span class="td">
+			@Html.LabelFor(a => a.Password, new { @class = "editor-label" })
+		</span>
+		<span class="td">
+			@Html.PasswordFor(a => a.Password)
+		</span>
+	</div>
+	<div class="tr">
+		<span class="td">
+			@Html.LabelFor(a => a.ConfirmPassword, new { @class = "editor-label" })
+		</span>
+		<span class="td">
+			@Html.PasswordFor(a => a.ConfirmPassword)
+		</span>
+	</div>
+	<div class="tr">
+		<span class="td">
+			<input type="button" class="button" value="Register" onclick="_postFormData('register-form', '@Url.Action("register", "Account")');" />
+		</span>
+		<span class="td">
+			<input type="reset" class="button" value="Reset" />
+		</span>
+	</div>
+
 }
