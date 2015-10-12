@@ -4,17 +4,38 @@
 {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(false)
-    <p>
-        @Html.LabelFor(a => a.Email, new { @class = "editor-label" })
-        @Html.EditorFor(a => a.Email)
-    </p>
-    <p>
-        @Html.LabelFor(a => a.Password, new { @class = "editor-label" })
-        @Html.PasswordFor(a => a.Password)
-    </p>
-    <p>
-        @Html.LabelFor(a => a.RememberMe, new { @class = "editor-label checkbox" })
-        @Html.CheckBoxFor(a => a.RememberMe)
-    </p>
-    <input type="button" value="Log in" onclick="_postFormData('login-form', '@Url.Action("Login","Account")');" />
+
+    <div class="tr">
+        <span class="td">
+            @Html.LabelFor(a => a.Email, new { @class = "editor-label" })
+        </span>
+        <span class="td">
+            @Html.EditorFor(a => a.Email)
+        </span>
+
+    </div>
+    <div class="tr">
+        <span class="td">
+            @Html.LabelFor(a => a.Password, new { @class = "editor-label" })
+        </span>
+        <span class="td">
+            @Html.PasswordFor(a => a.Password)
+        </span>
+    </div>
+    <div class="tr">
+        <span class="td">
+            @Html.LabelFor(a => a.RememberMe, new { @class = "editor-label checkbox" })
+        </span>
+        <span class="td">
+            @Html.CheckBoxFor(a => a.RememberMe)
+        </span>
+    </div>
+    <div class="tr">
+        <span class="td">
+            <input type="button" class="button" value="Log in" onclick="_postFormData('login-form', '@Url.Action("Login","Account")');" />
+        </span>
+        <span class="td">
+            <input type="reset" class="button" value="Reset" />
+        </span>
+    </div>
 }

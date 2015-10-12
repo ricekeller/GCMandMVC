@@ -28,7 +28,6 @@
 		    }
 		}
 	});
-	loadNews();
 });
 function _postFormData(formid, url)
 {
