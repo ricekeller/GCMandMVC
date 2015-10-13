@@ -1,5 +1,46 @@
 ﻿@{
-    ViewBag.Title = "InRoom";
+	ViewBag.Title = "InRoom";
 }
+<!DOCTYPE html>
 
-<h2>InRoom</h2>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Chat/Chat.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" href="~/Content/CSS/Chat/Chat.css" type="text/css" />
+</head>
+<body>
+	<div id="body">
+		<div class="upper">
+
+		</div>
+		<div class="center">
+			<div class="center-left">
+
+			</div>
+			<div class="center-center">
+				<div class="messages-container overflow">
+					<div id="messages">
+
+					</div>
+				</div>
+				<div class="input-container">
+
+				</div>
+			</div>
+			<div class="center-right overflow">
+				<div id="users-list">
+
+				</div>
+			</div>
+		</div>
+		<div class="bottom">
+
+		</div>
+	</div>
+</body>
+</html>

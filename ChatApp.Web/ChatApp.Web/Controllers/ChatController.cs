@@ -8,30 +8,30 @@ using ChatApp.Web.Models.ViewModels;
 
 namespace ChatApp.Web.Controllers
 {
-    [Authorize]
-    public class ChatController : Controller
-    {
-        public ActionResult Index()
-        {
-            return View(ChatCenter.GetRooms());
-        }
+	[Authorize]
+	public class ChatController : Controller
+	{
+		public ActionResult Index()
+		{
+			return View(ChatCenter.GetRooms());
+		}
 
 		public JsonResult GetDashboardInfo()
 		{
-			return Json(new ChatDashboardViewModel(){NumofRooms=ChatCenter.GetNumberOfRooms(),NumofUsers=ChatCenter.GetNumberOfUsers()},JsonRequestBehavior.AllowGet);
+			return Json(new ChatDashboardViewModel() { NumofRooms = ChatCenter.GetNumberOfRooms(), NumofUsers = ChatCenter.GetNumberOfUsers() }, JsonRequestBehavior.AllowGet);
 		}
 
 		[HttpPost]
 		public JsonResult CreateRoom(CreateChatroomViewModel m)
 		{
-			string rId=string.Empty;
-			ChatCenter.CreateRoom(m.IsPrivate,m.Password,out rId);
+			string rId = string.Empty;
+			ChatCenter.CreateRoom(m.IsPrivate, m.Password, out rId);
 			return Json(rId);
 		}
 
 		public ActionResult JoinRoom(string rId)
 		{
-			if(ChatCenter.AddUserToRoom(HttpContext.User.Identity.Name,rId))
+			if (ChatCenter.AddUserToRoom(HttpContext.User.Identity.Name, rId))
 			{
 				return RedirectToAction("InRoom");
 			}
@@ -43,7 +43,8 @@ namespace ChatApp.Web.Controllers
 
 		public ActionResult InRoom()
 		{
-			return View();
+			string uId = HttpContext.User.Identity.Name;
+			return View(ChatCenter.GetRoomById(rId));
 		}
-    }
+	}
 }
