@@ -64,52 +64,48 @@ namespace ChatApp.Web.Models.Chat
 		{
 			if (!_rooms.ContainsKey(rId))
 				return false;
-			Chatroom r = null;
 
-			if (_userToRoomIndex.Keys.Contains(uId))
+			Chatroom r = null;
+			if (!AddUserToRoomIndex(uId, rId))
 			{
-				string oldRID = null;
-				if (_userToRoomIndex.TryRemove(uId, out oldRID) && null != oldRID && _rooms.TryGetValue(oldRID, out r))
-				{
-					if (null != r && r.RemoveUser(uId))
-					{
-						if (_rooms.TryGetValue(rId, out r) && null != r && r.AddUser(uId) && AddUserToRoomIndex(uId, rId))
-						{
-							return true;
-						}
-						return false;
-					}
-					return false;
-				}
 				return false;
 			}
-			else
+
+			_rooms.TryGetValue(rId, out r);
+			if (null == r)
 			{
-				if (_rooms.TryGetValue(rId, out r) && null != r && r.AddUser(uId) && AddUserToRoomIndex(uId, rId))
-				{
-					return true;
-				}
 				return false;
 			}
+
+			if (!r.ContainsUser(uId))
+			{
+				r.AddUser(uId);
+			}
+
+			return true;
 		}
 
 		private static bool AddUserToRoomIndex(string uId, string rId)
 		{
 			List<string> rIds = null;
-			if(!_userToRoomIndex.ContainsKey(uId))
+			if (!_userToRoomIndex.ContainsKey(uId))
 			{
 				rIds = new List<string>();
 			}
 			else
 			{
 				_userToRoomIndex.TryGetValue(uId, out rIds);
-				if(null == rIds)
+				if (null == rIds)
 				{
 					return false;
 				}
 			}
-			rIds.Add(rId);
-			_userToRoomIndex.TryAdd(uId, rIds);
+			if (!rIds.Contains(rId))
+			{
+				rIds.Add(rId);
+			}
+
+			_userToRoomIndex.AddOrUpdate(uId, rIds, (key, oldValue) => { return rIds; });
 			return true;
 		}
 

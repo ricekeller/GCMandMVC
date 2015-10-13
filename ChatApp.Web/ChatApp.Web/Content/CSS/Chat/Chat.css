@@ -236,8 +236,8 @@
 
 .messages-container
 {
-	width:100%;
-	height:65%;
+	width:calc(100% - 2px - 0.4em); /* border is 1px, padding of .ui-tabs is .2em*/
+	height:calc(65% - 2px - 0.4em); 
 	background-color:aquamarine;
 }
 

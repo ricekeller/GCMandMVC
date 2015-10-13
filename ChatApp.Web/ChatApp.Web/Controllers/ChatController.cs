@@ -44,7 +44,7 @@ namespace ChatApp.Web.Controllers
 		public ActionResult InRoom()
 		{
 			string uId = HttpContext.User.Identity.Name;
-			return View(ChatCenter.GetRoomById(rId));
+			return View(ChatCenter.GetRoomsUserIn(uId));
 		}
 	}
 }

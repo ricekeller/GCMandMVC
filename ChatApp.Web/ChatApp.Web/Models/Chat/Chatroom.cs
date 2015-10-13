@@ -53,5 +53,10 @@ namespace ChatApp.Web.Models.Chat
 			}
 			return true;
 		}
+
+		public bool ContainsUser(string uId)
+		{
+			return _users.ContainsKey(uId);
+		}
 	}
 }
