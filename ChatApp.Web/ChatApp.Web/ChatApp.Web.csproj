@@ -188,6 +188,7 @@
     <Content Include="Content\CSS\glisse.css" />
     <Content Include="Content\Images\tnb.jpg" />
     <Content Include="Content\Scripts\Chat\Chat.js" />
+    <Content Include="Content\Scripts\Chat\Chatroom.js" />
     <Content Include="Content\Scripts\Games\phaser.js" />
     <Content Include="Content\Scripts\Games\PhaserTest\Game.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\CameraController.js" />

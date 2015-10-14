@@ -136,5 +136,19 @@ namespace ChatApp.Web.Models.Chat
 			}
 			return null;
 		}
+
+		public static bool SendMessageToRoom(Message m,string rId)
+		{
+			if(!_rooms.ContainsKey(rId))
+				return false;
+			
+			Chatroom c = null;
+			_rooms.TryGetValue(rId, out c);
+			if (null == c)
+				return false;
+
+			c.AddMessage(m);
+			return true;
+		}
 	}
 }

@@ -9,6 +9,7 @@ using ChatApp.Web.Models.ViewModels;
 namespace ChatApp.Web.Controllers
 {
 	[Authorize]
+	[ValidateAntiForgeryToken]
 	public class ChatController : Controller
 	{
 		public ActionResult Index()
@@ -45,6 +46,17 @@ namespace ChatApp.Web.Controllers
 		{
 			string uId = HttpContext.User.Identity.Name;
 			return View(ChatCenter.GetRoomsUserIn(uId));
+		}
+
+		[HttpPost]
+		public JsonResult PostMessage(string message, string rId)
+		{
+			Message m=new Message();
+			m.Timestamp = DateTime.Now.ToLongDateString();
+			m.Sender = HttpContext.User.Identity.Name;
+			m.MessageContent = message;
+			bool res=ChatCenter.SendMessageToRoom(m, rId);
+			return Json(new JsonResponse<int>() { Success = res });
 		}
 	}
 }

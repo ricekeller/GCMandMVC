@@ -11,7 +11,7 @@
 	<title>@ViewBag.Title</title>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="~/Content/Scripts/Chat/Chat.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Chat/Chatroom.js"></script>
 	<script type="text/javascript" src="https://cdn.ckeditor.com/4.5.4/full/ckeditor.js"></script>
 	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
 	<link rel="stylesheet" href="~/Content/CSS/Chat/Chat.css" type="text/css" />
@@ -26,6 +26,9 @@
 					tabs.tabs("refresh");
 				}
 			});
+
+			var edt=CKEDITOR.replace('input-area');
+			var cr = new Illc.Chatroom(edt);
 		});
 	</script>
 </head>
@@ -72,12 +75,9 @@
 					}
 				</div>
 				<div class="input-container">
-					<div>
+					<div class="inputarea">
 						<form>
 							<textarea name="input-area" id="input-area" rows="10" cols="80"></textarea>
-							<script>
-								CKEDITOR.replace('input-area');
-							</script>
 						</form>
 					</div>
 				</div>
