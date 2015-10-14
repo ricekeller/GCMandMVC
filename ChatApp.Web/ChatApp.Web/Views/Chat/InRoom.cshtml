@@ -2,7 +2,7 @@
 	ViewBag.Title = "InRoom";
 }
 @using ChatApp.Web.Models.Chat;
-@model List<Chatroom>
+@model ChatApp.Web.Models.ViewModels.InRoomViewModel
 <!DOCTYPE html>
 
 <html>
@@ -16,8 +16,12 @@
 	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
 	<link rel="stylesheet" href="~/Content/CSS/Chat/Chat.css" type="text/css" />
 	<script>
-		$(function ()
-		{
+	$(function ()
+	{
+		var edt = CKEDITOR.replace('input-area');
+		var cr = new Illc.Chatroom(edt);
+		cr.updateCurrentRoomId(@Model.CurrentRoomId);
+
 			var tabs = $("#message-container").tabs();
 			tabs.find(".ui-tabs-nav").sortable({
 				axis: "x",
@@ -26,9 +30,22 @@
 					tabs.tabs("refresh");
 				}
 			});
-
-			var edt=CKEDITOR.replace('input-area');
-			var cr = new Illc.Chatroom(edt);
+			tabs.find("li").each(function(idx,ele)
+			{
+				var cRId=@Model.CurrentRoomId;
+				cRId=cRId.toString();
+				if(cRId===$(this).attr("data-room-id"))
+				{
+					$( "#message-container" ).tabs( "option", "active", idx );
+				}
+			});
+			$("#message-container").on("tabsactivate", function (event, ui)
+			{
+				if (ui.newTab)
+				{
+					cr.updateCurrentRoomId($(ui.newTab[0]).attr('data-room-id'));
+				}
+			});
 		});
 	</script>
 </head>
@@ -44,12 +61,12 @@
 			<div class="center-center">
 				<div id="message-container" class="messages-container overflow">
 					<ul>
-						@for (int i = 1; i <= 5; i++)
+						@for (int i = 0; i < Model.Chatrooms.Count; i++)
 						{
-							<li><a href="#room-@i">Room - @i</a></li>
+							<li data-room-id="@Model.Chatrooms[i].Id"><a href="#room-@i">@Model.Chatrooms[i].Name - [@Model.Chatrooms[i].Id]</a></li>
 						}
 					</ul>
-					@for (int i = 1; i <= 5; i++)
+					@for (int i = 0; i < Model.Chatrooms.Count; i++)
 					{
 						<div id="room-@i">
 							lalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalalffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff

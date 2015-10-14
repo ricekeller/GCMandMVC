@@ -9,7 +9,6 @@ using ChatApp.Web.Models.ViewModels;
 namespace ChatApp.Web.Controllers
 {
 	[Authorize]
-	[ValidateAntiForgeryToken]
 	public class ChatController : Controller
 	{
 		public ActionResult Index()
@@ -34,6 +33,7 @@ namespace ChatApp.Web.Controllers
 		{
 			if (ChatCenter.AddUserToRoom(HttpContext.User.Identity.Name, rId))
 			{
+				TempData["RoomId"] = rId;
 				return RedirectToAction("InRoom");
 			}
 			else
@@ -45,17 +45,18 @@ namespace ChatApp.Web.Controllers
 		public ActionResult InRoom()
 		{
 			string uId = HttpContext.User.Identity.Name;
-			return View(ChatCenter.GetRoomsUserIn(uId));
+			string rId = (string)TempData["RoomId"];
+			return View(new InRoomViewModel() { Chatrooms = ChatCenter.GetRoomsUserIn(uId), CurrentRoomId = rId });
 		}
 
 		[HttpPost]
 		public JsonResult PostMessage(string message, string rId)
 		{
-			Message m=new Message();
+			Message m = new Message();
 			m.Timestamp = DateTime.Now.ToLongDateString();
 			m.Sender = HttpContext.User.Identity.Name;
 			m.MessageContent = message;
-			bool res=ChatCenter.SendMessageToRoom(m, rId);
+			bool res = ChatCenter.SendMessageToRoom(m, rId);
 			return Json(new JsonResponse<int>() { Success = res });
 		}
 	}

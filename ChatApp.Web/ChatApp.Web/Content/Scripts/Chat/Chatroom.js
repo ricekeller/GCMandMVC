@@ -48,4 +48,9 @@ Illc.Chatroom.prototype =
 					{ name: 'custombuttons', items: ['Send'] },
 		];
 	},
+
+	updateCurrentRoomId: function updateCurrentRoomId(newId)
+	{
+		this.__currentRoomId = newId;
+	}
 }

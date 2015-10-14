@@ -13,11 +13,14 @@ namespace ChatApp.Web.Models.Chat
 		private static int MAX = 1000;
 		public bool IsPrivate {get;set;}
 		public string Password {get;set;}
+		public string Id { get; set; }
+		public string Name { get; set; }
 
 		public Chatroom()
 		{
 			this._messageQueue=new ConcurrentQueue<Message>();
 			this._users = new ConcurrentDictionary<string, ChatUser>();
+			Name = "New room";
 		}
 
 		public bool AddUser(string uId)

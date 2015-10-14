@@ -36,6 +36,7 @@ namespace ChatApp.Web.Models.Chat
 			{
 				r.IsPrivate = isPrivate;
 				r.Password = pwd;
+				r.Id = rId;
 				return true;
 			}
 			return false;

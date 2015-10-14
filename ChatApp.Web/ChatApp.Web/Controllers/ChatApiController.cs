@@ -108,6 +108,7 @@ namespace ChatApp.Web.Controllers
 						kv.Value.StreamWriter.Close();
 						//send disconnect message
 					}
+					Console.WriteLine(ex.Message);
 				}
 				catch (Exception ex2)
 				{
