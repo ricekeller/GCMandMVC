@@ -12,6 +12,7 @@ Illc.Chatroom.prototype =
 	__init: function __init()
 	{
 		//add the "Send" command
+		var $this = this;
 		this.__editor.addCommand('cmd_send', {
 			exec: function (editor)
 			{
@@ -19,14 +20,26 @@ Illc.Chatroom.prototype =
 				$.ajax({
 					type: "POST",
 					url: "/Chat/PostMessage/",
-					data: JSON.stringify({ message: data, rId: this.__currentRoomId }),
+					data: JSON.stringify({ message: data, rId: $this.__currentRoomId }),
 					success: function (e)
 					{
-						console.log("success:" + e);
+						//e.Code, e.Success, e.Data
+						if (e.Success === true)
+						{
+							//remove sending pic
+							console.log(1);
+						}
+						else
+						{
+							//change sending to resend btn
+							console.log(0);
+						}
 					},
 					dataType: "json",
 					contentType: "application/json;charset=utf-8",
 				});
+				//add content to message container, add sending pic
+				$this.__createSendingBubble(data);
 			}
 		});
 		//add the "Send" button to toolbar
@@ -52,5 +65,26 @@ Illc.Chatroom.prototype =
 	updateCurrentRoomId: function updateCurrentRoomId(newId)
 	{
 		this.__currentRoomId = newId;
+	},
+
+	__createSendingBubble: function __createSendingBubble(msg)
+	{
+		var $this = this;
+		var reg = new RegExp('^room-[0-9]+$');
+		//find the visible div
+		var div;
+		$("#message-container div").each(function (idx, ele)
+		{
+			if (reg.exec(ele.id) && $(ele).css("display") === "block")
+			{
+				div = $(ele);
+			}
+		});
+
+		//append msg to the div
+		if (div)
+		{
+			div.append(msg);
+		}
 	}
 }

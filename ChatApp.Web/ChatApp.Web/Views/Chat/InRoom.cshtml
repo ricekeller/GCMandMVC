@@ -16,11 +16,11 @@
 	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
 	<link rel="stylesheet" href="~/Content/CSS/Chat/Chat.css" type="text/css" />
 	<script>
-	$(function ()
-	{
-		var edt = CKEDITOR.replace('input-area');
-		var cr = new Illc.Chatroom(edt);
-		cr.updateCurrentRoomId(@Model.CurrentRoomId);
+		$(function ()
+		{
+			var edt = CKEDITOR.replace('input-area');
+			var cr = new Illc.Chatroom(edt);
+			cr.updateCurrentRoomId(@Model.CurrentRoomId);
 
 			var tabs = $("#message-container").tabs();
 			tabs.find(".ui-tabs-nav").sortable({
@@ -69,25 +69,7 @@
 					@for (int i = 0; i < Model.Chatrooms.Count; i++)
 					{
 						<div id="room-@i">
-							lalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalalffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
-							lalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalal
-							alalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalala
-							llalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallala
-							lalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalal
-							allalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallal
-							alalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalala
-							lallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalalla
-							lalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalal
-							alallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalalalalall
-							alalalalallalalalalallalalalalallalalalalallalalalalallalalalalallalala
-							lalallalala
-							lalallalala
-							lalallalala
-							lalallalala
-							lalallalala
-							lalallalala
-							lalallalala
-							lalallalala
+
 						</div>
 					}
 				</div>
