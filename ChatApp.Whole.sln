@@ -22,6 +22,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChatApp.Model", "ChatApp.Mo
 		{8A645971-5E73-4A38-910F-634DC11BFBEE} = {8A645971-5E73-4A38-910F-634DC11BFBEE}
 	EndProjectSection
 EndProject
+Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "GCMClient", "GCMClient\GCMClient.pyproj", "{FBDF0807-C10A-431B-88A3-ECA9B9D90C3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,8 @@ Global
 		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3BE7FABA-D78E-473A-AA18-BB025F20BF1B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBDF0807-C10A-431B-88A3-ECA9B9D90C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBDF0807-C10A-431B-88A3-ECA9B9D90C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
