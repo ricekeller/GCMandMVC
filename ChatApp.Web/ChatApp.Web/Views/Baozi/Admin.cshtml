@@ -1,0 +1,39 @@
+﻿@using ChatApp.Web.Models
+@model List<BaoziCollection>
+
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/_baoziLayout.cshtml";
+}
+
+<div class="baoziContainer">
+	<div class="baoziLeft">
+		<ul>
+			@foreach (BaoziCollection b in Model)
+			{
+				<li data-baoziID="@b.Id">@b.OrderDate.ToShortDateString()</li>
+			}
+		</ul>
+
+	</div>
+	<div class="baoziRight">
+		<table>
+			<thead>
+				<tr>
+					<th>Buyer</th>
+					<th>Quantity</th>
+				</tr>
+			</thead>
+			<tbody>
+				@foreach (BaoziEntry be in Model[0])
+				{
+					<tr>
+						<td>@be.Buyer</td>
+						<td>@be.Quantity</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+
+	</div>
+</div>

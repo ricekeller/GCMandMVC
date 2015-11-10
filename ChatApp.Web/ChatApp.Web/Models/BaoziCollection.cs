@@ -17,7 +17,7 @@ namespace ChatApp.Web.Models
 	public class BaoziCollection : List<BaoziEntry>
 	{
 		public DateTime OrderDate { get; set; }
-
+		public Guid Id { get; set; }
 		public void Save(out string errorMsg)
 		{
 			string t = null;
@@ -89,6 +89,14 @@ namespace ChatApp.Web.Models
 				errMsg = result.LastErrorMessage;
 			}
 			errMsg = null;
+		}
+
+		public static List<BaoziCollection> GetAllBaoziCollection()
+		{
+			Init();
+			MongoCursor<BaoziCollection> col= _baoziCollection.FindAll();
+			List<BaoziCollection> result = new List<BaoziCollection>();
+			return col.SetSortOrder("order_date").ToList<BaoziCollection>();
 		}
 	}
 
