@@ -1,0 +1,36 @@
+﻿body {
+}
+
+.hidden
+{
+	display:none;
+}
+
+.rowCommands
+{
+	
+}
+
+.zeroOpacity
+{
+	opacity:0;
+	transition:opacity 1000ms;
+}
+
+.zeroOpacity:hover
+{
+	opacity:1;
+	animation:ease-in;
+}
+
+.rowCommands img
+{
+	width:26px;
+	height:26px;
+}
+
+.rowCommands div
+{
+	float:left;
+	text-align:center;
+}

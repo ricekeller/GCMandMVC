@@ -20,7 +20,7 @@ namespace ChatApp.Web.Controllers
 		[Authorize()]
 		public ActionResult Admin()
 		{
-			return View();
+			return View(BaoziDB.GetAllBaoziCollection());
 		}
 
 		[Authorize()]
@@ -30,11 +30,8 @@ namespace ChatApp.Web.Controllers
 			col.OrderDate = DateTime.Now;
 			string err = null;
 			col.Save(out err);
-			if(!string.IsNullOrWhiteSpace(err))
-			{
-				return View(col);
-			}
-			return View();
+			//TODO: display err
+			return View(BaoziDB.GetAllBaoziCollection());
 		}
     }
 }

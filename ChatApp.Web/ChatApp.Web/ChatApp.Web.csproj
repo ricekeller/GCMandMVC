@@ -168,12 +168,14 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Content Include="Content\CSS\Baozi.css" />
     <Content Include="Content\CSS\Chat\Chat.css" />
     <Content Include="Content\CSS\img\loader.gif" />
     <Content Include="Content\CSS\img\bg_maincontainer.jpg" />
     <Content Include="Content\CSS\PhotoViewer.css" />
     <Content Include="Content\CSS\Player.css" />
     <Content Include="Content\CSS\Site.css" />
+    <Content Include="Content\Images\add.png" />
     <Content Include="Content\Images\Games\PhaserTest\1-1.JPG" />
     <Content Include="Content\Images\Games\PhaserTest\btn_rightpanel.png" />
     <Content Include="Content\Images\Games\PhaserTest\bg_rightpanel.png" />
@@ -190,7 +192,9 @@
     <Content Include="Content\Images\loading-black.GIF" />
     <Content Include="Content\Images\loading-blue.gif" />
     <Content Include="Content\CSS\glisse.css" />
+    <Content Include="Content\Images\remove.png" />
     <Content Include="Content\Images\tnb.jpg" />
+    <Content Include="Content\Scripts\baozi.js" />
     <Content Include="Content\Scripts\Chat\Chat.js" />
     <Content Include="Content\Scripts\Chat\Chatroom.js" />
     <Content Include="Content\Scripts\Games\phaser.js" />
@@ -246,6 +250,8 @@
     <Content Include="Views\Account\Signup.cshtml" />
     <Content Include="Views\Account\ProfileDetail.cshtml" />
     <Content Include="Views\Chat\InRoom.cshtml" />
+    <Content Include="Views\Shared\_baoziLayout.cshtml" />
+    <Content Include="Views\Baozi\Admin.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

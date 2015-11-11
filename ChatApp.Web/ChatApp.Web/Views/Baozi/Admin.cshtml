@@ -14,7 +14,9 @@
 				<li data-baoziID="@b.Id">@b.OrderDate.ToShortDateString()</li>
 			}
 		</ul>
-
+		<div class="baoziMenu">
+			<button id="btn_addNewBaozi">Add</button>
+		</div>
 	</div>
 	<div class="baoziRight">
 		<table>
@@ -25,15 +27,41 @@
 				</tr>
 			</thead>
 			<tbody>
-				@foreach (BaoziEntry be in Model[0])
+				@if (Model.Count > 0)
 				{
-					<tr>
-						<td>@be.Buyer</td>
-						<td>@be.Quantity</td>
-					</tr>
+					foreach (BaoziEntry be in Model[0])
+					{
+						<tr>
+							<td>@be.Buyer</td>
+							<td>@be.Quantity</td>
+						</tr>
+					}
 				}
 			</tbody>
 		</table>
 
+	</div>
+
+	<div id="div_addBaozi" class="hidden">
+		<form id="frm_addBaozi" method="post">
+			<table>
+				<tr class="baoziRow">
+					<td class="buyer_cell">
+						@Html.TextBox("buyer")
+					</td>
+					<td class="quantity_cell">
+						@Html.TextBox("quantity")
+					</td>
+					<td class="rowCommands zeroOpacity">
+						<div class="btn_add">
+							<img src="~/Content/Images/add.png" />
+						</div>
+						<div class="btn_remove">
+							<img src="~/Content/Images/remove.png" />
+						</div>
+					</td>
+				</tr>
+			</table>
+		</form>
 	</div>
 </div>
