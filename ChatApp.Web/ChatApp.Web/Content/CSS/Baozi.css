@@ -11,16 +11,14 @@
 	
 }
 
-.zeroOpacity
-{
-	opacity:0;
-	transition:opacity 1000ms;
-}
-
-.zeroOpacity:hover
+.baoziRow:hover .rowCommands
 {
 	opacity:1;
-	animation:ease-in;
+}
+.baoziRow .rowCommands
+{
+	opacity:0;
+	transition:opacity 200ms;
 }
 
 .rowCommands img

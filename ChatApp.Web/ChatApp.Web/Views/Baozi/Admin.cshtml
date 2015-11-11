@@ -2,8 +2,8 @@
 @model List<BaoziCollection>
 
 @{
-    ViewBag.Title = "Admin";
-    Layout = "~/Views/Shared/_baoziLayout.cshtml";
+	ViewBag.Title = "Admin";
+	Layout = "~/Views/Shared/_baoziLayout.cshtml";
 }
 
 <div class="baoziContainer">
@@ -11,7 +11,7 @@
 		<ul>
 			@foreach (BaoziCollection b in Model)
 			{
-				<li data-baoziID="@b.Id">@b.OrderDate.ToShortDateString()</li>
+				<li data-baoziid="@b.Id">@b.OrderDate.ToShortDateString()</li>
 			}
 		</ul>
 		<div class="baoziMenu">
@@ -43,25 +43,11 @@
 	</div>
 
 	<div id="div_addBaozi" class="hidden">
-		<form id="frm_addBaozi" method="post">
-			<table>
-				<tr class="baoziRow">
-					<td class="buyer_cell">
-						@Html.TextBox("buyer")
-					</td>
-					<td class="quantity_cell">
-						@Html.TextBox("quantity")
-					</td>
-					<td class="rowCommands zeroOpacity">
-						<div class="btn_add">
-							<img src="~/Content/Images/add.png" />
-						</div>
-						<div class="btn_remove">
-							<img src="~/Content/Images/remove.png" />
-						</div>
-					</td>
-				</tr>
+		@using (Html.BeginForm("Admin","Baozi",FormMethod.Post))
+		{
+			<table id="tbl_baozi">
+				<tbody></tbody>
 			</table>
-		</form>
+		}
 	</div>
 </div>

@@ -25,11 +25,12 @@ namespace ChatApp.Web.Controllers
 
 		[Authorize()]
 		[HttpPost]
-		public ActionResult Admin(BaoziCollection col)
+		public ActionResult Admin(List<BaoziEntry> order)
 		{
-			col.OrderDate = DateTime.Now;
+			BaoziCollection bc = new BaoziCollection(order);
+			bc.OrderDate = DateTime.Now;
 			string err = null;
-			col.Save(out err);
+			bc.Save(out err);
 			//TODO: display err
 			return View(BaoziDB.GetAllBaoziCollection());
 		}
