@@ -6,6 +6,17 @@
 
 		//global variables
 		var newRowIdx = 0;
+		var lastSelectedItem = null;
+
+		//process baozi data
+		var tmp = {};
+		for (var i = 0; i < baozi_data.length; i++)
+		{
+			tmp[baozi_data[i].Id] = baozi_data[i];
+		}
+		baozi_data = tmp;
+
+		//jquery ui
 		$("#div_addBaozi").dialog({
 			autoOpen: false,
 			resizable: false,
@@ -23,6 +34,61 @@
 				}
 			}
 		});
+		$("#baozi_date").menu({
+			select: function (event,ui)
+			{
+				var id = $(ui.item).attr("data-baoziid");
+				if (lastSelectedItem && id === $(lastSelectedItem).attr("data-baoziid"))
+				{
+					return;
+				}
+				//change style
+				if (lastSelectedItem)
+				{
+					$(lastSelectedItem).removeClass("itemSelected");
+				}
+				$(ui.item).addClass("itemSelected");
+				lastSelectedItem = ui.item;
+
+				//get data
+				if(id)
+				{
+					var data = baozi_data[id];
+					//clear and set data
+					SetDataToDisplayInTbl(data)
+				}
+			},
+		});
+		$("#baozi_date li:first").click();
+
+		//style table
+		(function ($)
+		{
+			$.fn.styleTable = function (options)
+			{
+				var defaults = {
+					css: 'ui-styled-table'
+				};
+				options = $.extend(defaults, options);
+
+				return this.each(function ()
+				{
+					$this = $(this);
+					$this.addClass(options.css);
+
+					$this.on('mouseover mouseout', 'tbody tr', function (event)
+					{
+						$(this).children().toggleClass("ui-state-hover",
+													   event.type == 'mouseover');
+					});
+
+					$this.find("th").addClass("ui-state-default");
+					$this.find("td").addClass("ui-widget-content");
+					$this.find("tr:last-child").addClass("last-child");
+				});
+			};
+		})(jQuery);
+		$("table").styleTable();
 
 		//hook up events
 		$("#btn_addNewBaozi").click(function ()
@@ -69,6 +135,19 @@
 			}
 			hookupTableEvents();
 			newRowIdx++;
+		}
+		function SetDataToDisplayInTbl(data)
+		{
+			var tb = $("#tbody_baozi");
+			tb.empty();
+			var newDate=new Date(parseInt(data.OrderDate.substring(6)));
+			$("#order_date").text(newDate.toLocaleString());
+
+			$.each(data.Entries, function (key, val)
+			{
+				tb.append("<tr><td class='ui-widget-content'>" + val.Buyer +
+				"</td><td class='ui-widget-content'>" + val.Quantity + "</td></tr>");
+			});
 		}
 		function hookupTableEvents()
 		{

@@ -251,7 +251,7 @@
     <Content Include="Views\Account\ProfileDetail.cshtml" />
     <Content Include="Views\Chat\InRoom.cshtml" />
     <Content Include="Views\Shared\_baoziLayout.cshtml" />
-    <Content Include="Views\Baozi\Admin.cshtml" />
+    <Content Include="Views\Baozi\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

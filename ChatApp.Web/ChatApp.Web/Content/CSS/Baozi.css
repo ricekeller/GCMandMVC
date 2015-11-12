@@ -1,4 +1,7 @@
 ﻿body {
+	width:100vw;
+	height:100vh;
+	margin:0;
 }
 
 .hidden
@@ -6,9 +9,54 @@
 	display:none;
 }
 
-.rowCommands
+.baoziContainer
 {
-	
+	margin:0 auto;
+	width:50vw;
+	min-width:600px;
+}
+.upper
+{
+	height:15vh;
+	text-align:center;
+	font-size:40px;
+}
+.center
+{
+	height:70vh;
+	overflow:auto;
+}
+.bottom
+{
+	height:15vh;
+}
+.baoziLeft
+{
+	float:left;
+	width:250px;
+	margin-right:10px;
+}
+.baoziRight
+{
+	float:left;
+	width:calc(100% - 260px);
+}
+#baozi_date
+{
+	font-size:28px;
+	text-align:center;
+}
+#baozi_date li
+{
+	padding:0;
+}
+.baoziRight table
+{
+	width:100%;
+}
+.itemSelected
+{
+	background:blue;
 }
 
 .baoziRow:hover .rowCommands
@@ -32,3 +80,45 @@
 	float:left;
 	text-align:center;
 }
+
+
+
+/* styles for the style table */
+/* Internet Explorer 7: setting "separate" results in bad visuals; all other browsers work fine with either value. */
+/* If set to "separate", then this rule is also needed to prevent double vertical borders on hover:
+table.ui-styled-table tr * + th, table.ui-styled-table tr * + td  { border-left-width: 0px !important; } */
+table.ui-styled-table { border-collapse: collapse; }
+
+/* Undo the "bolding" that jQuery UI theme may cause on hovered elements
+/* Internet Explorer 7: does not support "inherit", so use a MS proprietary expression along with an Internet Explorer <= 7 targeting hack
+        to make the visuals consistent across all supported browsers */
+table.ui-styled-table td.ui-state-hover {
+    font-weight: inherit;
+    *font-weight: expression(this.parentNode.currentStyle['fontWeight']);
+}
+
+/* Initally remove bottom border for all cells. */
+table.ui-styled-table th, table.ui-styled-table td { border-bottom-width: 0 !important; }
+
+/* Hovered-row cells should show bottom border (will be highlighted) */
+table.ui-styled-table tbody tr:hover th,
+table.ui-styled-table tbody tr:hover td
+{ border-bottom-width: 1px !important; }
+
+/* Remove top border if the above row is being hovered to prevent double horizontal borders. */
+table.ui-styled-table tbody tr:hover + tr th,
+table.ui-styled-table tbody tr:hover + tr td
+{ border-top-width: 0 !important; }
+
+/* Last-row cells should always show bottom border (not necessarily highlighted if not hovered). */
+/* Internet Explorer 7, Internet Explorer 8: selector dependent on CSS classes because of no support for :last-child */
+table.ui-styled-table tbody tr.last-child th,
+table.ui-styled-table tbody tr.last-child td
+{ border-bottom-width: 1px !important; }
+
+/* Last-row cells should always show bottom border (not necessarily highlighted if not hovered). */
+/* Internet Explorer 8 BUG: if these (unsupported) selectors are added to a rule, other selectors for that rule will stop working as well! */
+/* Internet Explorer 9 and later, Firefox, Chrome: make sure the visuals are working even without the CSS classes crutch. */
+table.ui-styled-table tbody tr:last-child th,
+table.ui-styled-table tbody tr:last-child td
+{ border-bottom-width: 1px !important; }

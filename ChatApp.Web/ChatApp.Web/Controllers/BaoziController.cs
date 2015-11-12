@@ -14,14 +14,8 @@ namespace ChatApp.Web.Controllers
 
         public ActionResult Index()
         {
-            return View();
-        }
-
-		[Authorize()]
-		public ActionResult Admin()
-		{
 			return View(BaoziDB.GetAllBaoziCollection());
-		}
+        }
 
 		[Authorize()]
 		[HttpPost]
@@ -32,7 +26,7 @@ namespace ChatApp.Web.Controllers
 			string err = null;
 			bc.Save(out err);
 			//TODO: display err
-			return View(BaoziDB.GetAllBaoziCollection());
+			return RedirectToAction("Index");
 		}
     }
 }

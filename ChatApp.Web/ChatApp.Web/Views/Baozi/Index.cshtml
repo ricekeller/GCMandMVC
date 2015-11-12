@@ -1,0 +1,70 @@
+﻿@using ChatApp.Web.Models
+@model List<BaoziCollection>
+
+@{
+	ViewBag.Title = "Admin";
+	Layout = "~/Views/Shared/_baoziLayout.cshtml";
+}
+<script type="text/javascript">
+	var baozi_data = @Html.Raw(Json.Encode(Model));
+</script>
+<div class="baoziContainer">
+	<div class="upper">
+		<h1>Baozi Order Detail</h1>
+	</div>
+	<div class="center">
+		<div class="baoziLeft">
+			<h2>Order Dates:</h2>
+			<ul id="baozi_date">
+				@foreach (BaoziCollection b in Model)
+				{
+					<li data-baoziid="@b.Id">@b.OrderDate.ToShortDateString()</li>
+				}
+			</ul>
+			<div class="baoziMenu">
+				@if (HttpContext.Current.User.Identity.IsAuthenticated)
+				{
+					<button id="btn_addNewBaozi">Add</button>
+				}
+			</div>
+		</div>
+		<div class="baoziRight">
+			<h2>Order detail on <span id="order_date"></span></h2>
+			<table>
+				<thead>
+					<tr>
+						<th>Buyer</th>
+						<th>Quantity</th>
+					</tr>
+				</thead>
+				<tbody id="tbody_baozi">
+					@if (Model.Count > 0)
+					{
+						foreach (BaoziEntry be in Model[0])
+						{
+							<tr>
+								<td>@be.Buyer</td>
+								<td>@be.Quantity</td>
+							</tr>
+						}
+					}
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+	<div class="bottom">
+
+	</div>
+	<div id="div_addBaozi" class="hidden">
+		@if (HttpContext.Current.User.Identity.IsAuthenticated)
+		{
+			using (Html.BeginForm("Admin", "Baozi", FormMethod.Post))
+			{
+				<table id="tbl_baozi">
+					<tbody></tbody>
+				</table>
+			}
+		}
+	</div>
+</div>

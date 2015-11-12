@@ -21,14 +21,12 @@ namespace ChatApp.Web.Models
 		public int Quantity { get; set; }
 	}
 	[Serializable]
-	public class BaoziCollection:IEnumerable<BaoziEntry>
+	public class BaoziCollection
 	{
-		public Dictionary<string,BaoziEntry> Entries { get; set; }
-		[BsonDateTimeOptions(Kind=DateTimeKind.Unspecified)]
-		public DateTime OrderDate { get; set; }
-		[BsonId]
-		[BsonRepresentation(BsonType.ObjectId)]
 		public string Id { get; set; }
+		public DateTime OrderDate { get; set; }
+		public Dictionary<string,BaoziEntry> Entries { get; set; }
+
 		public BaoziCollection() 
 		{
 			Entries = new Dictionary<string, BaoziEntry>();
@@ -38,7 +36,7 @@ namespace ChatApp.Web.Models
 			Entries = new Dictionary<string, BaoziEntry>();
 			foreach(BaoziEntry be in src)
 			{
-				Entries.Add(be.Buyer, be);
+				Add(be);
 			}
 		}
 		public BaoziCollection(BsonDocument doc)
@@ -89,10 +87,6 @@ namespace ChatApp.Web.Models
 			return Entries.Values.ToList<BaoziEntry>().GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return GetEnumerator();
-		}
 		public BsonDocument CreateBsonDoc()
 		{
 			BsonDocument doc = new BsonDocument();
