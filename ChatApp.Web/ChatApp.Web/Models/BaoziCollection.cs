@@ -11,6 +11,9 @@ using MongoDB.Driver.Builders;
 
 namespace ChatApp.Web.Models
 {
+	/// <summary>
+	/// This class stores who bought how many baozi
+	/// </summary>
 	[Serializable]
 	public class BaoziEntry
 	{
@@ -20,6 +23,10 @@ namespace ChatApp.Web.Models
 		[Required]
 		public int Quantity { get; set; }
 
+		/// <summary>
+		/// This is used to check if this entry is valid, if it is not, it won't be added to the collection
+		/// </summary>
+		/// <returns>true:valid false:invalid </returns>
 		public bool IsValid()
 		{
 			if(string.IsNullOrWhiteSpace(Buyer))
@@ -33,6 +40,9 @@ namespace ChatApp.Web.Models
 			return true;
 		}
 	}
+	/// <summary>
+	/// This class stores the date when the order is placed and a collections of BaoziEntry.
+	/// </summary>
 	[Serializable]
 	public class BaoziCollection
 	{
@@ -58,12 +68,20 @@ namespace ChatApp.Web.Models
 				}
 			}
 		}
+		/// <summary>
+		/// Save this order to the db
+		/// </summary>
+		/// <param name="errorMsg"></param>
 		public void Save(out string errorMsg)
 		{
 			string t = null;
 			BaoziDB.Save(this, out t);
 			errorMsg = t;
 		}
+		/// <summary>
+		/// Add a BaoziEntry to this order
+		/// </summary>
+		/// <param name="be"></param>
 		public void Add(BaoziEntry be)
 		{
 			if(!Entries.ContainsKey(be.Buyer))
@@ -94,29 +112,18 @@ namespace ChatApp.Web.Models
 		}
 	}
 
-	internal static class BaoziListExtension
-	{
-		public static BsonArray ToBsonDocumentArray(this List<BaoziEntry> list)
-		{
-			BsonArray arr = new BsonArray();
-			BsonDocument bd = null;
-			foreach (BaoziEntry be in list)
-			{
-				bd = new BsonDocument();
-				bd.Add("buyer", be.Buyer);
-				bd.Add("quantity", be.Quantity);
-				arr.Add(BsonValue.Create(bd));
-			}
-			return arr;
-		}
-	}
-
+	/// <summary>
+	/// The database access layer.
+	/// </summary>
 	internal static class BaoziDB
 	{
 		private static MongoDatabase _db;
 		private static MongoCollection<BaoziCollection> _baoziCollection;
 		private static string _COLLECTIONNAME = "BaoziCollection";
 
+		/// <summary>
+		/// Initialize the db if it hasn't been initialized.
+		/// </summary>
 		private static void Init()
 		{
 			if (null == _db)
@@ -143,7 +150,7 @@ namespace ChatApp.Web.Models
 		/// Gets the mongo connection.
 		/// </summary>
 		/// <param name="connectionString">The connection string.</param>
-		/// <returns></returns>
+		/// <returns>The MongoDatabase object</returns>
 		private static MongoDatabase GetMongoConnection(String connectionString)
 		{
 			BaoziEntryMapping.Register();
@@ -153,6 +160,11 @@ namespace ChatApp.Web.Models
 			return server.GetDatabase(mongoUrl.DatabaseName);
 		}
 
+		/// <summary>
+		/// Save a BaoziCollection to db.
+		/// </summary>
+		/// <param name="bc">The BaoziCollection object to be saved</param>
+		/// <param name="errMsg">The output error message if the save operation fails</param>
 		public static void Save(BaoziCollection bc, out string errMsg)
 		{
 			Init();
@@ -180,6 +192,10 @@ namespace ChatApp.Web.Models
 			}
 		}
 
+		/// <summary>
+		/// Get all baozi orders from the db
+		/// </summary>
+		/// <returns>A list of orders</returns>
 		public static List<BaoziCollection> GetAllBaoziCollection()
 		{
 			Init();
@@ -188,6 +204,9 @@ namespace ChatApp.Web.Models
 		}
 	}
 
+	/// <summary>
+	/// The mapping class that will map BaoziCollection object to db document.
+	/// </summary>
 	internal class BaoziCollectionMapping
 	{
 		public static void Register()
@@ -207,6 +226,9 @@ namespace ChatApp.Web.Models
 			}
 		}
 	}
+	/// <summary>
+	/// The mapping class that will map BaoziEntry object to db document.
+	/// </summary>
 	internal class BaoziEntryMapping
 	{
 		public static void Register()

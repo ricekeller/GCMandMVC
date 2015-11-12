@@ -223,6 +223,7 @@
     <Content Include="Content\Scripts\PhotoViewer\masonry.pkgd.min.js" />
     <Content Include="Content\Scripts\PhotoViewer\PhotoViewerBehavior.js" />
     <Content Include="Content\Scripts\Player.js" />
+    <Content Include="Content\Scripts\prefixfree.min.js" />
     <Content Include="Content\Scripts\Queue.js" />
     <Content Include="Content\Scripts\Queue.src.js" />
     <Content Include="Global.asax" />

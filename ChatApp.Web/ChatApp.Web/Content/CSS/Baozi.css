@@ -2,6 +2,11 @@
 	width:100vw;
 	height:100vh;
 	margin:0;
+	background-color:#fbfbfb;
+}
+h1
+{
+	margin:0;
 }
 
 .hidden
@@ -46,6 +51,11 @@
 	font-size:28px;
 	text-align:center;
 }
+#order_date
+{
+	font-family:'Comic Sans MS';
+	font-style:oblique;
+}
 #baozi_date li
 {
 	padding:0;
@@ -60,7 +70,9 @@
 }
 .itemSelected
 {
-	background:blue;
+	background-color:aqua;
+	text-shadow:2px 2px black;
+	box-shadow: 5px 5px 5px 1px rgba(0, 0, 0, 0.2);
 }
 
 .baoziRow:hover .rowCommands
