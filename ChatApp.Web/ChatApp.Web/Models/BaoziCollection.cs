@@ -19,10 +19,25 @@ namespace ChatApp.Web.Models
 		[Range(1,1000)]
 		[Required]
 		public int Quantity { get; set; }
+
+		public bool IsValid()
+		{
+			if(string.IsNullOrWhiteSpace(Buyer))
+			{
+				return false;
+			}
+			if(Quantity<1||Quantity>1000)
+			{
+				return false;
+			}
+			return true;
+		}
 	}
 	[Serializable]
 	public class BaoziCollection
 	{
+		[BsonId]
+		[BsonRepresentation(BsonType.ObjectId)]
 		public string Id { get; set; }
 		public DateTime OrderDate { get; set; }
 		public Dictionary<string,BaoziEntry> Entries { get; set; }
@@ -36,20 +51,11 @@ namespace ChatApp.Web.Models
 			Entries = new Dictionary<string, BaoziEntry>();
 			foreach(BaoziEntry be in src)
 			{
-				Add(be);
-			}
-		}
-		public BaoziCollection(BsonDocument doc)
-		{
-			this.OrderDate = doc["order-date"].ToUniversalTime();
-			this.Id = doc["_id"].AsObjectId.ToString();
-			this.Entries=new Dictionary<string,BaoziEntry>();
-			foreach(BsonValue bv in doc["order-entries"].AsBsonArray)
-			{
-				BaoziEntry be = new BaoziEntry();
-				be.Buyer=bv["buyer"].AsString;
-				be.Quantity=bv["quantity"].AsInt32;
-				this.Entries.Add(be.Buyer,be);
+				if(be.IsValid())
+				{
+					be.Buyer = be.Buyer.Trim();
+					Add(be);
+				}
 			}
 		}
 		public void Save(out string errorMsg)
@@ -85,15 +91,6 @@ namespace ChatApp.Web.Models
 		public IEnumerator<BaoziEntry> GetEnumerator()
 		{
 			return Entries.Values.ToList<BaoziEntry>().GetEnumerator();
-		}
-
-		public BsonDocument CreateBsonDoc()
-		{
-			BsonDocument doc = new BsonDocument();
-			doc.Add("_id", Id);
-			doc.Add("order-date", OrderDate);
-			doc.Add("order-entries", Entries.Values.ToList<BaoziEntry>().ToBsonDocumentArray());
-			return doc;
 		}
 	}
 
@@ -149,7 +146,7 @@ namespace ChatApp.Web.Models
 		/// <returns></returns>
 		private static MongoDatabase GetMongoConnection(String connectionString)
 		{
-			//BaoziEntryMapping.Register();
+			BaoziEntryMapping.Register();
 			BaoziCollectionMapping.Register();
 			var mongoUrl = MongoUrl.Create(connectionString);
 			var server = new MongoClient(connectionString).GetServer();
@@ -162,7 +159,7 @@ namespace ChatApp.Web.Models
 			WriteConcernResult result = null;
 			try
 			{
-				result = _baoziCollection.Save(bc.CreateBsonDoc(), WriteConcern.Acknowledged);
+				result = _baoziCollection.Save(bc, WriteConcern.Acknowledged);
 			}
 			catch (Exception ex)
 			{
@@ -186,14 +183,8 @@ namespace ChatApp.Web.Models
 		public static List<BaoziCollection> GetAllBaoziCollection()
 		{
 			Init();
-			MongoCursor<BsonDocument> col = _db.GetCollection(_COLLECTIONNAME).FindAll();
-			List<BsonDocument> list= col.SetSortOrder(SortBy.Descending("order-date")).ToList<BsonDocument>();
-			List<BaoziCollection> result = new List<BaoziCollection>();
-			foreach (BsonDocument doc in list)
-			{
-				result.Add(new BaoziCollection(doc));
-			}
-			return result;
+			MongoCursor<BaoziCollection> col = _baoziCollection.FindAll().SetSortOrder(SortBy<BaoziCollection>.Descending(a => a.OrderDate));
+			return col.ToList<BaoziCollection>();
 		}
 	}
 

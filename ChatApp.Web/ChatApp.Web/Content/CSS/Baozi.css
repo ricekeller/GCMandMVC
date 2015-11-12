@@ -54,6 +54,10 @@
 {
 	width:100%;
 }
+.baoziRight table td
+{
+	width:50%;
+}
 .itemSelected
 {
 	background:blue;

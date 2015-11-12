@@ -11,87 +11,107 @@ using MongoDB.Driver.Builders;
 
 namespace mongotest
 {
-    public class Entity
+    public class Inventory
     {
+		public Inventory()
+		{
+			Products = new Dictionary<string, Product>();
+		}
         public ObjectId Id { get; set; }
         public string Name { get; set; }
+		public Dictionary<string,Product> Products { get; set; }
     }
+	public class Product
+	{
+		public string Name{get;set;}
+		public int Quantity{get;set;}
+	}
+
     class Program
     {
         static void Main(string[] args)
         {
-            //var connectionString = "mongodb://devtest:devtest@ds029541.mongolab.com:29541/devtest";
-            //var client = new MongoClient(connectionString);
-            //var server = client.GetServer();
-            //var database = server.GetDatabase("devtest");
-            //var collection = database.GetCollection<Entity>("entities");
+			var connectionString = "mongodb://devtest:devtest@ds029541.mongolab.com:29541/devtest";
+			var client = new MongoClient(connectionString);
+			var server = client.GetServer();
+			var database = server.GetDatabase("devtest");
+			var collection = database.GetCollection<Inventory>("Inventory");
+
+			Inventory ivt=new Inventory();
+			for (int i = 0; i < 5;i++ )
+			{
+				ivt.Products.Add("item"+i,new Product() { Name = "item" + i, Quantity = i });
+			}
+			WriteConcernResult result= collection.Save(ivt);
+			if(!result.Ok)
+			{
+				Console.WriteLine("Error!");
+			}
+				//var entity = new Entity { Name = "Tom" };
+				//collection.Insert(entity);
+				//var id = entity.Id;
+
+				//var query = Query<Entity>.EQ(e => e.Id, id);
+				//entity = collection.FindOne(query);
+
+				//entity.Name = "Dick";
+				//collection.Save(entity);
+
+				//var update = Update<Entity>.Set(e => e.Name, "Harry");
+				//collection.Update(query, update);
+
+				//collection.Remove(query);
+
+				//for(int i=0;i<10000;i++)
+				//{
+				//    var entity = new Entity() { Name = i.ToString() };
+				//    collection.Insert(entity);
+				//}
 
 
-            //var entity = new Entity { Name = "Tom" };
-            //collection.Insert(entity);
-            //var id = entity.Id;
-
-            //var query = Query<Entity>.EQ(e => e.Id, id);
-            //entity = collection.FindOne(query);
-
-            //entity.Name = "Dick";
-            //collection.Save(entity);
-
-            //var update = Update<Entity>.Set(e => e.Name, "Harry");
-            //collection.Update(query, update);
-
-            //collection.Remove(query);
-            
-            //for(int i=0;i<10000;i++)
-            //{
-            //    var entity = new Entity() { Name = i.ToString() };
-            //    collection.Insert(entity);
-            //}
+				//post data
+				//var webAddr = "https://android.googleapis.com/gcm/send";
+				//WebClient wc = new WebClient();
+				//wc.Headers.Add("Authorization", "key=AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8");
+				//wc.Headers.Add("Content-Type", "application/json");
+				//var data = new JavaScriptSerializer().Serialize(
+				//		new
+				//		{
+				//			registration_ids = new string[2] { "A", "B" },
+				//			data = new {message="This is the message."}
+				//		}
+				//	);
+				//string result = wc.UploadString(webAddr, "POST", data);
+				//DateTime d1 = new DateTime(1, 1, 1);
+				//DateTime d2 = new DateTime(3000, 12, 12);
+				//TimeSpan ts = d2.Subtract(d1);
+				//ts = d1.Subtract(d2);
 
 
-			//post data
-			//var webAddr = "https://android.googleapis.com/gcm/send";
-			//WebClient wc = new WebClient();
-			//wc.Headers.Add("Authorization", "key=AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8");
-			//wc.Headers.Add("Content-Type", "application/json");
-			//var data = new JavaScriptSerializer().Serialize(
-			//		new
-			//		{
-			//			registration_ids = new string[2] { "A", "B" },
-			//			data = new {message="This is the message."}
-			//		}
-			//	);
-			//string result = wc.UploadString(webAddr, "POST", data);
-			//DateTime d1 = new DateTime(1, 1, 1);
-			//DateTime d2 = new DateTime(3000, 12, 12);
-			//TimeSpan ts = d2.Subtract(d1);
-			//ts = d1.Subtract(d2);
+				//var webAddr = "http://localhost:59957/api/APIKey";
+				//WebClient wc = new WebClient();
+				//wc.Headers.Add("Content-Type", "application/json");
+				//wc.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
+				//wc.Headers.Add("key", "1234h");
+				//var data = new JavaScriptSerializer().Serialize(
+				//        "AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8"
+				//    );
+				//string result = wc.UploadString(webAddr, "POST", data);
 
+				//TestBinaryAndString();
+				//Console.ReadKey();
 
-            //var webAddr = "http://localhost:59957/api/APIKey";
-            //WebClient wc = new WebClient();
-            //wc.Headers.Add("Content-Type", "application/json");
-            //wc.Headers.Add("Accept", "text/html, application/xhtml+xml, */*");
-            //wc.Headers.Add("key", "1234h");
-            //var data = new JavaScriptSerializer().Serialize(
-            //        "AIzaSyAn1OWBTbBaUPQlWu-u6zKB7UOvTVPp1b8"
-            //    );
-            //string result = wc.UploadString(webAddr, "POST", data);
-
-            //TestBinaryAndString();
-            //Console.ReadKey();
-
-			//var webAddr = "http://localhost:59957/Location/SaveLocation";
-			//WebClient wc = new WebClient();
-			//wc.Headers.Add("Content-Type", "application/json");
-			//var data = new JavaScriptSerializer().Serialize(new {
-			//		Latitude = "43.067448",
-			//		Longitude = "-89.412069",
-			//		Timestamp=DateTime.UtcNow
-			//});
-			//string result = wc.UploadString(webAddr, "POST", data);
-			TestSaltedHash();
-			Console.ReadKey();
+				//var webAddr = "http://localhost:59957/Location/SaveLocation";
+				//WebClient wc = new WebClient();
+				//wc.Headers.Add("Content-Type", "application/json");
+				//var data = new JavaScriptSerializer().Serialize(new {
+				//		Latitude = "43.067448",
+				//		Longitude = "-89.412069",
+				//		Timestamp=DateTime.UtcNow
+				//});
+				//string result = wc.UploadString(webAddr, "POST", data);
+				//TestSaltedHash();
+				Console.ReadKey();
         }
 		private static void TestSaltedHash()
 		{
