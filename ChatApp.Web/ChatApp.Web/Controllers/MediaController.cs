@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ChatApp.Web.BL;
+using ChatApp.Web.Models;
 
 namespace ChatApp.Web.Controllers
 {
@@ -16,6 +17,11 @@ namespace ChatApp.Web.Controllers
         {
 			return PartialView();
         }
+
+		public ActionResult Audio()
+		{
+			return View(Utils.GetYoutubeDataViewModel());
+		}
 
         public PartialViewResult PhotoViewer()
         {

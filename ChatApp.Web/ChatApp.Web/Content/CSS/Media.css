@@ -1,0 +1,78 @@
+﻿body {
+	margin:0;
+	padding:0;
+	width:100vw;
+	height:100vh;
+}
+
+#mainContainer
+{
+	width:100%;
+	height:100%;
+}
+#upper
+{
+	width:100%;
+	height:15%;
+}
+#center
+{
+	width:100%;
+	height:70%;
+}
+#bottom
+{
+	width:100%;
+	height:15%;
+}
+#centerContainer
+{
+	width:100%;
+	height:100%;
+}
+#center-left
+{
+	height:100%;
+	float:left;
+	width:15%;
+	min-width:150px;
+}
+#center-center
+{
+	height:100%;
+	float:left;
+	width:60%;
+	min-width:480px;
+}
+#center-right
+{
+	height:100%;
+	float:left;
+	width:25%;
+	min-width:250px;
+}
+#playlists-container,#videos-container
+{
+	overflow:auto;
+}
+#center-Container
+{
+	width:100%;
+	height:100%;
+	overflow:hidden;
+}
+#player-container
+{
+	width:100%;
+	height:100%;
+}
+#progress-bar
+{
+	position:absolute;
+	background-color:aqua;
+	z-index:-1;
+}
+#control-container
+{
+	position:absolute;
+}

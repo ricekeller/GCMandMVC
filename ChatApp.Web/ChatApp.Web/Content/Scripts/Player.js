@@ -2,55 +2,14 @@
 var playList = null;
 var playListInfo = null;
 
-function initializePlayer()
-{
-	// This code loads the IFrame Player API code asynchronously.
-	var tag = document.createElement('script');
-
-	tag.src = "https://www.youtube.com/iframe_api";
-	var firstScriptTag = document.getElementsByTagName('script')[0];
-	firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-}
-function onYouTubeIframeAPIReady()
-{
-	player = new YT.Player('iframe-player', {
-		height: '390',
-		width: '640',
-		listType: 'playlist',
-		list: 'PLebSyLoh-P6d4-cPhrQCNKJqNFTONMUPH',
-		events: {
-			'onReady': onPlayerReady,
-			'onStateChange': onPlayerStateChange
-		}
-	});
-}
-
-function onPlayerReady(event)
+function onPlayerReady_(event)
 {
 	player.cuePlaylist({
 		listType: "playlist",
 		list: "PLebSyLoh-P6d4-cPhrQCNKJqNFTONMUPH",
 	});
-	__getPlayListInfo("PLebSyLoh-P6d4-cPhrQCNKJqNFTONMUPH");
 }
 
-var done = false;
-function onPlayerStateChange(event)
-{
-	switch(event.data)
-	{
-		case YT.PlayerState.ENDED:
-			break;
-		case YT.PlayerState.PLAYING:
-			break;
-		case YT.PlayerState.PAUSED:
-			break;
-		case YT.PlayerState.BUFFERING:
-			break;
-		case YT.PlayerState.CUED:
-			break;
-	}
-}
 function stopVideo()
 {
 	player.stopVideo();
@@ -62,29 +21,152 @@ function __buildPlayList()
 	ul.empty();
 	for (var i = 0; i < playListInfo.items.length; i++)
 	{
-	    var title = playListInfo.items[i].snippet.title;
-	    var li = $("<li></li>").addClass("player-center-main-listitem").text(title).data("idx",i);
+		var title = playListInfo.items[i].snippet.title;
+		var li = $("<li></li>").addClass("player-center-main-listitem").text(title).data("idx", i);
 		ul.append(li);
 	}
-    // setup the display style of the play list ul and hook select event
+	// setup the display style of the play list ul and hook select event
 	ul.menu({
-	    select: function (event, ui) {
-	        var idx = ui.item.data("idx");
-	        player.playVideoAt(idx);
-	    }
+		select: function (event, ui)
+		{
+			var idx = ui.item.data("idx");
+			player.playVideoAt(idx);
+		}
 	});
 }
-function __buildListItem(item)
+
+var YouTubePlayer = function ()
 {
 
 }
-
-function __getPlayListInfo(listId)
+YouTubePlayer.prototype =
 {
-    var url = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=" + listId + "&key=" + "AIzaSyCo-q1vlh3Koh9g8cauTwE_x4Va68bMelo";
-    $.get(url, function (data) {
-        playListInfo = data;
-        //get list and build list
-        __buildPlayList();
-    });
+	__data: null,
+	__player: null,
+	__createYoutubePlayer: function ()
+	{
+		this.__player = new YT.Player('player-container', {
+			height: '390',
+			width: '640',
+			listType: 'playlist',
+			playerVars: {
+				controls: 0,
+				fs: 0
+			},
+			events: {
+				'onReady': this.__onPlayerReady.bind(this),
+				'onStateChange': this.__onPlayerStateChange.bind(this),
+				'onPlaybackQuanlityChange': this.__onPlaybackQuanlityChange.bind(this),
+				'onError': this.__onPlayerError.bind(this)
+			}
+		});
+	},
+	__buildPlaylists: function ()
+	{
+		var parent = $("#playlists").empty();
+		var i = 0;
+		var li = null;
+		$.each(this.__data.Data, function (k, v)
+		{
+			li = $("<li></li>").text(v.Playlist.Snippet.Title).data("PlaylistId", k);
+			parent.append(li);
+		});
+		parent.menu({
+			select: this.__onSelectPlaylist.bind(this)
+		});
+	},
+	__buildVideoList: function (ui)
+	{
+		var parent = $("#video-list").empty();
+		var i = 0;
+		var li = null;
+		$.each(this.__data.Data[$(ui.item).data("PlaylistId")].Videos, function (idx, v)
+		{
+			li = $("<li></li>").text(v.Snippet.Title).data("VideoId", v.Snippet.ResourceId.VideoId);
+			parent.append(li);
+		});
+		parent.menu("refresh");
+	},
+	__onSelectPlaylist: function (event, ui)
+	{
+		//build the list
+		this.__buildVideoList(ui);
+		//display the title
+		var listId = $(ui.item).data("PlaylistId");
+		$("#span_list_title").text(this.__data.Data[listId].Playlist.Snippet.Title);
+		//load and play the list
+		this.__player.loadPlaylist({
+			list: listId
+		});
+	},
+	__onSelectVideo: function (event, ui)
+	{
+
+	},
+	__onPlayerReady: function (event)
+	{
+
+	},
+	__onPlayerStateChange: function (event)
+	{
+		switch (event.data)
+		{
+			case YT.PlayerState.ENDED:
+				break;
+			case YT.PlayerState.PLAYING:
+				break;
+			case YT.PlayerState.PAUSED:
+				break;
+			case YT.PlayerState.BUFFERING:
+				break;
+			case YT.PlayerState.CUED:
+				console.log(1);
+				break;
+		}
+	},
+	__onPlaybackQuanlityChange: function (event)
+	{
+
+	},
+	__onPlayerError: function (event)
+	{
+
+	},
+	__updateProgressBar: function ()
+	{
+		if (this.__player && this.__player.getPlayerState() == 1)
+		{
+			//1: playing
+			var duration = this.__player.getDuration();
+			var current = this.__player.getCurrentTime();
+			if (0 != duration)
+			{
+				$("#progress-bar").width($("#bottom").width() * current / duration);
+			}
+		}
+	},
+	init: function ()
+	{
+		//get data and fill lists
+		this.__data = tmpData;
+		delete window.tmpData;
+
+		this.__buildPlaylists();
+		$("#video-list").menu({
+			select: this.__onSelectVideo.bind(this)
+		});
+
+		//create the player
+		this.__createYoutubePlayer();
+
+		//set the position of progress-bar and control-bar
+		var pos = $("#bottom").offset();
+		var height = $("#bottom").height();
+		var width = $("#bottom").width();
+		$("#progress-bar").offset({ top: pos.top, left: pos.left }).height(height).width(0);
+		$("#control-container").offset({ top: pos.top, left: pos.left }).height(height).width(width);
+
+		//update progress-bar every 500ms
+		setInterval(this.__updateProgressBar.bind(this));
+	},
 }

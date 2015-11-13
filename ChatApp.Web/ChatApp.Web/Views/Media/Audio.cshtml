@@ -1,0 +1,66 @@
+﻿@{
+	ViewBag.Title = "Audio";
+}
+@model ChatApp.Web.Models.ViewModels.YoutubeDataViewModel
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Player.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="~/Content/CSS/Media.css" />
+	<script type="text/javascript" src="~/Content/Scripts/prefixfree.min.js"></script>
+</head>
+<body>
+	<div id="mainContainer">
+		<div id="upper"></div>
+		<div id="center">
+			<div id="centerContainer">
+				<div id="center-left">
+					<h3>Playlists:</h3>
+					<div id="playlists-container">
+						<ul id="playlists"></ul>
+					</div>
+				</div>
+				<div id="center-center">
+					<div id="center-Container">
+						<div id="player-container"></div>
+					</div>
+				</div>
+				<div id="center-right">
+					<h3>Videos in <span id="span_list_title"></span>:</h3>
+					<div id="videos-container">
+						<ul id="video-list"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="bottom">
+			<div id="progress-bar">
+
+			</div>
+			<div id="control-container">
+				
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+		window.tmpData=@Html.Raw(Json.Encode(Model));
+		//load youtube iframe api
+		var tag = document.createElement('script');
+		tag.src = "https://www.youtube.com/iframe_api";
+		var firstScriptTag = document.getElementsByTagName('script')[0];
+		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+		//create player
+		var player = new YouTubePlayer();
+		function onYouTubeIframeAPIReady()
+		{
+			player.init();
+		}
+	</script>
+</body>
+</html>
