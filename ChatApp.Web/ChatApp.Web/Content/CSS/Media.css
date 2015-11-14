@@ -75,4 +75,33 @@
 #control-container
 {
 	position:absolute;
+    display:table;
+}
+#controls
+{
+    vertical-align:middle;
+    display:table-cell;
+}
+#controls-cell
+{
+    width:60%;
+    height:64px;
+    margin:0 auto;
+    text-align:center;
+}
+.control-img-div img
+{
+    width:64px;
+    height:64px;
+}
+.control-img-div
+{
+    width:64px;
+    height:64px;
+    margin:0 10px;
+    display:inline-block;
+}
+.clear
+{
+    clear:both;
 }

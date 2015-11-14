@@ -239,6 +239,11 @@
     <Content Include="Content\CSS\glisse.css" />
     <Content Include="Content\Images\remove.png" />
     <Content Include="Content\Images\tnb.jpg" />
+    <Content Include="Content\Images\YoutubePlayer\next.png" />
+    <Content Include="Content\Images\YoutubePlayer\pause.png" />
+    <Content Include="Content\Images\YoutubePlayer\play.png" />
+    <Content Include="Content\Images\YoutubePlayer\previous.png" />
+    <Content Include="Content\Images\YoutubePlayer\volumn.png" />
     <Content Include="Content\Scripts\baozi.js" />
     <Content Include="Content\Scripts\Chat\Chat.js" />
     <Content Include="Content\Scripts\Chat\Chatroom.js" />
