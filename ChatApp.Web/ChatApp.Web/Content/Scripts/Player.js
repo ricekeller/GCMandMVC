@@ -43,6 +43,8 @@ YouTubePlayer.prototype =
 {
 	__data: null,
 	__player: null,
+	__playerReady: false,
+	__currentPlayStatus: null,
 	__createYoutubePlayer: function ()
 	{
 		this.__player = new YT.Player('player-container', {
@@ -60,6 +62,7 @@ YouTubePlayer.prototype =
 				'onError': this.__onPlayerError.bind(this)
 			}
 		});
+		this.__playerReady = this.__player != null;
 	},
 	__buildPlaylists: function ()
 	{
@@ -112,15 +115,18 @@ YouTubePlayer.prototype =
 		switch (event.data)
 		{
 			case YT.PlayerState.ENDED:
+				$("#play-pause-icon").attr("src", "/Content/Images/YoutubePlayer/play.png");
 				break;
 			case YT.PlayerState.PLAYING:
+				$("#play-pause-icon").attr("src", "/Content/Images/YoutubePlayer/pause.png");
 				break;
 			case YT.PlayerState.PAUSED:
+				$("#play-pause-icon").attr("src", "/Content/Images/YoutubePlayer/play.png");
 				break;
 			case YT.PlayerState.BUFFERING:
 				break;
 			case YT.PlayerState.CUED:
-				console.log(1);
+				$("#play-pause-icon").attr("src", "/Content/Images/YoutubePlayer/play.png");
 				break;
 		}
 	},
@@ -132,9 +138,42 @@ YouTubePlayer.prototype =
 	{
 
 	},
+	__onControlBtnClicked:function (event)
+	{
+		if(event&&event.currentTarget)
+		{
+			var id = event.currentTarget.id;
+			switch(id)
+			{
+				case "btn-previous":
+					this.__player.previousVideo();
+					break;
+				case "btn-playPause":
+					switch(this.__player.getPlayerState())
+					{
+						case -1://unstarted
+						case 0://ended
+						case 2://paused
+						case 5://video cued
+							this.__player.playVideo();
+							break;
+						case 1://playing
+							this.__player.pauseVideo();
+							break;
+					}
+					break;
+				case "btn-next":
+					this.__player.nextVideo();
+					break;
+				case "btn-volumn":
+
+					break;
+			}
+		}
+	},
 	__updateProgressBar: function ()
 	{
-		if (this.__player && this.__player.getPlayerState() == 1)
+		if (this.__player && this.__playerReady && this.__player.getPlayerState && this.__player.getPlayerState() == 1)
 		{
 			//1: playing
 			var duration = this.__player.getDuration();
@@ -165,6 +204,9 @@ YouTubePlayer.prototype =
 		var width = $("#bottom").width();
 		$("#progress-bar").offset({ top: pos.top, left: pos.left }).height(height).width(0);
 		$("#control-container").offset({ top: pos.top, left: pos.left }).height(height).width(width);
+
+		//hookup events
+		$(".control-img-div").click(this.__onControlBtnClicked.bind(this));
 
 		//update progress-bar every 500ms
 		setInterval(this.__updateProgressBar.bind(this));
