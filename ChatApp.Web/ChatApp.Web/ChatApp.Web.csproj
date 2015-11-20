@@ -169,6 +169,7 @@
     <Compile Include="Controllers\BaoziController.cs" />
     <Compile Include="Controllers\ChatApiController.cs" />
     <Compile Include="Controllers\ChatController.cs" />
+    <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LocationController.cs" />
     <Compile Include="Controllers\MediaController.cs" />
@@ -220,7 +221,32 @@
     <Content Include="Content\CSS\PhotoViewer.css" />
     <Content Include="Content\CSS\Player.css" />
     <Content Include="Content\CSS\Site.css" />
+    <Content Include="Content\Fonts\desyrel.png" />
+    <Content Include="Content\Fonts\Skranji-Bold-40.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\feathers-metal-works-desktop-theme.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\bg-down.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\bg.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\btn-bg-down.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\btn-bg.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\btn-corner.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\btn-line.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\chk-checkmark.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\corner.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\darkcnt-corner.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\darkcnt-line.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\header-bg.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\line.png" />
+    <Content Include="Content\EZGUI\metalworks-theme\images\radio-checkmark.png" />
+    <Content Include="Content\Fonts\shortStack.png" />
+    <Content Include="Content\Fonts\shortStack.xml" />
     <Content Include="Content\Images\add.png" />
+    <Content Include="Content\Images\Games\Minesweeper\6.png" />
+    <Content Include="Content\Images\Games\Minesweeper\1.png" />
+    <Content Include="Content\Images\Games\Minesweeper\2.png" />
+    <Content Include="Content\Images\Games\Minesweeper\5.png" />
+    <Content Include="Content\Images\Games\Minesweeper\4.png" />
+    <Content Include="Content\Images\Games\Minesweeper\3.png" />
+    <Content Include="Content\Images\Games\Minesweeper\blueblock.png" />
     <Content Include="Content\Images\Games\PhaserTest\1-1.JPG" />
     <Content Include="Content\Images\Games\PhaserTest\btn_rightpanel.png" />
     <Content Include="Content\Images\Games\PhaserTest\bg_rightpanel.png" />
@@ -247,6 +273,9 @@
     <Content Include="Content\Scripts\baozi.js" />
     <Content Include="Content\Scripts\Chat\Chat.js" />
     <Content Include="Content\Scripts\Chat\Chatroom.js" />
+    <Content Include="Content\Scripts\Games\EZGUI.js" />
+    <Content Include="Content\Scripts\Games\MineSweeper\Minesweeper.js" />
+    <Content Include="Content\Scripts\Games\phaser-compat-2.4.js" />
     <Content Include="Content\Scripts\Games\phaser.js" />
     <Content Include="Content\Scripts\Games\PhaserTest\Game.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\CameraController.js" />
@@ -263,6 +292,9 @@
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Content\Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Content\Images\Games\PhaserTest\1-1.json" />
+    <Content Include="Content\EZGUI\metalworks-theme\metalworks-theme.json" />
+    <Content Include="Content\Fonts\Skranji-Bold-40.xml" />
+    <Content Include="Content\Fonts\desyrel.xml" />
     <None Include="Content\Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Content\Scripts\jquery.validate.js" />
     <Content Include="Content\Scripts\jquery.validate.min.js" />
@@ -305,6 +337,7 @@
     <Content Include="Views\Baozi\Index.cshtml" />
     <Content Include="Views\Shared\_MediaLayout.cshtml" />
     <Content Include="Views\Media\Audio.cshtml" />
+    <Content Include="Views\Game\MineSweeper.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
