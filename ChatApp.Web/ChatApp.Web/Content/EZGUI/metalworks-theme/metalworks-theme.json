@@ -15,8 +15,10 @@
             "./images/line.png",
             "./images/chk-checkmark.png",
             "./images/radio-checkmark.png",
-            "/Content/Fonts/desyrel.fnt",
-            "/Content/Fonts/Skranji-Bold-40.fnt"
+            "/Content/Fonts/desyrel.xml",
+            "/Content/Fonts/Skranji-Bold-40.xml",
+            "/Content/Images/Games/Minesweeper/6.png",
+            "/Content/Images/Games/Minesweeper/1.png"
         ]
     },
 
