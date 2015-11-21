@@ -323,6 +323,7 @@
     <Content Include="Content\Scripts\prefixfree.min.js" />
     <Content Include="Content\Scripts\Queue.js" />
     <Content Include="Content\Scripts\Queue.src.js" />
+    <Content Include="Content\Sound\explosion.mp3" />
     <Content Include="Global.asax" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -353,6 +354,8 @@
     <Content Include="Views\Shared\_MediaLayout.cshtml" />
     <Content Include="Views\Media\Audio.cshtml" />
     <Content Include="Views\Game\MineSweeper.cshtml" />
+    <Content Include="Content\Sound\congratulations.ogg" />
+    <Content Include="Content\Sound\game_over.ogg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

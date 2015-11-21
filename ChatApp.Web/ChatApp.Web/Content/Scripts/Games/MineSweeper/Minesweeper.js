@@ -15,7 +15,7 @@ Minesweeper.prototype =
     __mineDic: null,
     __areaSize: 30,
     __gameResult: null,
-    __debug: true,
+    __debug: false,
     __concealedCount: null,
     __loseTitle: "Sorry, you lost this game. Better luck next time!",
     __winTitle: "Congratulations, you won the game!",
@@ -24,6 +24,8 @@ Minesweeper.prototype =
     __gameWon: 0,
     __elapsedTime: 0,
     __updateTimer: null,
+    __isGameOver: false,
+    __sounds: null,
 
 
     __preload: function () {
@@ -40,6 +42,9 @@ Minesweeper.prototype =
         this.__game.load.image('number6', '/Content/Images/Games/Minesweeper/number6.png');
         this.__game.load.image('number7', '/Content/Images/Games/Minesweeper/number7.png');
         this.__game.load.image('number8', '/Content/Images/Games/Minesweeper/number8.png');
+        this.__game.load.audio('explosion', '/Content/Sound/explosion.mp3');
+        this.__game.load.audio('win', '/Content/Sound/congratulations.ogg');
+        this.__game.load.audio('lose', '/Content/Sound/game_over.ogg');
 
         var EZimages = {};
         EZimages.Keys = ['newgame', 'restart', 'clock', 'mine-tb'];
@@ -52,25 +57,34 @@ Minesweeper.prototype =
         //this is temporary fix, it will be replaced with a specific EZGUI Loader
         this.__game.load.onLoadComplete.add(EZGUI.Compatibility.fixCache, this.__game.load, null, EZimages.Keys);
     },
-    __create: function ()
-    {
+    __create: function () {
         //prevent right click being captured by browser
         this.__game.canvas.oncontextmenu = function (e) { e.preventDefault(); }
         this.__screens = {};
+        this.__sounds = this.__sounds || {};
+        this.__sounds.explosion = this.__game.add.audio('explosion');
+        this.__sounds.win = this.__game.add.audio('win');
+        this.__sounds.lose = this.__game.add.audio('lose');
+
         EZGUI.Theme.load(['/Content/EZGUI/metalworks-theme/metalworks-theme.json'], this.__createEZGUIScreens.bind(this));
     },
     __update: function () {
-        this.__updateFlaggedCount();
-        if (this.__checkWin()) {
-            this.__gameResult = Minesweeper.GameResult.Win;
-        }
-        switch (this.__gameResult) {
-            case Minesweeper.GameResult.Win:
-                this.__endGame(this.__winTitle, true, true);
-                break;
-            case Minesweeper.GameResult.Lose:
-                this.__endGame(this.__loseTitle, false, true);
-                break;
+        if (!this.__isGameOver) {
+            this.__updateFlaggedCount();
+            if (this.__checkWin()) {
+                this.__gameResult = Minesweeper.GameResult.Win;
+            }
+            switch (this.__gameResult) {
+                case Minesweeper.GameResult.Win:
+                    this.__sounds.win.play();
+                    this.__endGame(this.__winTitle, true, true);
+                    break;
+                case Minesweeper.GameResult.Lose:
+                    this.__isGameOver = true;
+                    this.__sounds.explosion.play();
+                    this.__showAllMines();
+                    break;
+            }
         }
     },
     __render: function () {
@@ -175,9 +189,12 @@ Minesweeper.prototype =
     },
     __onAreaMouseDown: function (src, pointer) {
         //should play animation when mouse is down
+        if (this.__isGameOver || src.currentState === Minesweeper.AreaState.Revealed) {
+            return;
+        }
     },
     __onAreaMouseUp: function (src, pointer) {
-        if (src.currentState === Minesweeper.AreaState.Revealed) {
+        if (this.__isGameOver || src.currentState === Minesweeper.AreaState.Revealed) {
             return;
         }
         switch (pointer.button) {
@@ -295,7 +312,7 @@ Minesweeper.prototype =
         this.__updateTimer.loop(1000, this.__timerCallback.bind(this), this);
     },
     __timerCallback: function () {
-        if (this.__gameResult === Minesweeper.GameResult.Playing) {
+        if (this.__gameResult === Minesweeper.GameResult.Playing && !this.__isGameOver) {
             this.__elapsedTime++;
             EZGUI.components.tb_timer_lbl.text = this.__elapsedTime;
         }
@@ -330,6 +347,9 @@ Minesweeper.prototype =
         });
     },
     __onToolbarButtonClicked: function (evt, src) {
+        if (this.__isGameOver) {
+            return;
+        }
         this.__endGame("", "", false);
         switch (src.userData) {
             case 'new':
@@ -348,6 +368,36 @@ Minesweeper.prototype =
         src.animateSizeTo(src.settings.width, src.settings.height, 100, EZGUI.Easing.Back.Out, function () {
             that.__onToolbarButtonClicked(evt, src);
         });
+    },
+    __showAllMines: function () {
+        var grp = this.__game.add.group();
+        var target = null;
+        var position = {};
+        var child = null;
+        grp.alpha = 0;
+        grp.visible = true;
+        grp.position.x = this.__mineGrid.position.x;
+        grp.position.y = this.__mineGrid.position.y;
+        for (var rowIdx in this.__mineDic) {
+            if (this.__mineDic.hasOwnProperty(rowIdx)) {
+                for (var colIdx in this.__mineDic[rowIdx]) {
+                    if (this.__mineDic[rowIdx].hasOwnProperty(colIdx)) {
+                        target = this.__mineGrid.children[parseInt(rowIdx) * this.__gridWidth + parseInt(colIdx)];
+                        child = grp.create(target.position.x, target.position.y, 'mine');
+                        child.width = 30;
+                        child.height = 30;
+                    }
+                }
+            }
+        }
+        //repeat two times
+        var tween = this.__game.add.tween(grp).to({ alpha: 1 }, 1000, "Linear", true, 0, 2);
+        //  And this tells it to yoyo, i.e. fade back to zero again before repeating.
+        tween.yoyo(true);
+        tween.onComplete.add(function () {
+            this.__sounds.lose.play();
+            this.__endGame(this.__loseTitle, "", true);
+        }, this);
     },
     __endGame: function (titleText, playWinAnim, showEndScreen) {
         if (this.__winTitle === titleText) {
@@ -411,6 +461,7 @@ Minesweeper.prototype =
         this.__screens.Toolbar.visible = true;
         this.__createUpdateTimer();
         this.__updateTimer.start();
+        this.__isGameOver = false;
     },
     init: function () {
         this.__game = new Phaser.Game(this.__width, this.__height, Phaser.AUTO, 'minesweeper-container',
