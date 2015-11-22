@@ -20,5 +20,10 @@ namespace ChatApp.Web.Controllers
 		{
 			return View();
 		}
+
+        public ActionResult Hanoi()
+        {
+            return View();
+        }
     }
 }

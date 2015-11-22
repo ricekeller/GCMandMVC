@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "Hanoi";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/Games/phaser.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/Games/phaser-compat-2.4.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/Games/EZGUI.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/Queue.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/Games/Hanoi/Hanoi.js"></script>
+    <script type="text/javascript" src="~/Content/Scripts/prefixfree.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: cadetblue;
+        }
+
+        #hanoi-container {
+            height: 600px;
+            width: 1000px;
+            margin: auto auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="hanoi-container">
+
+    </div>
+</body>
+</html>
