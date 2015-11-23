@@ -240,6 +240,9 @@
     <Content Include="Content\Fonts\shortStack.png" />
     <Content Include="Content\Fonts\shortStack.xml" />
     <Content Include="Content\Images\add.png" />
+    <Content Include="Content\Images\Games\Hanoi\disk.png" />
+    <Content Include="Content\Images\Games\Hanoi\glass-back.png" />
+    <Content Include="Content\Images\Games\Hanoi\pipe.png" />
     <Content Include="Content\Images\Games\Minesweeper\6.png" />
     <Content Include="Content\Images\Games\Minesweeper\1.png" />
     <Content Include="Content\Images\Games\Minesweeper\2.png" />
@@ -289,6 +292,7 @@
     <Content Include="Content\Scripts\Chat\Chat.js" />
     <Content Include="Content\Scripts\Chat\Chatroom.js" />
     <Content Include="Content\Scripts\Games\EZGUI.js" />
+    <Content Include="Content\Scripts\Games\Hanoi\Hanoi.js" />
     <Content Include="Content\Scripts\Games\MineSweeper\Minesweeper.js" />
     <Content Include="Content\Scripts\Games\phaser-compat-2.4.js" />
     <Content Include="Content\Scripts\Games\phaser.js" />
@@ -356,6 +360,7 @@
     <Content Include="Views\Game\MineSweeper.cshtml" />
     <Content Include="Content\Sound\congratulations.ogg" />
     <Content Include="Content\Sound\game_over.ogg" />
+    <Content Include="Views\Game\Hanoi.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
