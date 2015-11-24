@@ -14,6 +14,7 @@ Hanoi.prototype =
 	__isGameOver: false,
 	__isPlaying: false,
 	__staticGroup: null,
+	__sounds: null,
 	__bgFire: null,
 	__bg: null,
 	__strings: { win: "Level completed", lose: "Time's up" },
@@ -36,6 +37,10 @@ Hanoi.prototype =
 		this.__game.load.image('pipe', '/Content/Images/Games/Hanoi/pipe.png');
 		this.__game.load.image('glass-back', '/Content/Images/Games/Hanoi/glass-back.png');
 		this.__game.load.script('filter-fire', '/Content/Scripts/Games/Hanoi/Fire.js');
+		this.__game.load.audio('tick1', '/Content/Sound/clock-tick1.ogg');
+		this.__game.load.audio('tick2', '/Content/Sound/clock-tick2.ogg');
+		this.__game.load.audio('tick3', '/Content/Sound/clock-tick3.ogg');
+		this.__game.load.audio('tick4', '/Content/Sound/clock-tick4.ogg');
 
 		//TODO: change images
 		var EZimages = {};
@@ -76,6 +81,14 @@ Hanoi.prototype =
 		this.__bgFire = this.__game.add.filter('Fire', 800, 600);
 		this.__bgFire.alpha = 0.0;
 		this.__bg.filters = [this.__bgFire];
+
+		//sound
+		this.__sounds = this.__sounds || {};
+		this.__sounds.ticks = [];
+		for (var i = 1; i < 5; i++)
+		{
+			this.__sounds.ticks.push(this.__game.add.audio('tick' + i));
+		}
 
 		EZGUI.Theme.load(['/Content/EZGUI/metalworks-theme/metalworks-theme.json'], this.__createEZGUIScreens.bind(this));
 	},
@@ -204,6 +217,11 @@ Hanoi.prototype =
 			var targetY = this.__height + 20;
 			dialog.animatePosTo(dialog.position.x, targetY, 800, EZGUI.Easing.Back.In, afterAnimationCallback.bind(this));
 		}
+	},
+	__playClockTickSound:function () 
+	{
+		var n = this.__game.rnd.integerInRange(0, this.__sounds.ticks.length - 1);
+		this.__sounds.ticks[n].play();
 	},
 	__createDisks: function ()
 	{
@@ -400,6 +418,10 @@ Hanoi.prototype =
 			if (this.__timeRemains <= 0)
 			{
 				this.__isGameOver = true;
+			}
+			else if (this.__timeRemains <= 15)
+			{
+				this.__playClockTickSound();
 			}
 			EZGUI.components.lbl_time.text = this.__timeRemains;
 		}
