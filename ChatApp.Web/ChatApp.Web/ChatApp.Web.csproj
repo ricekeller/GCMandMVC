@@ -241,6 +241,7 @@
     <Content Include="Content\Fonts\shortStack.xml" />
     <Content Include="Content\Images\add.png" />
     <Content Include="Content\Images\Games\Hanoi\block.png" />
+    <Content Include="Content\Images\Games\Hanoi\block2.png" />
     <Content Include="Content\Images\Games\Hanoi\disk.png" />
     <Content Include="Content\Images\Games\Hanoi\glass-back.png" />
     <Content Include="Content\Images\Games\Hanoi\pipe.png" />
@@ -293,6 +294,7 @@
     <Content Include="Content\Scripts\Chat\Chat.js" />
     <Content Include="Content\Scripts\Chat\Chatroom.js" />
     <Content Include="Content\Scripts\Games\EZGUI.js" />
+    <Content Include="Content\Scripts\Games\Hanoi\Fire.js" />
     <Content Include="Content\Scripts\Games\Hanoi\Hanoi.js" />
     <Content Include="Content\Scripts\Games\MineSweeper\Minesweeper.js" />
     <Content Include="Content\Scripts\Games\phaser-compat-2.4.js" />
