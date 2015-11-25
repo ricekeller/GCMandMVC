@@ -367,6 +367,8 @@
     <Content Include="Content\Sound\clock-tick2.ogg" />
     <Content Include="Content\Sound\clock-tick3.ogg" />
     <Content Include="Content\Sound\clock-tick4.ogg" />
+    <Content Include="Content\Sound\block-mousedown.ogg" />
+    <Content Include="Content\Sound\block-placed.ogg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
