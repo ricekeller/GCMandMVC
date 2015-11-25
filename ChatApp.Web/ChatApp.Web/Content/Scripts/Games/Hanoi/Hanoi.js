@@ -36,6 +36,7 @@ Hanoi.prototype =
         this.__game.load.image('disk', '/Content/Images/Games/Hanoi/block2.png');
         this.__game.load.image('pipe', '/Content/Images/Games/Hanoi/pipe.png');
         this.__game.load.image('glass-back', '/Content/Images/Games/Hanoi/glass-back.png');
+        this.__game.load.image('platform', '/Content/Images/Games/Hanoi/platform.png');
         this.__game.load.script('filter-fire', '/Content/Scripts/Games/Hanoi/Fire.js');
         this.__game.load.audio('tick1', '/Content/Sound/clock-tick1.ogg');
         this.__game.load.audio('tick2', '/Content/Sound/clock-tick2.ogg');
@@ -43,6 +44,8 @@ Hanoi.prototype =
         this.__game.load.audio('tick4', '/Content/Sound/clock-tick4.ogg');
         this.__game.load.audio('disk-mousedown', '/Content/Sound/block-mousedown.ogg');
         this.__game.load.audio('disk-placed', '/Content/Sound/block-placed.ogg');
+        this.__game.load.audio('win', '/Content/Sound/win.ogg');
+        this.__game.load.audio('lose', '/Content/Sound/lose1.ogg');
 
         //TODO: change images
         var EZimages = {};
@@ -93,18 +96,25 @@ Hanoi.prototype =
         }
         this.__sounds.disk_mousedown = this.__game.add.audio('disk-mousedown');
         this.__sounds.disk_placed = this.__game.add.audio('disk-placed');
+        this.__sounds.win = this.__game.add.audio('win');
+        this.__sounds.lose = this.__game.add.audio('lose');
 
         EZGUI.Theme.load(['/Content/EZGUI/metalworks-theme/metalworks-theme.json'], this.__createEZGUIScreens.bind(this));
     },
     __createCylinder: function (x, y, tint)
     {
+        //the background
         var cylinder = this.__staticGroup.create(x, y, 'glass-back');
         cylinder.width = 150;
         cylinder.height = 400;
         cylinder.alpha = 0.4;
-        //cylinder.tint = tint;
         this.__cylinders = this.__cylinders || [];
         this.__cylinders.push(cylinder);
+        //the holder
+        cylinder = this.__staticGroup.create(x, 380, 'platform');
+        cylinder.width = 150;
+        cylinder.height = 50;
+        //the pipe
         cylinder = this.__staticGroup.create(x + 70, y, 'pipe');
         cylinder.width = 10;
     },
@@ -328,16 +338,6 @@ Hanoi.prototype =
                 this.__data[i][this.__data[i].length - 1].input.enableDrag();
             }
         }
-        //var arr = this.__data[fromIdx];
-        //if (arr.length > 0)
-        //{
-        //    arr[arr.length - 1].input.enableDrag();
-        //}
-        //arr = this.__data[toIdx];
-        //if (arr.length - 2 >= 0)
-        //{
-        //    arr[arr.length - 2].input.disableDrag();
-        //}
     },
     __checkOverlap: function (area, spr)
     {
@@ -386,11 +386,13 @@ Hanoi.prototype =
             {
                 //win
                 this.__endGame(this.__screens.End, true, this.__strings.win);
+                this.__sounds.win.play();
             }
             else if (this.__isGameOver)
             {
                 //lose
                 this.__endGame(this.__screens.End, true, this.__strings.lose);
+                this.__sounds.lose.play();
             }
         }
     },
