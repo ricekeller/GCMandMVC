@@ -1,0 +1,10 @@
+﻿@{
+	ViewBag.Title = "SokobanLevelUpload";
+}
+
+<h2>SokobanLevelUpload</h2>
+@using (Html.BeginForm("SokobanLevelUpload", "Game", FormMethod.Post))
+{
+	<textarea id="levelText" name="levelText"></textarea>
+	<input type="submit" />
+}

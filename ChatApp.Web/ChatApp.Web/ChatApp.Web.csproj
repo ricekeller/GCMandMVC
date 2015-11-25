@@ -193,6 +193,7 @@
     <Compile Include="Models\GCMServerHelper.cs" />
     <Compile Include="Models\PasswordSaltedHash.cs" />
     <Compile Include="Models\SecUtility.cs" />
+    <Compile Include="Models\SokobanUtils.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserClassMap.cs" />
     <Compile Include="Models\Utils.cs" />
@@ -278,6 +279,8 @@
     <Content Include="Content\Images\Games\PhaserTest\player1.png" />
     <Content Include="Content\Images\Games\PhaserTest\sword.png" />
     <Content Include="Content\Images\Games\PhaserTest\terrain_1.png" />
+    <Content Include="Content\Images\Games\Sokoban\sprites.png" />
+    <Content Include="Content\Images\Games\Sokoban\sprites.xml" />
     <Content Include="Content\Images\Games\ThreeTest\terrain_1.png" />
     <Content Include="Content\Images\Games\ThreeTest\rockroad.png" />
     <Content Include="Content\Images\loading-black.GIF" />
@@ -300,6 +303,7 @@
     <Content Include="Content\Scripts\Games\phaser-compat-2.4.js" />
     <Content Include="Content\Scripts\Games\phaser.js" />
     <Content Include="Content\Scripts\Games\PhaserTest\Game.js" />
+    <Content Include="Content\Scripts\Games\Sokoban\Sokoban.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\CameraController.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\Detector.js" />
     <Content Include="Content\Scripts\Games\ThreeTest\Game.js" />
@@ -372,6 +376,8 @@
     <Content Include="Content\Sound\block-placed.ogg" />
     <Content Include="Content\Sound\win1.ogg" />
     <Content Include="Content\Sound\lose1.ogg" />
+    <Content Include="Views\Game\Sokoban.cshtml" />
+    <Content Include="Views\Game\SokobanLevelUpload.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

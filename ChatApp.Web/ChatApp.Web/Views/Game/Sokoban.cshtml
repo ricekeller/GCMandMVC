@@ -1,0 +1,72 @@
+﻿@{
+	ViewBag.Title = "Sokoban";
+}
+@model List<ChatApp.Web.Models.SokobanLevel>
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/phaser.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/phaser-compat-2.4.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/EZGUI.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Queue.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/Sokoban/Sokoban.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/prefixfree.min.js"></script>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: cadetblue;
+			color:aqua;
+		}
+
+		#mainContainer {
+			height: 600px;
+			width: 1000px;
+			margin: auto auto;
+			background-color: black;
+		}
+
+		#ui {
+			height: 590px;
+			width: 190px;
+			float: left;
+			border: 5px solid white;
+		}
+
+		#game {
+			height: 100%;
+			width: 800px;
+			float: left;
+		}
+		#slt_level
+		{
+			width:100%;
+		}
+	</style>
+	<script type="text/javascript">
+		window.sokobanLevels = @Html.Raw(Json.Encode(Model));
+	</script>
+</head>
+<body>
+	<div id="mainContainer">
+		<div id="ui">
+			<div id="level-selection-area">
+				<h2>Select level:</h2>
+				<select id="slt_level">
+					@for (int i = 0; i < Model.Count; i++)
+					{
+						<option value="@i">@Model[i].Name</option>
+					}
+				</select>
+			</div>
+		</div>
+		<div id="game">
+
+		</div>
+	</div>
+</body>
+</html>
