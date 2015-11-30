@@ -35,6 +35,9 @@ Sokoban.prototype =
 	},
 	__create: function ()
 	{
+		//start physics
+		this.__game.physics.startSystem(Phaser.Physics.ARCADE);
+
 		this.__screens = this.__screens || {};
 
 		EZGUI.Theme.load(['/Content/EZGUI/metalworks-theme/metalworks-theme.json'], this.__createEZGUIScreens.bind(this));
@@ -132,8 +135,10 @@ Sokoban.Gameplay.prototype =
 	__levelData: null,
 	__levelGroup: null,
 	__squareSize: 40,
+	__playerSize: 38,
 	__spriteKey: "sprites",
 	__playerAnimFrameRate: 10,
+	__movingSpeed: 80,
 	__player: null,
 	__cursorKeys: null,
 	__createLevel: function ()
@@ -162,35 +167,35 @@ Sokoban.Gameplay.prototype =
 				{
 					case '#'://wall
 						metWall = true;
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png');
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'WallRound_Beige.png');
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'WallRound_Beige.png', Sokoban.ObjectType.Wall, true, true);
 						break;
 					case '@'://player
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png');
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
 						this.__createPlayer(j * this.__squareSize, i * this.__squareSize);
 						break;
 					case '+'://player on goal square
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png');
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png');
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
 						this.__createPlayer(j * this.__squareSize, i * this.__squareSize);
 						break;
 					case '$'://box
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png');
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png');
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
 						break;
 					case '*'://box on goal square
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png');
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png');
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png');
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
 						break;
 					case '.'://goal square
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png');
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png');
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
 						break;
 					case ' '://floor
 						if (metWall)
 						{
-							this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png');
+							this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
 						}
 						break;
 				}
@@ -204,21 +209,39 @@ Sokoban.Gameplay.prototype =
 		//create keys
 		this.__cursorKeys = this.__game.input.keyboard.createCursorKeys();
 	},
-	__createSprite: function (x, y, key, frame)
+	__createSprite: function (x, y, key, frame, objType, enablePhysics, immovable)
 	{
 		var spr = this.__levelGroup.create(x, y, key, frame);
 		spr.width = this.__squareSize;
 		spr.height = this.__squareSize;
+		spr.objectType = objType;
+		if (enablePhysics)
+		{
+			this.__game.physics.arcade.enable(spr, Phaser.Physics.ARCADE);
+			spr.body.immovable = immovable;
+		}
 		return spr;
 	},
 	__createPlayer: function (x, y)
 	{
 		var spr = this.__createSprite(x, y, this.__spriteKey, 'Character4.png');
+		spr.width = this.__playerSize;
+		spr.height = this.__playerSize;
+		spr.objectType = Sokoban.ObjectType.Player;
 		spr.animations.add('down', ['Character4.png', 'Character5.png', 'Character6.png'], this.__playerAnimFrameRate);
 		spr.animations.add('up', ['Character7.png', 'Character8.png', 'Character9.png'], this.__playerAnimFrameRate);
 		spr.animations.add('left', ['Character1.png', 'Character10.png'], this.__playerAnimFrameRate);
 		spr.animations.add('right', ['Character2.png', 'Character3.png'], this.__playerAnimFrameRate);
+		this.__game.physics.arcade.enable(spr, Phaser.Physics.ARCADE);
 		this.__player = spr;
+	},
+	__onCollide: function (player, obj)
+	{
+
+	},
+	__onCheckCollide: function (grp,player)
+	{
+
 	},
 	get_isGameOver: function ()
 	{
@@ -230,26 +253,39 @@ Sokoban.Gameplay.prototype =
 	},
 	update: function ()
 	{
+		this.__game.physics.arcade.collide(this.__levelGroup, this.__player, this.__onCollide.bind(this), this.__onCheckCollide.bind(this), this);
+		this.__player.body.velocity.set(0);
+
 		if (this.__cursorKeys.up.isDown)
 		{
 			this.__player.play('up');
+			this.__player.body.velocity.y = -this.__movingSpeed;
 		}
 		else if (this.__cursorKeys.down.isDown)
 		{
 			this.__player.play('down');
+			this.__player.body.velocity.y = this.__movingSpeed;
 		}
 
 		else if (this.__cursorKeys.left.isDown)
 		{
 			this.__player.play('left');
+			this.__player.body.velocity.x = -this.__movingSpeed;
 		}
 		else if (this.__cursorKeys.right.isDown)
 		{
 			this.__player.play('right');
+			this.__player.body.velocity.x = this.__movingSpeed;
 		}
 
 	}
 }
+Sokoban.ObjectType =
+{
+	Wall: 0,
+	Box: 1,
+	Player: 2,
+};
 Sokoban.ScreenJSON =
 {
 	test1:
