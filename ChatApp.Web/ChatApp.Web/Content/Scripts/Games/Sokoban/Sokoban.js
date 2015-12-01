@@ -147,13 +147,14 @@ Sokoban.Gameplay.prototype =
 	__levelMatrix: null,
 	__createLevel: function ()
 	{
-		this.__boxes = [];
+		this.__boxes = {};
 		this.__goals = [];
 		this.__levelMatrix = {};
 		//create level from data
 		this.__levelGroup = this.__game.add.group();
 		var maxJ = 0;
 		var offset = 0;
+		var spr = null;
 		for (var i = 0; i < this.__levelData.LevelData.length; i++)
 		{
 			if (this.__levelData.LevelData[i].indexOf('#') !== -1)
@@ -190,12 +191,14 @@ Sokoban.Gameplay.prototype =
 						break;
 					case '$'://box
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__boxes.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false));
+						this.__boxes[i] = this.__boxes[i] || {};
+						this.__boxes[i][j] = this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
 						break;
 					case '*'://box on goal square
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
 						this.__goals.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
-						this.__boxes.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false));
+						this.__boxes[i] = this.__boxes[i] || {};
+						this.__boxes[i][j] = this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
 						break;
 					case '.'://goal square
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
@@ -224,9 +227,18 @@ Sokoban.Gameplay.prototype =
 			this.__goals[i].bringToTop();
 		}
 		//bring boxes up
-		for (var i = 0; i < this.__boxes.length; i++)
+		for (var i in this.__boxes)
 		{
-			this.__boxes[i].bringToTop();
+			if (this.__boxes.hasOwnProperty(i))
+			{
+				for (var j in this.__boxes[i])
+				{
+					if (this.__boxes[i].hasOwnProperty(j))
+					{
+						this.__boxes[i][j].bringToTop();
+					}
+				}
+			}
 		}
 		//bring player up
 		this.__player.bringToTop();
@@ -294,20 +306,59 @@ Sokoban.Gameplay.prototype =
 			}
 			else if (target === '*' || target === '$')
 			{
-
+				var newI2, newJ2, target2, oldData = target;
+				newI2 = newI + deltaI;
+				newJ2 = newJ + deltaJ;
+				if (!this.__levelMatrix[newI2] || !this.__levelMatrix[newI2][newJ2])
+				{
+					return;
+				}
+				target = this.__levelMatrix[newI2][newJ2];
+				if (target !== '#' && target !== '*' && target !== '$')
+				{
+					target = this.__boxes[newI][newJ];
+					delete this.__boxes[newI][newJ];
+					this.__boxes[newI2] = this.__boxes[newI2] || {};
+					this.__boxes[newI2][newJ2] = target;
+					if (oldData === '*')
+					{
+						this.__levelMatrix[newI][newJ] = '.';
+					}
+					else
+					{
+						this.__levelMatrix[newI][newJ] = ' ';
+					}
+					var newData = this.__levelMatrix[newI2][newJ2];
+					if (newData === '.' || newData === '+')
+					{
+						this.__levelMatrix[newI2][newJ2] = '*';
+					}
+					else
+					{
+						this.__levelMatrix[newI2][newJ2] = '$';
+					}
+					this.__game.add.tween(target).to({ x: newJ2 * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0);
+					this.__game.add.tween(target).to({ y: newI2 * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0);
+					this.__animPlayer(newI, newJ);
+				}
 			}
 			else
 			{
-				spr.canMove = false;
-				spr.rowIdx = newI;
-				spr.colIdx = newJ;
-				this.__game.add.tween(spr).to({ x: newJ * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0);
-				this.__game.add.tween(spr).to({ y: newI * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0).onComplete.add(function ()
-				{
-					spr.canMove = true;
-				});
+				this.__animPlayer(newI, newJ);
 			}
 		}
+	},
+	__animPlayer: function (newI, newJ)
+	{
+		var spr = this.__player;
+		spr.canMove = false;
+		spr.rowIdx = newI;
+		spr.colIdx = newJ;
+		this.__game.add.tween(spr).to({ x: newJ * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0);
+		this.__game.add.tween(spr).to({ y: newI * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0).onComplete.add(function ()
+		{
+			spr.canMove = true;
+		});
 	},
 	get_isGameOver: function ()
 	{
