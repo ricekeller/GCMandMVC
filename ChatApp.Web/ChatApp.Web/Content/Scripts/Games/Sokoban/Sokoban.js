@@ -35,9 +35,6 @@ Sokoban.prototype =
 	},
 	__create: function ()
 	{
-		//start physics
-		this.__game.physics.startSystem(Phaser.Physics.ARCADE);
-
 		this.__screens = this.__screens || {};
 
 		EZGUI.Theme.load(['/Content/EZGUI/metalworks-theme/metalworks-theme.json'], this.__createEZGUIScreens.bind(this));
@@ -61,7 +58,10 @@ Sokoban.prototype =
 	},
 	__render: function ()
 	{
-
+		if (this.__gamePlay)
+		{
+			this.__gamePlay.render();
+		}
 	},
 	__createEZGUIScreens: function ()
 	{
@@ -135,14 +135,21 @@ Sokoban.Gameplay.prototype =
 	__levelData: null,
 	__levelGroup: null,
 	__squareSize: 40,
-	__playerSize: 38,
+	__playerSize: 40,
+	__boxSize: 40,
 	__spriteKey: "sprites",
 	__playerAnimFrameRate: 10,
-	__movingSpeed: 80,
+	__movingSpeed: 250,
 	__player: null,
 	__cursorKeys: null,
+	__boxes: null,
+	__goals: null,
+	__levelMatrix: null,
 	__createLevel: function ()
 	{
+		this.__boxes = [];
+		this.__goals = [];
+		this.__levelMatrix = {};
 		//create level from data
 		this.__levelGroup = this.__game.add.group();
 		var maxJ = 0;
@@ -160,9 +167,11 @@ Sokoban.Gameplay.prototype =
 			var rowData = this.__levelData.LevelData[i + offset];
 			maxJ = Math.max(maxJ, rowData.length);
 			var metWall = false;
+			this.__levelMatrix[i] = this.__levelMatrix[i] || {};
 			for (var j = 0; j < rowData.length; j++)
 			{
 				var data = rowData.charAt(j);
+				this.__levelMatrix[i][j] = data;
 				switch (data)
 				{
 					case '#'://wall
@@ -172,25 +181,25 @@ Sokoban.Gameplay.prototype =
 						break;
 					case '@'://player
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__createPlayer(j * this.__squareSize, i * this.__squareSize);
+						this.__createPlayer(i, j, j * this.__squareSize, i * this.__squareSize);
 						break;
 					case '+'://player on goal square
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
-						this.__createPlayer(j * this.__squareSize, i * this.__squareSize);
+						this.__createPlayer(i, j, j * this.__squareSize, i * this.__squareSize);
 						break;
 					case '$'://box
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
+						this.__boxes.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false));
 						break;
 					case '*'://box on goal square
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
+						this.__goals.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
+						this.__boxes.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false));
 						break;
 					case '.'://goal square
 						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
+						this.__goals.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
 						break;
 					case ' '://floor
 						if (metWall)
@@ -208,6 +217,19 @@ Sokoban.Gameplay.prototype =
 		this.__levelGroup.position.y = (600 - height) / 2;
 		//create keys
 		this.__cursorKeys = this.__game.input.keyboard.createCursorKeys();
+
+		//bring goals up
+		for (var i = 0; i < this.__goals.length; i++)
+		{
+			this.__goals[i].bringToTop();
+		}
+		//bring boxes up
+		for (var i = 0; i < this.__boxes.length; i++)
+		{
+			this.__boxes[i].bringToTop();
+		}
+		//bring player up
+		this.__player.bringToTop();
 	},
 	__createSprite: function (x, y, key, frame, objType, enablePhysics, immovable)
 	{
@@ -215,33 +237,77 @@ Sokoban.Gameplay.prototype =
 		spr.width = this.__squareSize;
 		spr.height = this.__squareSize;
 		spr.objectType = objType;
-		if (enablePhysics)
-		{
-			this.__game.physics.arcade.enable(spr, Phaser.Physics.ARCADE);
-			spr.body.immovable = immovable;
-		}
 		return spr;
 	},
-	__createPlayer: function (x, y)
+	__createPlayer: function (i, j, x, y)
 	{
 		var spr = this.__createSprite(x, y, this.__spriteKey, 'Character4.png');
 		spr.width = this.__playerSize;
 		spr.height = this.__playerSize;
 		spr.objectType = Sokoban.ObjectType.Player;
+		spr.rowIdx = i;
+		spr.colIdx = j;
+		spr.canMove = true;
 		spr.animations.add('down', ['Character4.png', 'Character5.png', 'Character6.png'], this.__playerAnimFrameRate);
 		spr.animations.add('up', ['Character7.png', 'Character8.png', 'Character9.png'], this.__playerAnimFrameRate);
 		spr.animations.add('left', ['Character1.png', 'Character10.png'], this.__playerAnimFrameRate);
 		spr.animations.add('right', ['Character2.png', 'Character3.png'], this.__playerAnimFrameRate);
-		this.__game.physics.arcade.enable(spr, Phaser.Physics.ARCADE);
 		this.__player = spr;
 	},
-	__onCollide: function (player, obj)
+	__updatePlayer: function ()
 	{
+		if (this.__cursorKeys.up.isDown)
+		{
+			this.__movePlayer(-1, 0, 'up');
+		}
+		else if (this.__cursorKeys.down.isDown)
+		{
+			this.__movePlayer(1, 0, 'down');
+		}
 
+		else if (this.__cursorKeys.left.isDown)
+		{
+			this.__movePlayer(0, -1, 'left');
+		}
+		else if (this.__cursorKeys.right.isDown)
+		{
+			this.__movePlayer(0, 1, 'right');
+		}
 	},
-	__onCheckCollide: function (grp,player)
+	__movePlayer: function (deltaI, deltaJ, anim)
 	{
+		var spr = this.__player;
+		if (spr.canMove)
+		{
+			spr.play(anim);
+			var newI, newJ, target;
+			newI = spr.rowIdx + deltaI;
+			newJ = spr.colIdx + deltaJ;
+			if (!this.__levelMatrix[newI] || !this.__levelMatrix[newI][newJ])
+			{
+				return;
+			}
+			target = this.__levelMatrix[newI][newJ];
+			if (target === '#')
+			{
+				return;
+			}
+			else if (target === '*' || target === '$')
+			{
 
+			}
+			else
+			{
+				spr.canMove = false;
+				spr.rowIdx = newI;
+				spr.colIdx = newJ;
+				this.__game.add.tween(spr).to({ x: newJ * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0);
+				this.__game.add.tween(spr).to({ y: newI * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0).onComplete.add(function ()
+				{
+					spr.canMove = true;
+				});
+			}
+		}
 	},
 	get_isGameOver: function ()
 	{
@@ -253,30 +319,10 @@ Sokoban.Gameplay.prototype =
 	},
 	update: function ()
 	{
-		this.__game.physics.arcade.collide(this.__levelGroup, this.__player, this.__onCollide.bind(this), this.__onCheckCollide.bind(this), this);
-		this.__player.body.velocity.set(0);
-
-		if (this.__cursorKeys.up.isDown)
-		{
-			this.__player.play('up');
-			this.__player.body.velocity.y = -this.__movingSpeed;
-		}
-		else if (this.__cursorKeys.down.isDown)
-		{
-			this.__player.play('down');
-			this.__player.body.velocity.y = this.__movingSpeed;
-		}
-
-		else if (this.__cursorKeys.left.isDown)
-		{
-			this.__player.play('left');
-			this.__player.body.velocity.x = -this.__movingSpeed;
-		}
-		else if (this.__cursorKeys.right.isDown)
-		{
-			this.__player.play('right');
-			this.__player.body.velocity.x = this.__movingSpeed;
-		}
+		this.__updatePlayer();
+	},
+	render: function ()
+	{
 
 	}
 }
