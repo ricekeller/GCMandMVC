@@ -18,7 +18,9 @@ Sokoban.prototype =
 	__preload: function ()
 	{
 		this.__game.load.atlasXML('sprites', '/Content/Images/Games/Sokoban/sprites.png', '/Content/Images/Games/Sokoban/sprites.xml');
-
+		this.__game.load.audio('player-move', '/Content/Sound/player-moving.ogg');
+		this.__game.load.audio('box-move', '/Content/Sound/box-moving.ogg');
+		this.__game.load.audio('win', '/Content/Sound/blessing.ogg');
 		//TODO: change images
 		var EZimages = {};
 		EZimages.Keys = ['newgame', 'restart', 'clock', 'mine-tb'];
@@ -151,6 +153,9 @@ Sokoban.Gameplay = function (game, lvlData)
 	this.__game = game;
 	this.__levelData = lvlData;
 	$("#moves").text(0);
+	this.__sounds.player_move = this.__game.add.audio('player-move');
+	this.__sounds.box_move = this.__game.add.audio('box-move');
+	this.__sounds.win = this.__game.add.audio('win');
 	this.__createLevel();
 }
 
@@ -171,7 +176,8 @@ Sokoban.Gameplay.prototype =
 	__boxes: null,
 	__goals: null,
 	__levelMatrix: null,
-	__moves:0,
+	__moves: 0,
+	__sounds:{},
 	__createLevel: function ()
 	{
 		this.__boxes = [];
@@ -379,11 +385,13 @@ Sokoban.Gameplay.prototype =
 					this.__animPlayer(newI, newJ);
 					this.__moves++;
 					$("#moves").text(this.__moves);
+					this.__sounds.box_move.play();
 				}
 			}
 			else
 			{
 				this.__animPlayer(newI, newJ);
+				this.__sounds.player_move.play();
 			}
 		}
 	},
@@ -429,6 +437,7 @@ Sokoban.Gameplay.prototype =
 			}
 		}
 		//play win sound
+		this.__sounds.win.play();
 		//display effect
 		this.__game.add.tween(this.__levelGroup).to({ y: 600 }, 2000, "Back", true, 0, 0).onComplete.add(function ()
 		{

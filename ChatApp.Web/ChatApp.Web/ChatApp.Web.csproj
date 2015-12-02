@@ -378,6 +378,9 @@
     <Content Include="Content\Sound\lose1.ogg" />
     <Content Include="Views\Game\Sokoban.cshtml" />
     <Content Include="Views\Game\SokobanLevelUpload.cshtml" />
+    <Content Include="Content\Sound\box-moving.ogg" />
+    <Content Include="Content\Sound\player-moving.ogg" />
+    <Content Include="Content\Sound\blessing.ogg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
