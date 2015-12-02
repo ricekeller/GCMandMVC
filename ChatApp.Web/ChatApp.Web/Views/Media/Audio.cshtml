@@ -16,7 +16,8 @@
 </head>
 <body>
 	<div id="mainContainer">
-		<div id="upper"></div>
+		<div id="upper">
+		</div>
 		<div id="center">
 			<div id="centerContainer">
 				<div id="center-left">
@@ -44,23 +45,34 @@
 			</div>
 			<div id="control-container">
 				<div id="controls">
-                    <div id="controls-cell">
-                        <div class="control-img-div" id="btn-previous">
-                            <img src="~/Content/Images/YoutubePlayer/previous.png" />
-                        </div>
-                        <div class="control-img-div" id="btn-playPause">
-                            <img id="play-pause-icon" src="~/Content/Images/YoutubePlayer/play.png" />
-                        </div>
-                        <div class="control-img-div" id="btn-next">
-                            <img src="~/Content/Images/YoutubePlayer/next.png" />
-                        </div>
-                        <div class="control-img-div" id="btn-volumn">
-                            <img src="~/Content/Images/YoutubePlayer/volumn.png" />
-                        </div>
-                        <div class="clear"></div>
-                    </div>
-                </div>
+					<div id="controls-cell">
+						<div class="control-img-div" id="btn-previous">
+							<img src="~/Content/Images/YoutubePlayer/previous.png" />
+						</div>
+						<div class="control-img-div" id="btn-playPause">
+							<img id="play-pause-icon" src="~/Content/Images/YoutubePlayer/play.png" />
+						</div>
+						<div class="control-img-div" id="btn-next">
+							<img src="~/Content/Images/YoutubePlayer/next.png" />
+						</div>
+						<div class="control-img-div" id="btn-volumn">
+							<img src="~/Content/Images/YoutubePlayer/volumn.png" />
+						</div>
+						<div class="clear"></div>
+					</div>
+				</div>
 			</div>
+		</div>
+	</div>
+	<div id="overlay" class="hidden">
+		<div class="game-container">
+			<iframe src='@Url.Action("Minesweeper","Game")'></iframe>
+		</div>
+		<div class="game-container">
+			<iframe src='@Url.Action("Hanoi","Game")'></iframe>
+		</div>
+		<div class="game-container">
+			<iframe src='@Url.Action("Sokoban","Game")'></iframe>
 		</div>
 	</div>
 	<script type="text/javascript">
