@@ -46,6 +46,14 @@
 		{
 			width:100%;
 		}
+		#prev-next-control span:hover
+		{
+			cursor:pointer;
+		}
+		#status
+		{
+			margin-top:100px;
+		}
 	</style>
 	<script type="text/javascript">
 		window.sokobanLevels = @Html.Raw(Json.Encode(Model));
@@ -62,6 +70,10 @@
 						<option value="@i">@Model[i].Name</option>
 					}
 				</select>
+				<p id="prev-next-control"><span id="prev" style="float:left"><< Prev</span><span id="next" style="float:right">Next >></span></p>
+				<div id="status">
+					<p>Moves:<span id="moves">0</span></p>
+				</div>
 			</div>
 		</div>
 		<div id="game">

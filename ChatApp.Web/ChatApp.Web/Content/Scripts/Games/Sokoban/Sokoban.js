@@ -50,9 +50,7 @@ Sokoban.prototype =
 			this.__gamePlay.update();
 			if (this.__gamePlay.get_isGameOver())
 			{
-				//TODO:get game result
-				//display it
-				this.__gamePlay = null;
+				this._nextLevel();
 			}
 		}
 	},
@@ -99,6 +97,34 @@ Sokoban.prototype =
 			this.__gamePlay = null;
 		}
 	},
+	_nextLevel: function ()
+	{
+		var val = parseInt($("#slt_level").val());
+		if (val >= $("#slt_level option").length - 1)
+		{
+			val = 0;
+		}
+		else
+		{
+			val++;
+		}
+		$("#slt_level").val(val);
+		$("#slt_level").trigger('change');
+	},
+	_previousLevel: function ()
+	{
+		var val = parseInt($("#slt_level").val());
+		if (val === 0)
+		{
+			val = $("#slt_level option").length - 1;
+		}
+		else
+		{
+			val--;
+		}
+		$("#slt_level").val(val);
+		$("#slt_level").trigger('change');
+	},
 	__init: function ()
 	{
 		this.__game = new Phaser.Game(this.__width, this.__height, Phaser.AUTO, 'game',
@@ -117,7 +143,6 @@ Sokoban.prototype =
 			this.__destroyCurrentGame();
 			this.__createGame(lvlData);
 		}
-
 	}
 }
 
@@ -125,6 +150,7 @@ Sokoban.Gameplay = function (game, lvlData)
 {
 	this.__game = game;
 	this.__levelData = lvlData;
+	$("#moves").text(0);
 	this.__createLevel();
 }
 
@@ -145,9 +171,10 @@ Sokoban.Gameplay.prototype =
 	__boxes: null,
 	__goals: null,
 	__levelMatrix: null,
+	__moves:0,
 	__createLevel: function ()
 	{
-		this.__boxes = {};
+		this.__boxes = [];
 		this.__goals = [];
 		this.__levelMatrix = {};
 		//create level from data
@@ -177,37 +204,35 @@ Sokoban.Gameplay.prototype =
 				{
 					case '#'://wall
 						metWall = true;
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'WallRound_Beige.png', Sokoban.ObjectType.Wall, true, true);
+						this.__createSprite(j, i, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createSprite(j, i, this.__spriteKey, 'WallRound_Beige.png', Sokoban.ObjectType.Wall, true, true);
 						break;
 					case '@'://player
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__createPlayer(i, j, j * this.__squareSize, i * this.__squareSize);
+						this.__createSprite(j, i, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createPlayer(i, j);
 						break;
 					case '+'://player on goal square
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
-						this.__createPlayer(i, j, j * this.__squareSize, i * this.__squareSize);
+						this.__createSprite(j, i, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__createSprite(j, i, this.__spriteKey, 'EndPoint_Blue.png', null, false, true);
+						this.__createPlayer(i, j);
 						break;
 					case '$'://box
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__boxes[i] = this.__boxes[i] || {};
-						this.__boxes[i][j] = this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
+						this.__createSprite(j, i, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__boxes.push(this.__createSprite(j, i, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false));
 						break;
 					case '*'://box on goal square
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__goals.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
-						this.__boxes[i] = this.__boxes[i] || {};
-						this.__boxes[i][j] = this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
+						this.__createSprite(j, i, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__goals.push(this.__createSprite(j, i, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
+						this.__boxes.push(this.__createSprite(j, i, this.__spriteKey, 'Crate_Blue.png', Sokoban.ObjectType.Box, true, false));
 						break;
 					case '.'://goal square
-						this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
-						this.__goals.push(this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
+						this.__createSprite(j, i, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+						this.__goals.push(this.__createSprite(j, i, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
 						break;
 					case ' '://floor
 						if (metWall)
 						{
-							this.__createSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+							this.__createSprite(j, i, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
 						}
 						break;
 				}
@@ -217,7 +242,9 @@ Sokoban.Gameplay.prototype =
 		var width = maxJ * this.__squareSize;
 		var height = (this.__levelData.LevelData.length - offset) * this.__squareSize;
 		this.__levelGroup.position.x = (800 - width) / 2;
-		this.__levelGroup.position.y = (600 - height) / 2;
+		var targetY = (600 - height) / 2;
+		this.__levelGroup.position.y = -height;
+		this.__game.add.tween(this.__levelGroup).to({ y: targetY }, 1000, "Back", true, 0, 0);
 		//create keys
 		this.__cursorKeys = this.__game.input.keyboard.createCursorKeys();
 
@@ -227,33 +254,39 @@ Sokoban.Gameplay.prototype =
 			this.__goals[i].bringToTop();
 		}
 		//bring boxes up
-		for (var i in this.__boxes)
+		for (var i = 0; i < this.__boxes.length; i++)
 		{
-			if (this.__boxes.hasOwnProperty(i))
-			{
-				for (var j in this.__boxes[i])
-				{
-					if (this.__boxes[i].hasOwnProperty(j))
-					{
-						this.__boxes[i][j].bringToTop();
-					}
-				}
-			}
+			this.__boxes[i].bringToTop();
 		}
 		//bring player up
 		this.__player.bringToTop();
 	},
-	__createSprite: function (x, y, key, frame, objType, enablePhysics, immovable)
+	__findBox: function (r, c)
 	{
-		var spr = this.__levelGroup.create(x, y, key, frame);
+		var box = null;
+		for (var i = 0; i < this.__boxes.length; i++)
+		{
+			box = this.__boxes[i];
+			if (box.rowIdx === r && box.colIdx === c)
+			{
+				return box;
+			}
+		}
+		return null;
+	},
+	__createSprite: function (c, r, key, frame, objType, enablePhysics, immovable)
+	{
+		var spr = this.__levelGroup.create(c * this.__squareSize, r * this.__squareSize, key, frame);
 		spr.width = this.__squareSize;
 		spr.height = this.__squareSize;
+		spr.rowIdx = r;
+		spr.colIdx = c;
 		spr.objectType = objType;
 		return spr;
 	},
-	__createPlayer: function (i, j, x, y)
+	__createPlayer: function (i, j)
 	{
-		var spr = this.__createSprite(x, y, this.__spriteKey, 'Character4.png');
+		var spr = this.__createSprite(j, i, this.__spriteKey, 'Character4.png');
 		spr.width = this.__playerSize;
 		spr.height = this.__playerSize;
 		spr.objectType = Sokoban.ObjectType.Player;
@@ -306,7 +339,7 @@ Sokoban.Gameplay.prototype =
 			}
 			else if (target === '*' || target === '$')
 			{
-				var newI2, newJ2, target2, oldData = target;
+				var newI2, newJ2, oldData = target;
 				newI2 = newI + deltaI;
 				newJ2 = newJ + deltaJ;
 				if (!this.__levelMatrix[newI2] || !this.__levelMatrix[newI2][newJ2])
@@ -316,13 +349,13 @@ Sokoban.Gameplay.prototype =
 				target = this.__levelMatrix[newI2][newJ2];
 				if (target !== '#' && target !== '*' && target !== '$')
 				{
-					target = this.__boxes[newI][newJ];
-					delete this.__boxes[newI][newJ];
-					this.__boxes[newI2] = this.__boxes[newI2] || {};
-					this.__boxes[newI2][newJ2] = target;
+					target = this.__findBox(newI, newJ);
+					target.rowIdx = newI2;
+					target.colIdx = newJ2;
 					if (oldData === '*')
 					{
 						this.__levelMatrix[newI][newJ] = '.';
+						this.__changeBoxTexture(target, false);
 					}
 					else
 					{
@@ -332,14 +365,20 @@ Sokoban.Gameplay.prototype =
 					if (newData === '.' || newData === '+')
 					{
 						this.__levelMatrix[newI2][newJ2] = '*';
+						this.__changeBoxTexture(target, true);
 					}
 					else
 					{
 						this.__levelMatrix[newI2][newJ2] = '$';
 					}
 					this.__game.add.tween(target).to({ x: newJ2 * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0);
-					this.__game.add.tween(target).to({ y: newI2 * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0);
+					this.__game.add.tween(target).to({ y: newI2 * this.__squareSize }, this.__movingSpeed, "Linear", true, 0, 0).onComplete.add(function ()
+					{
+						this.__checkGameStatus();
+					}, this);
 					this.__animPlayer(newI, newJ);
+					this.__moves++;
+					$("#moves").text(this.__moves);
 				}
 			}
 			else
@@ -360,6 +399,42 @@ Sokoban.Gameplay.prototype =
 			spr.canMove = true;
 		});
 	},
+	__changeBoxTexture: function (box, isOnGoal)
+	{
+		if (isOnGoal)
+		{
+			box.loadTexture(this.__spriteKey, 'Crate_Blue.png');
+		}
+		else
+		{
+			box.loadTexture(this.__spriteKey, 'Crate_Black.png');
+		}
+	},
+	__checkGameStatus: function ()
+	{
+		for (var i in this.__levelMatrix)
+		{
+			if (this.__levelMatrix.hasOwnProperty(i))
+			{
+				for (var j in this.__levelMatrix[i])
+				{
+					if (this.__levelMatrix[i].hasOwnProperty(j))
+					{
+						if (this.__levelMatrix[i][j] === '.')
+						{
+							return;
+						}
+					}
+				}
+			}
+		}
+		//play win sound
+		//display effect
+		this.__game.add.tween(this.__levelGroup).to({ y: 600 }, 2000, "Back", true, 0, 0).onComplete.add(function ()
+		{
+			this.__isGameOver = true;
+		}, this);
+	},
 	get_isGameOver: function ()
 	{
 		return this.__isGameOver;
@@ -371,11 +446,79 @@ Sokoban.Gameplay.prototype =
 	update: function ()
 	{
 		this.__updatePlayer();
+		//this.__debug();
 	},
 	render: function ()
 	{
 
-	}
+	},
+	//__debugGrp: null,
+	//__debug: function ()
+	//{
+	//	if (this.__debugGrp)
+	//	{
+	//		this.__debugGrp.destroy();
+	//	}
+	//	this.__debugGrp = this.__game.add.group();
+	//	var tmp = [];
+	//	for (var i in this.__levelMatrix)
+	//	{
+	//		if (this.__levelMatrix.hasOwnProperty(i))
+	//		{
+	//			for (var j in this.__levelMatrix[i])
+	//			{
+	//				if (this.__levelMatrix[i].hasOwnProperty(j))
+	//				{
+	//					var data = this.__levelMatrix[i][j];
+	//					switch (data)
+	//					{
+	//						case '#'://wall
+	//							//metWall = true;
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'WallRound_Beige.png', Sokoban.ObjectType.Wall, true, true);
+	//							break;
+	//						case '@'://player
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+	//							//this.__createPlayer(i, j, j * this.__squareSize, i * this.__squareSize);
+	//							break;
+	//						case '+'://player on goal square
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+	//							tmp.push(this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
+	//							//this.__createPlayer(i, j, j * this.__squareSize, i * this.__squareSize);
+	//							break;
+	//						case '$'://box
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
+	//							break;
+	//						case '*'://box on goal square
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+	//							tmp.push(this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Crate_Black.png', Sokoban.ObjectType.Box, true, false);
+	//							break;
+	//						case '.'://goal square
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+	//							tmp.push(this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'EndPoint_Blue.png', null, false, true));
+	//							break;
+	//						case ' '://floor
+	//							this.__debugCreateSprite(j * this.__squareSize, i * this.__squareSize, this.__spriteKey, 'Ground_Concrete.png', null, false, true);
+	//							break;
+	//					}
+	//				}
+	//			}
+	//		}
+	//	}
+	//	for (var i = 0; i < tmp.length; i++)
+	//	{
+	//		tmp[i].bringToTop();
+	//	}
+	//},
+	//__debugCreateSprite: function (x, y, key, frame)
+	//{
+	//	var spr = this.__debugGrp.create(x, y, key, frame);
+	//	spr.width = this.__squareSize;
+	//	spr.height = this.__squareSize;
+	//	return spr;
+	//}
 }
 Sokoban.ObjectType =
 {
@@ -592,4 +735,6 @@ $(function ()
 {
 	var g = new Sokoban();
 	$("#slt_level").change(g._onLevelSelectChange.bind(g));
+	$("#prev").click(g._previousLevel.bind(g));
+	$("#next").click(g._nextLevel.bind(g));
 });
