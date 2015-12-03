@@ -31,6 +31,11 @@
 {
 	overflow:hidden;
 }
+#player-game
+{
+	width:100%;
+	height:100%;
+}
 #centerContainer {
 	width: 100%;
 	height: 100%;
