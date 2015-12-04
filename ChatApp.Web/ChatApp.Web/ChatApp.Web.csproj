@@ -246,6 +246,7 @@
     <Content Include="Content\Images\Games\Hanoi\disk.png" />
     <Content Include="Content\Images\Games\Hanoi\glass-back.png" />
     <Content Include="Content\Images\Games\Hanoi\pipe.png" />
+    <Content Include="Content\Images\Games\Hanoi\tower.png" />
     <Content Include="Content\Images\Games\Minesweeper\6.png" />
     <Content Include="Content\Images\Games\Minesweeper\1.png" />
     <Content Include="Content\Images\Games\Minesweeper\2.png" />
