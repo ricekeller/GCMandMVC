@@ -67,17 +67,11 @@
 			</div>
 		</div>
 	</div>
-	@*<div id="overlay" class="hidden">
+	<div id="overlay" class="game-close">
 		<div class="game-container">
-			<iframe src='@Url.Action("Minesweeper","Game")'></iframe>
+
 		</div>
-		<div class="game-container">
-			<iframe src='@Url.Action("Hanoi","Game")'></iframe>
-		</div>
-		<div class="game-container">
-			<iframe src='@Url.Action("Sokoban","Game")'></iframe>
-		</div>
-	</div>*@
+	</div>
 	<script type="text/javascript">
 		window.tmpData=@Html.Raw(Json.Encode(Model));
 		//load youtube iframe api
@@ -91,9 +85,10 @@
 		{
 			player.init();
 		}
-		$(function () 
+		$(function ()
 		{
 			var playerGame=new PlayerGame("player-game",$("#player-game").width(),$("#player-game").height());
+			$("#overlay").click(playerGame.onOverlayClicked.bind(playerGame));
 		});
 	</script>
 </body>
