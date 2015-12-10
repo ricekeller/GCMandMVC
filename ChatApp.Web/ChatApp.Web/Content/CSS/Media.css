@@ -37,7 +37,6 @@
 	text-align:center;
 	margin:0 auto;
 	overflow: hidden;
-	transition: width ease-in-out 1s,height ease-in-out 1s;
 }
 
 .game-frame {
@@ -149,6 +148,7 @@
 	left: 0;
 	background-color: rgba(192,192,192,0.7);
 	display: table;
+    transition: width ease-in-out 1s,height ease-in-out 1s;
 }
 
 .clear {
