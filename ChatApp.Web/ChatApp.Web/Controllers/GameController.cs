@@ -36,6 +36,11 @@ namespace ChatApp.Web.Controllers
 			return View(lvls);
 		}
 
+		public ActionResult BattleCity()
+		{
+			return View();
+		}
+
 		[Authorize]
 		public ActionResult SokobanLevelUpload()
 		{

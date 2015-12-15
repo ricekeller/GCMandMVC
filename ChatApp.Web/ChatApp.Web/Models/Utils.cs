@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -164,6 +165,49 @@ namespace ChatApp.Web.Models
 				res.Data.Add(id, new YoutubePlaylist() { Id = id, Playlist = pl, Videos = vids });
 			}
 			return res;
+		}
+
+		/// <summary>
+		/// Convert a string to base 64 string
+		/// </summary>
+		/// <param name="s"></param>
+		/// <returns></returns>
+		public static string ToBase64(string s)
+		{
+			return Convert.ToBase64String(Encoding.UTF8.GetBytes(s));
+		}
+
+		/// <summary>
+		/// Convert a base 64 string to original string
+		/// </summary>
+		/// <param name="s"></param>
+		/// <returns></returns>
+		public static string FromBase64(string s)
+		{
+			int len = s.Length % 4;
+			if (len != 0)
+			{
+				len = 4 - len;
+				for (int i = 0; i < len; i++)
+				{
+					s += '=';
+				}
+			}
+			byte[] bs = Convert.FromBase64String(s);
+			return Encoding.UTF8.GetString(bs);
+		}
+
+		/// <summary>
+		/// Download a web resource to byte array
+		/// </summary>
+		/// <param name="url"></param>
+		/// <returns></returns>
+		public static byte[] DownloadFile(string url)
+		{
+			byte[] b = null;
+			WebClient wc = new WebClient();
+			b = wc.DownloadData(url);
+			return b;
 		}
 	}
 }

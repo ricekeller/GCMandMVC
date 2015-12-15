@@ -1,0 +1,44 @@
+﻿@{
+    ViewBag.Title = "BattleCity";
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/phaser.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/BattleCity/MainGame.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/prefixfree.min.js"></script>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: cadetblue;
+		}
+
+		#game-container {
+			height: 640px;
+			width: 640px;
+			margin: auto auto;
+		}
+	</style>
+</head>
+<body>
+	<div id="game-container">
+
+	</div>
+	<script type="text/javascript">
+		$(function ()
+		{
+			var g = new Phaser.Game(640, 640, Phaser.AUTO, 'game-container');
+			g.state.add('boot', MainGame.Boot);
+			g.state.add('preload', MainGame.Preloader);
+			g.state.add('mainmenu', MainGame.MainMenu);
+
+			//start the game
+			g.state.start('boot');
+		});
+	</script>
+</body>
+</html>

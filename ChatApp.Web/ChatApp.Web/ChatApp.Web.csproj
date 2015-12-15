@@ -241,6 +241,12 @@
     <Content Include="Content\Fonts\shortStack.png" />
     <Content Include="Content\Fonts\shortStack.xml" />
     <Content Include="Content\Images\add.png" />
+    <Content Include="Content\Images\Games\BattleCity\all.xml" />
+    <Content Include="Content\Images\Games\BattleCity\brick.png" />
+    <Content Include="Content\Images\Games\BattleCity\eagle.png" />
+    <Content Include="Content\Images\Games\BattleCity\lose.png" />
+    <Content Include="Content\Images\Games\BattleCity\starting_point.png" />
+    <Content Include="Content\Images\Games\BattleCity\stone.png" />
     <Content Include="Content\Images\Games\Hanoi\block2.png" />
     <Content Include="Content\Images\Games\Hanoi\platform.png" />
     <Content Include="Content\Images\Games\Hanoi\disk.png" />
@@ -287,6 +293,8 @@
     <Content Include="Content\Images\loading-black.GIF" />
     <Content Include="Content\Images\loading-blue.gif" />
     <Content Include="Content\CSS\glisse.css" />
+    <Content Include="Content\Images\loadingEmpty.png" />
+    <Content Include="Content\Images\loadingFull.png" />
     <Content Include="Content\Images\remove.png" />
     <Content Include="Content\Images\tnb.jpg" />
     <Content Include="Content\Images\YoutubePlayer\next.png" />
@@ -297,6 +305,7 @@
     <Content Include="Content\Scripts\baozi.js" />
     <Content Include="Content\Scripts\Chat\Chat.js" />
     <Content Include="Content\Scripts\Chat\Chatroom.js" />
+    <Content Include="Content\Scripts\Games\BattleCity\MainGame.js" />
     <Content Include="Content\Scripts\Games\EZGUI.js" />
     <Content Include="Content\Scripts\Games\Hanoi\Fire.js" />
     <Content Include="Content\Scripts\Games\Hanoi\Hanoi.js" />
@@ -383,6 +392,7 @@
     <Content Include="Content\Sound\box-moving.ogg" />
     <Content Include="Content\Sound\player-moving.ogg" />
     <Content Include="Content\Sound\blessing.ogg" />
+    <Content Include="Views\Game\BattleCity.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
