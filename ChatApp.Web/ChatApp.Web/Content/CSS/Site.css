@@ -1,7 +1,7 @@
 ﻿body {
     margin: 0;
     padding: 0;
-    background: url("img/bg_maincontainer.jpg") repeat #01090c top center;
+    background: url("images/bg_maincontainer.jpg") repeat #01090c top center;
 }
 
 .hidden {

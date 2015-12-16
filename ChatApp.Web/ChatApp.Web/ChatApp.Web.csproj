@@ -216,8 +216,23 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Content Include="Content\CSS\Baozi.css" />
     <Content Include="Content\CSS\Chat\Chat.css" />
-    <Content Include="Content\CSS\img\loader.gif" />
-    <Content Include="Content\CSS\img\bg_maincontainer.jpg" />
+    <Content Include="Content\CSS\images\ui-bg_glass_45_0078ae_1x400.png" />
+    <Content Include="Content\CSS\images\ui-bg_glass_55_f8da4e_1x400.png" />
+    <Content Include="Content\CSS\images\ui-bg_glass_75_79c9ec_1x400.png" />
+    <Content Include="Content\CSS\images\ui-bg_gloss-wave_45_e14f1c_500x100.png" />
+    <Content Include="Content\CSS\images\ui-bg_gloss-wave_50_6eac2c_500x100.png" />
+    <Content Include="Content\CSS\images\ui-bg_gloss-wave_75_2191c0_500x100.png" />
+    <Content Include="Content\CSS\images\ui-bg_inset-hard_100_fcfdfd_1x100.png" />
+    <Content Include="Content\CSS\images\ui-icons_0078ae_256x240.png" />
+    <Content Include="Content\CSS\images\ui-icons_056b93_256x240.png" />
+    <Content Include="Content\CSS\images\ui-icons_d8e7f3_256x240.png" />
+    <Content Include="Content\CSS\images\ui-icons_e0fdff_256x240.png" />
+    <Content Include="Content\CSS\images\ui-icons_f5e175_256x240.png" />
+    <Content Include="Content\CSS\images\ui-icons_f7a50d_256x240.png" />
+    <Content Include="Content\CSS\images\ui-icons_fcd113_256x240.png" />
+    <Content Include="Content\CSS\images\loader.gif" />
+    <Content Include="Content\CSS\images\bg_maincontainer.jpg" />
+    <Content Include="Content\CSS\jquery-ui.min.css" />
     <Content Include="Content\CSS\Media.css" />
     <Content Include="Content\CSS\PhotoViewer.css" />
     <Content Include="Content\CSS\Player.css" />
@@ -309,6 +324,7 @@
     <Content Include="Content\Scripts\Games\EZGUI.js" />
     <Content Include="Content\Scripts\Games\Hanoi\Fire.js" />
     <Content Include="Content\Scripts\Games\Hanoi\Hanoi.js" />
+    <Content Include="Content\Scripts\Games\MapEditor\MapEditor.js" />
     <Content Include="Content\Scripts\Games\MineSweeper\Minesweeper.js" />
     <Content Include="Content\Scripts\Games\phaser-compat-2.4.js" />
     <Content Include="Content\Scripts\Games\phaser.js" />
@@ -393,6 +409,7 @@
     <Content Include="Content\Sound\player-moving.ogg" />
     <Content Include="Content\Sound\blessing.ogg" />
     <Content Include="Views\Game\BattleCity.cshtml" />
+    <Content Include="Views\Game\MapEditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

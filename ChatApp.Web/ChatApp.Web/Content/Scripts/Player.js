@@ -85,7 +85,7 @@ YouTubePlayer.prototype =
 		var li = null;
 		$.each(this.__data.Data[$(ui.item).data("PlaylistId")].Videos, function (idx, v)
 		{
-			li = $("<li></li>").text(v.Snippet.Title).data("VideoId", v.Snippet.ResourceId.VideoId);
+			li = $("<li></li>").text(v.Snippet.Title).data("VideoIdx", /*v.Snippet.ResourceId.VideoId*/idx);
 			parent.append(li);
 		});
 		parent.menu("refresh");
@@ -101,10 +101,37 @@ YouTubePlayer.prototype =
 		this.__player.loadPlaylist({
 			list: listId
 		});
+
+		//set the selected style
+		$("#playlists .selected").removeClass("selected");
+		$(ui.item).addClass("selected");
 	},
 	__onSelectVideo: function (event, ui)
 	{
-
+		//get video index in the playlist and play it
+		var vidIdx = $(ui.item).data("VideoIdx");
+		if (null !== vidIdx)
+		{
+			this.__player.playVideoAt(vidIdx);
+			//set the selected style
+			this.__setSelectedVideoStyle(ui.item);
+		}
+	},
+	__setSelectedVideoStyle: function (elem)
+	{
+		$("#video-list .selected").removeClass("selected");
+		if (elem)
+		{
+			$(elem).addClass("selected");
+		}
+		else
+		{
+			var newIdx = this.__player.getPlaylistIndex();
+			if (null !== newIdx)
+			{
+				$($("#video-list li")[newIdx]).addClass("selected");
+			}
+		}
 	},
 	__onPlayerReady: function (event)
 	{
@@ -119,6 +146,10 @@ YouTubePlayer.prototype =
 				break;
 			case YT.PlayerState.PLAYING:
 				$("#play-pause-icon").attr("src", "/Content/Images/YoutubePlayer/pause.png");
+				//set the volume
+				$("#volumn-slider").slider("value", this.__player.getVolume());
+				//set the style 
+				this.__setSelectedVideoStyle();
 				break;
 			case YT.PlayerState.PAUSED:
 				$("#play-pause-icon").attr("src", "/Content/Images/YoutubePlayer/play.png");
@@ -138,18 +169,18 @@ YouTubePlayer.prototype =
 	{
 
 	},
-	__onControlBtnClicked:function (event)
+	__onControlBtnClicked: function (event)
 	{
-		if(event&&event.currentTarget)
+		if (event && event.currentTarget)
 		{
 			var id = event.currentTarget.id;
-			switch(id)
+			switch (id)
 			{
 				case "btn-previous":
 					this.__player.previousVideo();
 					break;
 				case "btn-playPause":
-					switch(this.__player.getPlayerState())
+					switch (this.__player.getPlayerState())
 					{
 						case -1://unstarted
 						case 0://ended
@@ -164,9 +195,6 @@ YouTubePlayer.prototype =
 					break;
 				case "btn-next":
 					this.__player.nextVideo();
-					break;
-				case "btn-volumn":
-
 					break;
 			}
 		}
@@ -186,6 +214,7 @@ YouTubePlayer.prototype =
 	},
 	init: function ()
 	{
+		var that = this;
 		//get data and fill lists
 		this.__data = tmpData;
 		delete window.tmpData;
@@ -204,6 +233,19 @@ YouTubePlayer.prototype =
 		var width = $("#bottom").width();
 		$("#progress-bar").offset({ top: pos.top, left: pos.left }).height(height).width(0);
 		$("#control-container").offset({ top: pos.top, left: pos.left }).height(height).width(width);
+
+		//volumn slider
+		$("#volumn-slider").slider({
+			orientation: "horizontal",
+			range: "min",
+			min: 0,
+			max: 100,
+			value: 60,
+			slide: function (event, ui)
+			{
+				that.__player.setVolume(ui.value);
+			}
+		});
 
 		//hookup events
 		$(".control-img-div").click(this.__onControlBtnClicked.bind(this));

@@ -12,7 +12,7 @@
 	<script type="text/javascript" src="~/Content/Scripts/Player.js"></script>
 	<script type="text/javascript" src="~/Content/Scripts/Games/phaser.js"></script>
 	<script type="text/javascript" src="~/Content/Scripts/PlayerGame.js"></script>
-	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css" />
+	<link rel="stylesheet" type="text/css" href="~/Content/CSS/jquery-ui.min.css" />
 	<link rel="stylesheet" type="text/css" href="~/Content/CSS/Media.css" />
 	<script type="text/javascript" src="~/Content/Scripts/prefixfree.min.js"></script>
 </head>
@@ -58,9 +58,13 @@
 						<div class="control-img-div" id="btn-next">
 							<img src="~/Content/Images/YoutubePlayer/next.png" />
 						</div>
-						<div class="control-img-div" id="btn-volumn">
-							<img src="~/Content/Images/YoutubePlayer/volumn.png" />
+						@*<div class="control-img-div" id="btn-volumn">
+								<img src="~/Content/Images/YoutubePlayer/volumn.png" />
+							</div>*@
+						<div id="volumn-container">
+							<div id="volumn-slider"></div>
 						</div>
+
 						<div class="clear"></div>
 					</div>
 				</div>

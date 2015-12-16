@@ -1,0 +1,86 @@
+﻿@{
+    ViewBag.Title = "MapEditor";
+}
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width" />
+	<title>@ViewBag.Title</title>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/phaser.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/Games/MapEditor/MapEditor.js"></script>
+	<script type="text/javascript" src="~/Content/Scripts/prefixfree.min.js"></script>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: cadetblue;
+		}
+
+		#game-container {
+			height: 100%;
+			width: calc(100% - 200px);
+			margin: 0;
+			padding:0;
+			float:left;
+		}
+		#main-container
+		{
+			height:100vh;
+			width:100vw;
+			margin:0;
+			padding:0;
+		}
+		#controls
+		{
+			width:200px;
+			height:100%;
+			margin:0;
+			padding:0;
+			float:left;
+		}
+	</style>
+</head>
+<body>
+	<div id="main-container">
+		<div id="controls">
+			<ul>
+				<li data-idx="0">
+					<img src="~/Content/Images/Games/BattleCity/brick.png" />
+				</li>
+				<li data-idx="1">
+					<img src="~/Content/Images/Games/BattleCity/stone.png" />
+				</li>
+				<li data-idx="2">
+					<img src="~/Content/Images/Games/BattleCity/eagle.png" />
+				</li>
+				<li data-idx="3">
+					<img src="~/Content/Images/Games/BattleCity/starting_point.png" />
+				</li>
+				<li data-idx="4">
+					<img src="~/Content/Images/Games/BattleCity/brick.png" />
+				</li>
+			</ul>
+		</div>
+		<div id="game-container">
+			<div id="game"></div>
+		</div>
+	</div>
+	
+	<script type="text/javascript">
+		$(function ()
+		{
+			var w, h;
+			w = $("#game-container").width();
+			h = $("#game-container").height();
+			var g = new Phaser.Game(w, h, Phaser.AUTO, 'game');
+			//g.state.add('boot', MainGame.Boot);
+			//g.state.add('preload', MainGame.Preloader);
+			//g.state.add('mainmenu', MainGame.MainMenu);
+
+			////start the game
+			//g.state.start('boot');
+		});
+	</script>
+</body>
+</html>

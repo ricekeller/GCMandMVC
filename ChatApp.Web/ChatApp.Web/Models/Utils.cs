@@ -133,16 +133,16 @@ namespace ChatApp.Web.Models
 
 		}
 
-		private static IList<PlaylistItem> GetVideosInAPlaylist(string listId)
+		private static IList<PlaylistItem> GetVideosInAPlaylist(string listId, YouTubeService svc)
 		{
-			var youtubeService = new YouTubeService(new BaseClientService.Initializer()
-			{
-				ApiKey = ConfigurationManager.AppSettings["Youtube-APIKEY"],
-			});
+			//var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+			//{
+			//	ApiKey = ConfigurationManager.AppSettings["Youtube-APIKEY"],
+			//});
 			List<PlaylistItem> result = new List<PlaylistItem>();
-			var req = youtubeService.PlaylistItems.List("id,contentDetails,snippet,status");
+			var req = svc.PlaylistItems.List("id,contentDetails,snippet,status");
 			req.PlaylistId = listId;
-			req.MaxResults = 5;
+			req.MaxResults = 20;
 			var resp = req.Execute();
 			result.AddRange(resp.Items);
 			while (!string.IsNullOrEmpty(resp.NextPageToken))
@@ -157,12 +157,30 @@ namespace ChatApp.Web.Models
 		public static YoutubeDataViewModel GetYoutubeDataViewModel()
 		{
 			var res = new YoutubeDataViewModel();
-			var lists = GetPlaylistsInfo();
-			foreach (Playlist pl in lists.Items)
+			var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+			{
+				ApiKey = ConfigurationManager.AppSettings["Youtube-APIKEY"],
+			});
+			var listsReq = youtubeService.Playlists.List("id,contentDetails,snippet,status");
+			listsReq.ChannelId = ConfigurationManager.AppSettings["Youtube-ChannelId"];
+			listsReq.MaxResults = 20;
+			var resp = listsReq.Execute();
+			foreach (Playlist pl in resp.Items)
 			{
 				var id = pl.Id;
-				var vids = GetVideosInAPlaylist(id);
+				var vids = GetVideosInAPlaylist(id, youtubeService);
 				res.Data.Add(id, new YoutubePlaylist() { Id = id, Playlist = pl, Videos = vids });
+			}
+			while (!string.IsNullOrWhiteSpace(resp.NextPageToken))
+			{
+				listsReq.PageToken = resp.NextPageToken;
+				resp = listsReq.Execute();
+				foreach (Playlist pl in resp.Items)
+				{
+					var id = pl.Id;
+					var vids = GetVideosInAPlaylist(id, youtubeService);
+					res.Data.Add(id, new YoutubePlaylist() { Id = id, Playlist = pl, Videos = vids });
+				}
 			}
 			return res;
 		}
