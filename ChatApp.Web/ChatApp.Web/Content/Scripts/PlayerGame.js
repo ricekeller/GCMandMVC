@@ -12,17 +12,17 @@ PlayerGame.prototype =
 	__height: null,
 	__filter: null,
 	__emitter: null,
-	__games: null,
+	__emitTimer: 0,
+	__emitFrequency: 0.08,//100ms emit 1 particle
+	__showPopupTimer: 0,
+	__showPopupChecker: 5,
 	__preload: function ()
 	{
-		this.__game.load.atlasXML('sprites', '/Content/Images/Games/Sokoban/sprites.png', '/Content/Images/Games/Sokoban/sprites.xml');
-		this.__game.load.image('hanoi', '/Content/Images/Games/Hanoi/tower.png');
-		this.__game.load.image('minesweeper', '/Content/Images/Games/Minesweeper/mine2.png');
+		this.__game.load.image('particle', '/Content/Images/Games/blue.png');
 	},
 	__create: function ()
 	{
 		this.__game.stage.backgroundColor = '#000000';
-		this.__games = {};
 		//the filter
 		var fragmentSrc = [
 
@@ -56,90 +56,75 @@ PlayerGame.prototype =
 
 		//the particle
 		this.__emitter = this.__game.add.emitter(0, 0, 600);//x,y,number of particles
-		this.__emitter.makeParticles('sprites', 'EndPoint_Blue.png');//the image key
+		this.__emitter.makeParticles('particle');
 
 		this.__emitter.setRotation(0, 0);
 		this.__emitter.setAlpha(0.3, 0.8);
-		this.__emitter.setScale(0.5, 1);
+		this.__emitter.setScale(0.1, 0.1);
 		this.__emitter.gravity = -200;
 
 		//	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
 		//	The 5000 value is the lifespan of each particle before it's killed
-		this.__emitter.start(false, 5000, 100);
-
-		//the games
-		var hanoi, minesweeper, sokoban;
-		hanoi = this.__game.add.sprite(this.__game.world.randomX, this.__game.world.randomY, 'hanoi');
-		minesweeper = this.__game.add.sprite(this.__game.world.randomX, this.__game.world.randomY, 'minesweeper');
-		sokoban = this.__game.add.sprite(this.__game.world.randomX, this.__game.world.randomY, 'sprites', 'CrateDark_Brown.png');
-		this.__games[PlayerGame.Games.Hanoi] = hanoi;
-		this.__games[PlayerGame.Games.Minesweeper] = minesweeper;
-		this.__games[PlayerGame.Games.Sokoban] = sokoban;
-		for (var gm in this.__games)
-		{
-			if (this.__games.hasOwnProperty(gm))
-			{
-				var itm = this.__games[gm];
-				itm.gameIdx = parseInt(gm);
-				itm.canEnter = true;
-				itm.inputEnabled = true;
-				itm.events.onInputOver.add(this.__onEnterGameIcon, this);
-				itm.events.onInputOut.add(this.__onOutGameIcon, this);
-				itm.events.onInputUp.add(this.__onIconClicked, this);
-				itm.alpha = 0;
-				this.__game.add.tween(itm).to({ alpha: 1 }, 2000, "Linear", true, 0, 2, true);
-			}
-		}
+		//this.__emitter.start(false, 5000, 100);
 	},
 	__update: function ()
 	{
 		this.__filter.update();
 		this.__emitter.emitX = this.__game.input.activePointer.x;
 		this.__emitter.emitY = this.__game.input.activePointer.y;
+		if (this.__game.input.activePointer.leftButton.isDown)
+		{
+			this.__emitTimer += this.__game.time.physicsElapsed;
+			this.__showPopupTimer += this.__game.time.physicsElapsed;
+			if (this.__emitTimer >= this.__emitFrequency)
+			{
+				this.__emitter.explode(2000, 1);
+				this.__emitTimer = 0;
+			}
+			if (this.__showPopupTimer >= this.__showPopupChecker)
+			{
+				this.__showGamePopup();
+				this.__showPopupTimer = 0;
+			}
+		}
+		else
+		{
+			this.__emitTimer = 0;
+			this.__showPopupTimer = 0;
+		}
 	},
 	__render: function ()
 	{
 
 	},
-	__onEnterGameIcon: function (src, ptr)
+	__showGamePopup: function ()
 	{
-		if (src.canEnter)
-		{
-			src.alpha = 1;
-		}
+		$("#game-select-dialog").dialog("open");
 	},
-	__onOutGameIcon: function (src, ptr)
+	showGameWithIdx: function (idx)
 	{
-		if (src.canEnter)
+		if (typeof idx != Number)
 		{
-			src.canEnter = false;
-			this.__game.add.tween(src).to({ alpha: 0 }, 2000, "Linear", true, 0, 0).onComplete.add(function ()
-			{
-				src.canEnter = true;
-			});
+			idx = parseInt(idx);
 		}
-	},
-	__onIconClicked: function (src, ptr)
-	{
-		switch (src.gameIdx)
+		var url = null;
+		switch (idx)
 		{
 			case PlayerGame.Games.Minesweeper:
-				this.showOverlay();
-				this.__showGameWithSrc("/Game/Minesweeper");
+				url = "/Game/Minesweeper";
 				break;
 			case PlayerGame.Games.Hanoi:
-				this.showOverlay();
-				this.__showGameWithSrc("/Game/Hanoi");
+				url = "/Game/Hanoi";
 				break;
 			case PlayerGame.Games.Sokoban:
-				this.showOverlay();
-				this.__showGameWithSrc("/Game/Sokoban");
+				url = "/Game/Sokoban";
 				break;
 		}
-	},
-	__showGameWithSrc: function (src)
-	{
-		$(".game-container").html("<iframe class='game-frame' src='" + src + "'></iframe>");
+		if (url)
+		{
+			this.showOverlay();
+			$(".game-container").html("<iframe class='game-frame' src='" + url + "'></iframe>");
+		}
 	},
 	onOverlayClicked: function ()
 	{

@@ -76,6 +76,9 @@
 
 		</div>
 	</div>
+	<div id="game-select-dialog" title="Select a game:">
+
+	</div>
 	<script type="text/javascript">
 		window.tmpData=@Html.Raw(Json.Encode(Model));
 		//load youtube iframe api
@@ -93,6 +96,38 @@
 		{
 			var playerGame=new PlayerGame("player-game",$("#player-game").width(),$("#player-game").height());
 			$("#overlay").click(playerGame.onOverlayClicked.bind(playerGame));
+			$("#game-select-dialog").dialog({
+				autoOpen: false,
+				height: 300,
+				width: 350,
+				modal: true,
+				resizable:false,
+				draggable:false,
+				closeOnEscape:false,
+				buttons:
+				{
+					"Close": function()
+					{
+						$("#game-select-dialog").dialog( "close" );
+					}
+				}
+			});
+			for(var game in PlayerGame.Games)
+			{
+				if(PlayerGame.Games.hasOwnProperty(game))
+				{
+					$("#game-select-dialog").append("<div class='game-icon' data-game-idx='"+PlayerGame.Games[game]+"'><span>"+game+"</span></div>");
+				}
+			}
+			$("#game-select-dialog div").button().click(function (event)
+			{
+				if(event&&event.currentTarget)
+				{
+					var idx=$(event.currentTarget).attr("data-game-idx");
+					playerGame.showGameWithIdx(idx);
+				}
+				$("#game-select-dialog").dialog( "close" );
+			});
 		});
 	</script>
 </body>

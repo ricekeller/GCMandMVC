@@ -170,6 +170,12 @@
 	background-color: deepskyblue;
 }
 
+.game-icon
+{
+	width:auto;
+	float:left;
+}
+
 .clear {
 	clear: both;
 }
