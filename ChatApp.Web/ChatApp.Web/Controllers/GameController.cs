@@ -41,6 +41,11 @@ namespace ChatApp.Web.Controllers
 			return View();
 		}
 
+        public ActionResult MapEditor()
+        {
+            return View();
+        }
+
 		[Authorize]
 		public ActionResult SokobanLevelUpload()
 		{
